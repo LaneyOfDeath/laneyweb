@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
   const [flow, incidents] = await Promise.all([
     fetchTomTomFlow(lat, lon, radius),
-    fetchTomTomIncidents(lat, lon, radius * 5),
+    fetchTomTomIncidents(lat, lon, Math.min(radius * 5, 0.5)),
   ]);
 
   return NextResponse.json({
