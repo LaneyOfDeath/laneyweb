@@ -17,6 +17,9 @@ import {
   Wifi,
   HelpCircle,
   Ship,
+  Droplets,
+  PoundSterling,
+  Shield,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -165,6 +168,39 @@ const modules = [
     badgeColor: "green" as const,
   },
   {
+    href: "/flood",
+    label: "Flood Warnings",
+    icon: Droplets,
+    color: "text-blue-400",
+    bg: "bg-blue-400/10",
+    border: "border-blue-400/20",
+    desc: "UK Environment Agency live flood warnings, alerts & severe warnings",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/iss",
+    label: "ISS Tracker",
+    icon: Rocket,
+    color: "text-cyan-400",
+    bg: "bg-cyan-400/10",
+    border: "border-cyan-400/20",
+    desc: "International Space Station live position, NASA video feed & crew list",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/prices",
+    label: "UK Prices",
+    icon: PoundSterling,
+    color: "text-orange-400",
+    bg: "bg-orange-400/10",
+    border: "border-orange-400/20",
+    desc: "UK fuel pump prices, live exchange rates & crypto in GBP",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
     href: "/ships",
     label: "Ship Tracking",
     icon: Ship,
@@ -174,6 +210,17 @@ const modules = [
     desc: "Real-time AIS vessel positions via AISStream WebSocket",
     badge: "Live",
     badgeColor: "green" as const,
+  },
+  {
+    href: "/tor",
+    label: "Tor Network",
+    icon: Shield,
+    color: "text-purple-400",
+    bg: "bg-purple-400/10",
+    border: "border-purple-400/20",
+    desc: "Tor relay stats, bandwidth, top nodes & country breakdown — no Tor browser needed",
+    badge: "Stats",
+    badgeColor: "cyan" as const,
   },
   {
     href: "/quiz",
@@ -209,7 +256,7 @@ export default function DashboardPage() {
               </span>
             </h1>
             <p className="text-sm text-[#64748b] mt-0.5">
-              Live OSINT dashboard — real-time feeds across 15 modules
+              Live OSINT dashboard — real-time feeds across 19 modules
             </p>
           </div>
         </div>
