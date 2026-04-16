@@ -57,7 +57,8 @@ function SteamCard({ game, rank }: { game: SteamGame; rank: number }) {
 
 function Tv2Card({ stream }: { stream: Tv2Stream }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 border-b border-[#1e2a3a]/60 hover:bg-white/5 transition-colors">
+    <a href={`https://www.twitch.tv/${stream.userName}`} target="_blank" rel="noopener noreferrer"
+      className="flex items-center gap-3 px-4 py-3 border-b border-[#1e2a3a]/60 hover:bg-white/5 transition-colors group">
       {stream.thumbnail ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={stream.thumbnail} alt={stream.userName} className="w-14 h-8 object-cover rounded flex-shrink-0" />
@@ -67,14 +68,15 @@ function Tv2Card({ stream }: { stream: Tv2Stream }) {
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-white font-medium truncate">{stream.userName}</p>
+        <p className="text-xs text-white font-medium truncate group-hover:text-purple-300 transition-colors">{stream.userName}</p>
         <p className="text-[10px] text-purple-400 truncate">{stream.gameName}</p>
+        <p className="text-[9px] text-[#64748b] truncate">{stream.title}</p>
       </div>
       <div className="flex-shrink-0 text-right">
         <p className="text-xs font-bold text-purple-400">{fmt(stream.viewers)}</p>
         <p className="text-[9px] text-[#64748b]">viewers</p>
       </div>
-    </div>
+    </a>
   );
 }
 
