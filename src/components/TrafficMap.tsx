@@ -50,7 +50,7 @@ export default function TrafficMap() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/traffic?lat=${city.lat}&lon=${city.lon}&radius=0.15`);
+      const res = await fetch(`/api/traffic?lat=${city.lat}&lon=${city.lon}&radius=0.5`);
       if (!res.ok) return;
       const json = await res.json();
       setIncidents(json.incidents ?? []);
