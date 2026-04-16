@@ -239,19 +239,19 @@ export default function DashboardPage() {
   return (
     <div className="min-h-full">
       {/* Hero */}
-      <div className="relative px-6 pt-10 pb-8 border-b border-[#1a2640] overflow-hidden">
+      <div className="relative px-6 pt-4 pb-3 border-b border-[#1a2640] overflow-hidden">
         {/* Background glows */}
         <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full aurora"
           style={{ background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)", filter: "blur(40px)" }} />
         <div className="absolute -bottom-10 right-20 w-48 h-48 rounded-full aurora"
           style={{ background: "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)", filter: "blur(40px)", animationDelay: "4s" }} />
 
-        <div className="relative flex flex-col items-center text-center gap-4 mb-5">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.15))", border: "1px solid rgba(6,182,212,0.3)", boxShadow: "0 0 24px rgba(6,182,212,0.2)" }}>
-            <Globe className="w-8 h-8 text-cyan-400" />
+        <div className="relative flex items-center justify-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.15))", border: "1px solid rgba(6,182,212,0.3)", boxShadow: "0 0 16px rgba(6,182,212,0.2)" }}>
+            <Globe className="w-5 h-5 text-cyan-400" />
           </div>
-          <h1 className="text-4xl font-black tracking-tight"
+          <h1 className="text-2xl font-black tracking-tight"
             style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             LaneyWeb
           </h1>
@@ -267,38 +267,37 @@ export default function DashboardPage() {
       </div>
 
       {/* Module grid */}
-      <div className="p-6">
-        <p className="text-xs font-semibold text-[#4a6080] uppercase tracking-widest mb-4">
+      <div className="p-4">
+        <p className="text-xs font-semibold text-[#4a6080] uppercase tracking-widest mb-3">
           Active modules
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
           {modules.map(
             ({ href, label, icon: Icon, color, bg, border, desc, badge, badgeColor }) => (
               <Link
                 key={href}
                 href={href}
-                className="group flex flex-col gap-3 p-5 rounded-2xl border border-[#1a2640] bg-[#0d1e30]
+                className="group flex flex-col gap-2 p-4 rounded-xl border border-[#1a2640] bg-[#0d1e30]
                            hover:border-[#243352] transition-all duration-300 relative overflow-hidden"
                 style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
               >
                 {/* Hover glow */}
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl ${bg}`}
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl ${bg}`}
                   style={{ filter: "blur(1px)" }} />
 
                 <div className="relative flex items-start justify-between">
-                  <div className={`w-11 h-11 rounded-xl ${bg} border ${border} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
-                    style={{ boxShadow: "none" }}>
-                    <Icon className={`w-5 h-5 ${color}`} />
+                  <div className={`w-9 h-9 rounded-lg ${bg} border ${border} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}>
+                    <Icon className={`w-4 h-4 ${color}`} />
                   </div>
                   <LiveBadge label={badge} color={badgeColor} />
                 </div>
                 <div className="relative">
-                  <h2 className={`font-semibold text-white text-sm transition-colors duration-200 group-hover:${color}`}>
+                  <h2 className={`font-semibold text-white text-xs transition-colors duration-200 group-hover:${color}`}>
                     {label}
                   </h2>
-                  <p className="text-xs text-[#4a6080] mt-1 leading-relaxed group-hover:text-[#64748b] transition-colors">{desc}</p>
+                  <p className="text-[11px] text-[#4a6080] mt-0.5 leading-relaxed group-hover:text-[#64748b] transition-colors line-clamp-2">{desc}</p>
                 </div>
-                <div className={`relative flex items-center gap-1 text-[11px] text-[#4a6080] group-hover:${color} transition-colors mt-auto`}>
+                <div className={`relative flex items-center gap-1 text-[10px] text-[#4a6080] group-hover:${color} transition-colors mt-auto`}>
                   <span>Open module</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200" />
                 </div>
