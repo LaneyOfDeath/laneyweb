@@ -110,7 +110,7 @@ export default function TrafficMap() {
 
       <div className="flex flex-1 min-h-0 mt-3 mx-4 mb-4 gap-3">
         <div className="flex-1 rounded-xl overflow-hidden border border-[#1e2a3a]">
-          <MapComponent center={[city.lat, city.lon]} incidents={incidents} hasKey={hasKey} />
+          <MapComponent center={[city.lat, city.lon]} incidents={incidents} hasKey={hasKey ?? false} />
         </div>
 
         {/* Incidents panel */}
