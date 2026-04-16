@@ -114,18 +114,18 @@ export default function TrafficMap() {
         </div>
 
         {/* Incidents panel */}
-        <div className="w-64 border border-[#1e2a3a] rounded-xl bg-[#111827] flex flex-col overflow-hidden">
-          <div className="px-4 pt-3 pb-2 border-b border-[#1e2a3a]">
-            <div className="flex items-center gap-2">
-              <Car className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-xs font-semibold text-white">Incidents ({incidents.length})</span>
+        <div className="w-44 border border-[#1e2a3a] rounded-xl bg-[#111827] flex flex-col overflow-hidden flex-shrink-0">
+          <div className="px-3 pt-2.5 pb-2 border-b border-[#1e2a3a]">
+            <div className="flex items-center gap-1.5">
+              <Car className="w-3 h-3 text-yellow-400" />
+              <span className="text-[11px] font-semibold text-white">Incidents ({incidents.length})</span>
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
             {incidents.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                <p className="text-xs text-[#64748b]">
-                  {hasKey ? "No incidents in this area" : "Add TomTom API key to see incidents"}
+              <div className="flex flex-col items-center justify-center py-6 px-3 text-center">
+                <p className="text-[10px] text-[#64748b]">
+                  {hasKey ? "No incidents" : "Add TomTom key"}
                 </p>
               </div>
             ) : (
@@ -134,13 +134,13 @@ export default function TrafficMap() {
                 const desc = inc.properties.events?.[0]?.description ?? "Incident";
                 const road = inc.properties.roadNumbers?.join(", ") ?? "";
                 return (
-                  <div key={i} className="px-4 py-3 border-b border-[#1e2a3a]/50 hover:bg-white/5">
-                    <div className="flex items-start gap-2">
-                      <span className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${DELAY_COLORS[Math.min(delay, 4)].replace("text-", "bg-")}`} />
+                  <div key={i} className="px-3 py-2 border-b border-[#1e2a3a]/50 hover:bg-white/5">
+                    <div className="flex items-start gap-1.5">
+                      <span className={`w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0 ${DELAY_COLORS[Math.min(delay, 4)].replace("text-", "bg-")}`} />
                       <div>
-                        <p className="text-xs text-white leading-snug">{desc}</p>
-                        {road && <p className="text-[10px] text-[#64748b] mt-0.5">{road}</p>}
-                        <p className={`text-[10px] mt-0.5 ${DELAY_COLORS[Math.min(delay, 4)]}`}>
+                        <p className="text-[10px] text-white leading-snug">{desc}</p>
+                        {road && <p className="text-[9px] text-[#64748b] mt-0.5">{road}</p>}
+                        <p className={`text-[9px] mt-0.5 ${DELAY_COLORS[Math.min(delay, 4)]}`}>
                           {DELAY_LABELS[Math.min(delay, 4)]}
                         </p>
                       </div>
