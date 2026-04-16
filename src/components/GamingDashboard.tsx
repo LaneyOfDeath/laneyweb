@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Gamepad2, Users, RefreshCw, Search, Twitch, Gift, Calendar, Star, ExternalLink, X } from "lucide-react";
+import { Gamepad2, Users, RefreshCw, Search, Tv2, Gift, Calendar, Star, ExternalLink, X } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface SteamGame { appid: number; name: string; developer: string; ccu: number; average_2weeks: number; genre: string; }
-interface TwitchStream { id: string; userName: string; gameName: string; title: string; viewers: number; thumbnail: string; language: string; }
+interface Tv2Stream { id: string; userName: string; gameName: string; title: string; viewers: number; thumbnail: string; language: string; }
 interface EpicGame { title: string; description: string; image: string; url: string; endDate: string; }
 interface RAWGGame { id: number; name: string; released: string; rating: number; image: string; platforms: string[]; genres?: string[]; }
 
 interface GamingData {
   steam: SteamGame[];
-  twitch: TwitchStream[];
+  twitch: Tv2Stream[];
   epicFree: EpicGame[];
   upcoming: RAWGGame[];
   timestamp: number;
@@ -55,7 +55,7 @@ function SteamCard({ game, rank }: { game: SteamGame; rank: number }) {
   );
 }
 
-function TwitchCard({ stream }: { stream: TwitchStream }) {
+function Tv2Card({ stream }: { stream: Tv2Stream }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3 border-b border-[#1e2a3a]/60 hover:bg-white/5 transition-colors">
       {stream.thumbnail ? (
@@ -63,7 +63,7 @@ function TwitchCard({ stream }: { stream: TwitchStream }) {
         <img src={stream.thumbnail} alt={stream.userName} className="w-14 h-8 object-cover rounded flex-shrink-0" />
       ) : (
         <div className="w-14 h-8 bg-[#1e2a3a] rounded flex-shrink-0 flex items-center justify-center">
-          <Twitch className="w-4 h-4 text-purple-400" />
+          <Tv2 className="w-4 h-4 text-purple-400" />
         </div>
       )}
       <div className="flex-1 min-w-0">
@@ -227,21 +227,21 @@ export default function GamingDashboard() {
               )}
             </div>
 
-            {/* Twitch */}
+            {/* Tv2 */}
             <div className="flex flex-col">
               <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1e2a3a] bg-white/2">
-                <Twitch className="w-3.5 h-3.5 text-purple-400" />
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-400">Twitch — Top Streams</span>
+                <Tv2 className="w-3.5 h-3.5 text-purple-400" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-400">Tv2 — Top Streams</span>
               </div>
               {loading ? (
                 <div className="flex-1 flex items-center justify-center">
                   <RefreshCw className="w-5 h-5 text-[#64748b] animate-spin" />
                 </div>
               ) : data?.twitch.length ? (
-                data.twitch.map((s) => <TwitchCard key={s.id} stream={s} />)
+                data.twitch.map((s) => <Tv2Card key={s.id} stream={s} />)
               ) : (
                 <div className="flex-1 flex items-center justify-center p-8 text-center">
-                  <p className="text-xs text-[#64748b]">Add <code className="text-pink-400">IGDB_CLIENT_ID</code> + <code className="text-pink-400">IGDB_CLIENT_SECRET</code> in Vercel to enable Twitch streams</p>
+                  <p className="text-xs text-[#64748b]">Add <code className="text-pink-400">IGDB_CLIENT_ID</code> + <code className="text-pink-400">IGDB_CLIENT_SECRET</code> in Vercel to enable Tv2 streams</p>
                 </div>
               )}
             </div>
