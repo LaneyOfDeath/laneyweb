@@ -15,6 +15,8 @@ import {
   Gamepad2,
   ChevronLeft,
   ChevronRight,
+  Menu,
+  X,
   Radio,
   Globe,
   CloudSun,
@@ -45,47 +47,47 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
+  const sidebarContent = (mobile = false) => (
     <aside
       className={clsx(
         "flex flex-col h-full transition-all duration-300 ease-in-out flex-shrink-0",
         "border-r border-[#1e2a3a]",
-        collapsed ? "w-16" : "w-60"
+        mobile ? "w-72" : collapsed ? "w-16" : "w-60"
       )}
       style={{ background: "var(--sidebar-bg)" }}
     >
       {/* Logo */}
       <div className={clsx(
         "flex items-center gap-3 px-4 py-5 border-b border-[#1e2a3a]",
-        collapsed && "justify-center"
+        !mobile && collapsed && "justify-center"
       )}>
         <div className="relative flex-shrink-0">
           <Globe className="w-8 h-8 text-cyan-400" />
           <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-[#0d1224]" />
         </div>
-        {!collapsed && (
-          <div>
-            <p className="font-bold text-sm text-white leading-tight tracking-wide">
-              LAANEYWEB
-            </p>
-            <p className="text-[10px] text-[#64748b] uppercase tracking-widest">
-              Live Intelligence
-            </p>
+        {(mobile || !collapsed) && (
+          <div className="flex-1">
+            <p className="font-bold text-sm text-white leading-tight tracking-wide">LAANEYWEB</p>
+            <p className="text-[10px] text-[#64748b] uppercase tracking-widest">Live Intelligence</p>
           </div>
+        )}
+        {mobile && (
+          <button onClick={() => setMobileOpen(false)} className="p-1 text-[#64748b] hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
         )}
       </div>
 
       {/* Live indicator */}
-      {!collapsed && (
+      {(mobile || !collapsed) && (
         <div className="mx-3 mt-3 mb-1 flex items-center gap-2 px-3 py-2 rounded-md bg-green-400/10 border border-green-400/20">
           <span className="relative flex h-2 w-2 flex-shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
           </span>
-          <span className="text-[11px] text-green-400 font-semibold tracking-wider uppercase">
-            All feeds live
-          </span>
+          <span className="text-[11px] text-green-400 font-semibold tracking-wider uppercase">All feeds live</span>
           <Radio className="w-3 h-3 text-green-400 ml-auto" />
         </div>
       )}
@@ -98,22 +100,21 @@ export default function Sidebar() {
             <Link
               key={href}
               href={href}
-              title={collapsed ? label : undefined}
+              onClick={() => setMobileOpen(false)}
+              title={!mobile && collapsed ? label : undefined}
               className={clsx(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium",
                 "transition-all duration-150 group relative",
-                active
-                  ? "bg-cyan-500/15 text-white"
-                  : "text-[#94a3b8] hover:bg-white/5 hover:text-white",
-                collapsed && "justify-center"
+                active ? "bg-cyan-500/15 text-white" : "text-[#94a3b8] hover:bg-white/5 hover:text-white",
+                !mobile && collapsed && "justify-center"
               )}
             >
               {active && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-cyan-400 rounded-r-full" />
               )}
               <Icon className={clsx("w-4.5 h-4.5 flex-shrink-0", active ? color : "text-[#64748b] group-hover:" + color.replace("text-", "text-"))} />
-              {!collapsed && <span>{label}</span>}
-              {!collapsed && active && (
+              {(mobile || !collapsed) && <span>{label}</span>}
+              {(mobile || !collapsed) && active && (
                 <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400" />
               )}
             </Link>
@@ -121,26 +122,54 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Collapse toggle */}
-      <div className="border-t border-[#1e2a3a] p-2">
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={clsx(
-            "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#64748b]",
-            "hover:bg-white/5 hover:text-white transition-colors text-sm",
-            collapsed && "justify-center"
-          )}
-        >
-          {collapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
-            <>
-              <ChevronLeft className="w-4 h-4" />
-              <span>Collapse</span>
-            </>
-          )}
-        </button>
-      </div>
+      {/* Collapse toggle — desktop only */}
+      {!mobile && (
+        <div className="border-t border-[#1e2a3a] p-2">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className={clsx(
+              "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[#64748b]",
+              "hover:bg-white/5 hover:text-white transition-colors text-sm",
+              collapsed && "justify-center"
+            )}
+          >
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <><ChevronLeft className="w-4 h-4" /><span>Collapse</span></>}
+          </button>
+        </div>
+      )}
     </aside>
+  );
+
+  return (
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#111827] border border-[#1e2a3a] text-[#94a3b8] hover:text-white"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      {/* Mobile drawer backdrop */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <div className={clsx(
+        "md:hidden fixed inset-y-0 left-0 z-50 transition-transform duration-300",
+        mobileOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        {sidebarContent(true)}
+      </div>
+
+      {/* Desktop sidebar */}
+      <div className="hidden md:flex h-full">
+        {sidebarContent(false)}
+      </div>
+    </>
   );
 }
