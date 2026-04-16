@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Github, Globe2, Flame, Code } from "lucide-react";
+import { RefreshCw, GitBranch, Globe2, Flame, Code } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface GithubRepo {
@@ -62,7 +62,7 @@ export default function InternetDashboard() {
 
   const tabs = [
     { id: "hackernews" as const, label: "Hacker News", icon: Flame },
-    { id: "github" as const, label: "GitHub Trending", icon: Github },
+    { id: "github" as const, label: "GitHub Trending", icon: GitBranch },
     { id: "wikipedia" as const, label: "Wikipedia Edits", icon: Globe2 },
   ];
 
