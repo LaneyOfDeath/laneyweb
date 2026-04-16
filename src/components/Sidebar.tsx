@@ -28,7 +28,6 @@ import {
   Ship,
   Droplets,
   PoundSterling,
-  Rocket,
   Shield,
 } from "lucide-react";
 import { clsx } from "clsx";
