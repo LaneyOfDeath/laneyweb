@@ -241,7 +241,7 @@ export default function GamingDashboard() {
                 data.twitch.map((s) => <Tv2Card key={s.id} stream={s} />)
               ) : (
                 <div className="flex-1 flex items-center justify-center p-8 text-center">
-                  <p className="text-xs text-[#64748b]">Add <code className="text-pink-400">IGDB_CLIENT_ID</code> + <code className="text-pink-400">IGDB_CLIENT_SECRET</code> in Vercel to enable Tv2 streams</p>
+                  <p className="text-xs text-[#64748b]">Add <code className="text-pink-400">IGDB_CLIENT_ID</code> + <code className="text-pink-400">IGDB_CLIENT_SECRET</code> in Vercel to enable Twitch streams</p>
                 </div>
               )}
             </div>
