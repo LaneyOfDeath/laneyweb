@@ -284,7 +284,7 @@ export default function DashboardPage() {
               <Link
                 key={href}
                 href={href}
-                className="group flex flex-col gap-3 p-5 rounded-2xl border border-[#1a2640] bg-[#0f1623]
+                className="group flex flex-col gap-3 p-5 rounded-2xl border border-[#1a2640] bg-[#0d1e30]
                            hover:border-[#243352] transition-all duration-300 relative overflow-hidden"
                 style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
               >
@@ -317,7 +317,7 @@ export default function DashboardPage() {
 
       {/* Footer note */}
       <div className="px-6 pb-8">
-        <div className="rounded-2xl border border-[#1a2640] bg-[#0f1623] p-4">
+        <div className="rounded-2xl border border-[#1a2640] bg-[#0d1e30] p-4">
           <p className="text-xs text-[#64748b] leading-relaxed">
             <span className="text-[#94a3b8] font-medium">Data sources:</span> OpenSky Network
             (aircraft), OpenStreetMap (maps), Alpha Vantage (stocks), TheSportsDB (sports),

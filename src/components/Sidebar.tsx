@@ -182,7 +182,7 @@ export default function Sidebar() {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#111827] border border-[#1e2a3a] text-[#94a3b8] hover:text-white"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#0d1e30] border border-[#1a3248] text-[#94a3b8] hover:text-white"
       >
         <Menu className="w-5 h-5" />
       </button>
