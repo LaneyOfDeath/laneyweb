@@ -239,38 +239,43 @@ export default function DashboardPage() {
   return (
     <div className="min-h-full">
       {/* Hero */}
-      <div
-        className="px-6 pt-10 pb-8 border-b border-[#1e2a3a]"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(6,182,212,0.08) 0%, rgba(59,130,246,0.06) 50%, transparent 100%)",
-        }}
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <Globe className="w-10 h-10 text-cyan-400" />
+      <div className="relative px-6 pt-10 pb-8 border-b border-[#1a2640] overflow-hidden">
+        {/* Background glows */}
+        <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full aurora"
+          style={{ background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)", filter: "blur(40px)" }} />
+        <div className="absolute -bottom-10 right-20 w-48 h-48 rounded-full aurora"
+          style={{ background: "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)", filter: "blur(40px)", animationDelay: "4s" }} />
+
+        <div className="relative flex items-center gap-4 mb-5">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.15))", border: "1px solid rgba(6,182,212,0.3)", boxShadow: "0 0 24px rgba(6,182,212,0.2)" }}>
+            <Globe className="w-7 h-7 text-cyan-400" />
+          </div>
           <div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
+            <h1 className="text-4xl font-black tracking-tight text-white">
               Laaney{" "}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <span style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 Intelligence
               </span>
             </h1>
-            <p className="text-sm text-[#64748b] mt-0.5">
+            <p className="text-sm text-[#64748b] mt-1">
               Live OSINT dashboard — real-time feeds across 19 modules
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <LiveBadge label="All systems live" color="green" />
-          <span className="text-xs text-[#64748b]">
-            Data refreshes automatically · No login required
-          </span>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            19 live modules
+          </div>
+          <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
         </div>
       </div>
 
       {/* Module grid */}
       <div className="p-6">
-        <p className="text-xs font-semibold text-[#64748b] uppercase tracking-widest mb-4">
+        <p className="text-xs font-semibold text-[#4a6080] uppercase tracking-widest mb-4">
           Active modules
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
@@ -279,25 +284,30 @@ export default function DashboardPage() {
               <Link
                 key={href}
                 href={href}
-                className="group flex flex-col gap-3 p-5 rounded-xl border border-[#1e2a3a] bg-[#111827]
-                           hover:border-[#2d3f55] hover:bg-[#131f30] transition-all duration-200
-                           hover:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+                className="group flex flex-col gap-3 p-5 rounded-2xl border border-[#1a2640] bg-[#0f1623]
+                           hover:border-[#243352] transition-all duration-300 relative overflow-hidden"
+                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
               >
-                <div className="flex items-start justify-between">
-                  <div className={`w-10 h-10 rounded-xl ${bg} border ${border} flex items-center justify-center`}>
+                {/* Hover glow */}
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl ${bg}`}
+                  style={{ filter: "blur(1px)" }} />
+
+                <div className="relative flex items-start justify-between">
+                  <div className={`w-11 h-11 rounded-xl ${bg} border ${border} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
+                    style={{ boxShadow: "none" }}>
                     <Icon className={`w-5 h-5 ${color}`} />
                   </div>
                   <LiveBadge label={badge} color={badgeColor} />
                 </div>
-                <div>
-                  <h2 className="font-semibold text-white text-sm group-hover:text-cyan-300 transition-colors">
+                <div className="relative">
+                  <h2 className={`font-semibold text-white text-sm transition-colors duration-200 group-hover:${color}`}>
                     {label}
                   </h2>
-                  <p className="text-xs text-[#64748b] mt-1 leading-relaxed">{desc}</p>
+                  <p className="text-xs text-[#4a6080] mt-1 leading-relaxed group-hover:text-[#64748b] transition-colors">{desc}</p>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] text-[#64748b] group-hover:text-cyan-400 transition-colors mt-auto">
+                <div className={`relative flex items-center gap-1 text-[11px] text-[#4a6080] group-hover:${color} transition-colors mt-auto`}>
                   <span>Open module</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200" />
                 </div>
               </Link>
             )
@@ -307,7 +317,7 @@ export default function DashboardPage() {
 
       {/* Footer note */}
       <div className="px-6 pb-8">
-        <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-4">
+        <div className="rounded-2xl border border-[#1a2640] bg-[#0f1623] p-4">
           <p className="text-xs text-[#64748b] leading-relaxed">
             <span className="text-[#94a3b8] font-medium">Data sources:</span> OpenSky Network
             (aircraft), OpenStreetMap (maps), Alpha Vantage (stocks), TheSportsDB (sports),
