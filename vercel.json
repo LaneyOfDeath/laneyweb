@@ -1,0 +1,37 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "functions": {
+    "src/app/api/aircraft/route.ts": { "maxDuration": 10 },
+    "src/app/api/earth/route.ts":    { "maxDuration": 10 },
+    "src/app/api/space/route.ts":    { "maxDuration": 10 },
+    "src/app/api/internet/route.ts": { "maxDuration": 10 },
+    "src/app/api/marine/route.ts":   { "maxDuration": 10 },
+    "src/app/api/news/route.ts":     { "maxDuration": 10 },
+    "src/app/api/power/route.ts":    { "maxDuration": 10 },
+    "src/app/api/sports/route.ts":   { "maxDuration": 10 },
+    "src/app/api/stocks/route.ts":   { "maxDuration": 10 },
+    "src/app/api/traffic/route.ts":  { "maxDuration": 10 },
+    "src/app/api/weather/route.ts":  { "maxDuration": 10 },
+    "src/app/api/gaming/route.ts":   { "maxDuration": 10 }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}
