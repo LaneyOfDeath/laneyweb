@@ -15,6 +15,7 @@ import {
   Mountain,
   Zap,
   Wifi,
+  HelpCircle,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -162,6 +163,17 @@ const modules = [
     badge: "Live",
     badgeColor: "green" as const,
   },
+  {
+    href: "/quiz",
+    label: "Trivia Quiz",
+    icon: HelpCircle,
+    color: "text-yellow-300",
+    bg: "bg-yellow-300/10",
+    border: "border-yellow-300/20",
+    desc: "10-question trivia quiz — pick your category & difficulty",
+    badge: "Fun",
+    badgeColor: "yellow" as const,
+  },
 ];
 
 export default function DashboardPage() {
@@ -185,7 +197,7 @@ export default function DashboardPage() {
               </span>
             </h1>
             <p className="text-sm text-[#64748b] mt-0.5">
-              Live OSINT dashboard — real-time feeds across 13 modules
+              Live OSINT dashboard — real-time feeds across 14 modules
             </p>
           </div>
         </div>

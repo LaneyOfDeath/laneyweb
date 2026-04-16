@@ -24,6 +24,7 @@ import {
   Mountain,
   Zap,
   Wifi,
+  HelpCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -42,6 +43,7 @@ const navItems = [
   { href: "/earth", label: "Earth Activity", icon: Mountain, color: "text-amber-400" },
   { href: "/power", label: "Power Grid", icon: Zap, color: "text-lime-400" },
   { href: "/internet", label: "Internet", icon: Wifi, color: "text-rose-400" },
+  { href: "/quiz", label: "Trivia Quiz", icon: HelpCircle, color: "text-yellow-300" },
 ];
 
 export default function Sidebar() {
