@@ -16,6 +16,7 @@ import {
   Zap,
   Wifi,
   HelpCircle,
+  Ship,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -164,6 +165,17 @@ const modules = [
     badgeColor: "green" as const,
   },
   {
+    href: "/ships",
+    label: "Ship Tracking",
+    icon: Ship,
+    color: "text-blue-300",
+    bg: "bg-blue-300/10",
+    border: "border-blue-300/20",
+    desc: "Real-time AIS vessel positions via AISStream WebSocket",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
     href: "/quiz",
     label: "Trivia Quiz",
     icon: HelpCircle,
@@ -197,7 +209,7 @@ export default function DashboardPage() {
               </span>
             </h1>
             <p className="text-sm text-[#64748b] mt-0.5">
-              Live OSINT dashboard — real-time feeds across 14 modules
+              Live OSINT dashboard — real-time feeds across 15 modules
             </p>
           </div>
         </div>

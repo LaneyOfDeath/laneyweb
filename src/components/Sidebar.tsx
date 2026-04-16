@@ -25,6 +25,7 @@ import {
   Zap,
   Wifi,
   HelpCircle,
+  Ship,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -41,6 +42,7 @@ const navItems = [
   { href: "/space", label: "Space", icon: Rocket, color: "text-violet-400" },
   { href: "/stocks", label: "Stock Market", icon: TrendingUp, color: "text-emerald-400" },
   { href: "/sports", label: "Sports Stats", icon: Trophy, color: "text-orange-400" },
+  { href: "/ships", label: "Ship Tracking", icon: Ship, color: "text-blue-300" },
   { href: "/traffic", label: "Traffic", icon: Car, color: "text-yellow-400" },
   { href: "/quiz", label: "Trivia Quiz", icon: HelpCircle, color: "text-yellow-300" },
   { href: "/weather", label: "Weather", icon: CloudSun, color: "text-sky-300" },
