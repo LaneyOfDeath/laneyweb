@@ -81,6 +81,12 @@ export default function TrafficMapLeaflet({ center, incidents, hasKey }: Props) 
                 <p className="font-bold text-sm" style={{ color }}>{desc}</p>
                 {inc.properties.from && <p>From: {inc.properties.from}</p>}
                 {inc.properties.to && <p>To: {inc.properties.to}</p>}
+                {!inc.properties.from && inc.properties.roadNumbers && inc.properties.roadNumbers.length > 0 && (
+                  <p>Road: {inc.properties.roadNumbers.join(", ")}</p>
+                )}
+                {!inc.properties.from && (
+                  <p style={{ color: "#94a3b8" }}>{pos[0].toFixed(4)}, {pos[1].toFixed(4)}</p>
+                )}
               </div>
             </Popup>
           </CircleMarker>
