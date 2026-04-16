@@ -13,6 +13,7 @@ interface Incident {
     events?: { description: string }[];
     from?: string;
     to?: string;
+    roadNumbers?: string[];
   };
 }
 
