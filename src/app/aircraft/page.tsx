@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import AircraftMap from "@/components/AircraftMap";
 
 export const metadata: Metadata = {
-  title: "Aircraft Tracking — LaaneyWeb",
+  title: "Aircraft Tracking — LaneyWeb",
 };
 
 export default function AircraftPage() {

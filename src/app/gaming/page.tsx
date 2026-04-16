@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import GamingDashboard from "@/components/GamingDashboard";
 
 export const metadata: Metadata = {
-  title: "Gaming Top 10 — LaaneyWeb",
+  title: "Gaming Top 10 — LaneyWeb",
 };
 
 export default function GamingPage() {

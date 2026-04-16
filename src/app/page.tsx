@@ -246,24 +246,17 @@ export default function DashboardPage() {
         <div className="absolute -bottom-10 right-20 w-48 h-48 rounded-full aurora"
           style={{ background: "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)", filter: "blur(40px)", animationDelay: "4s" }} />
 
-        <div className="relative flex items-center gap-4 mb-5">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0"
+        <div className="relative flex flex-col items-center text-center gap-4 mb-5">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
             style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.15))", border: "1px solid rgba(6,182,212,0.3)", boxShadow: "0 0 24px rgba(6,182,212,0.2)" }}>
-            <Globe className="w-7 h-7 text-cyan-400" />
+            <Globe className="w-8 h-8 text-cyan-400" />
           </div>
-          <div>
-            <h1 className="text-4xl font-black tracking-tight text-white">
-              Laaney{" "}
-              <span style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Intelligence
-              </span>
-            </h1>
-            <p className="text-sm text-[#64748b] mt-1">
-              Live OSINT dashboard — real-time feeds across 19 modules
-            </p>
-          </div>
+          <h1 className="text-4xl font-black tracking-tight"
+            style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            LaneyWeb
+          </h1>
         </div>
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center justify-center gap-3 flex-wrap">
           <LiveBadge label="All systems live" color="green" />
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />

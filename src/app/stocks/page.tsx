@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import StocksDashboard from "@/components/StocksDashboard";
 
 export const metadata: Metadata = {
-  title: "Stock Market — LaaneyWeb",
+  title: "Stock Market — LaneyWeb",
 };
 
 export default function StocksPage() {

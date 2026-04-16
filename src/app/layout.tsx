@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LaaneyWeb — Live Intelligence Dashboard",
+  title: "LaneyWeb — Live Intelligence Dashboard",
   description: "Real-time tracking of aircraft, marine, traffic, sports, stocks, news, and more.",
 };
 

@@ -91,7 +91,7 @@ export default function Sidebar() {
           <div className="flex-1">
             <p className="font-black text-sm tracking-wide"
               style={{ background: "linear-gradient(135deg, #06b6d4, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              LAANEYWEB
+              LANEYWEB
             </p>
             <p className="text-[10px] text-[#4a6080] uppercase tracking-widest">Live Intelligence</p>
           </div>

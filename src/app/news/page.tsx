@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import NewsDashboard from "@/components/NewsDashboard";
 
 export const metadata: Metadata = {
-  title: "Live News — LaaneyWeb",
+  title: "Live News — LaneyWeb",
 };
 
 export default function NewsPage() {

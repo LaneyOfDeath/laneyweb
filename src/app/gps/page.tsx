@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import GPSMap from "@/components/GPSMap";
 
 export const metadata: Metadata = {
-  title: "GPS / Maps — LaaneyWeb",
+  title: "GPS / Maps — LaneyWeb",
 };
 
 export default function GPSPage() {

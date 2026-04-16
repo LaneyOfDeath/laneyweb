@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import SportsDashboard from "@/components/SportsDashboard";
 
 export const metadata: Metadata = {
-  title: "Sports Stats — LaaneyWeb",
+  title: "Sports Stats — LaneyWeb",
 };
 
 export default function SportsPage() {

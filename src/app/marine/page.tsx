@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import MarineMap from "@/components/MarineMap";
 
 export const metadata: Metadata = {
-  title: "Marine Traffic — LaaneyWeb",
+  title: "Marine Traffic — LaneyWeb",
 };
 
 export default function MarinePage() {

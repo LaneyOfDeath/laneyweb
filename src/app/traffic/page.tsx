@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import TrafficMap from "@/components/TrafficMap";
 
 export const metadata: Metadata = {
-  title: "Traffic — LaaneyWeb",
+  title: "Traffic — LaneyWeb",
 };
 
 export default function TrafficPage() {
