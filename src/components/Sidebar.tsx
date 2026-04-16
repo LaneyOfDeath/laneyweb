@@ -30,20 +30,20 @@ import { clsx } from "clsx";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, color: "text-cyan-400" },
-  { href: "/traffic", label: "Traffic", icon: Car, color: "text-yellow-400" },
-  { href: "/marine", label: "Marine", icon: Anchor, color: "text-blue-400" },
   { href: "/aircraft", label: "Aircraft", icon: PlaneTakeoff, color: "text-sky-400" },
-  { href: "/gps", label: "GPS / Maps", icon: MapPin, color: "text-green-400" },
-  { href: "/sports", label: "Sports Stats", icon: Trophy, color: "text-orange-400" },
-  { href: "/stocks", label: "Stock Market", icon: TrendingUp, color: "text-emerald-400" },
-  { href: "/news", label: "Live News", icon: Newspaper, color: "text-purple-400" },
-  { href: "/gaming", label: "Gaming Top 10", icon: Gamepad2, color: "text-pink-400" },
-  { href: "/weather", label: "Weather", icon: CloudSun, color: "text-sky-300" },
-  { href: "/space", label: "Space", icon: Rocket, color: "text-violet-400" },
   { href: "/earth", label: "Earth Activity", icon: Mountain, color: "text-amber-400" },
-  { href: "/power", label: "Power Grid", icon: Zap, color: "text-lime-400" },
+  { href: "/gaming", label: "Gaming Top 10", icon: Gamepad2, color: "text-pink-400" },
+  { href: "/gps", label: "GPS / Maps", icon: MapPin, color: "text-green-400" },
   { href: "/internet", label: "Internet", icon: Wifi, color: "text-rose-400" },
+  { href: "/news", label: "Live News", icon: Newspaper, color: "text-purple-400" },
+  { href: "/marine", label: "Marine", icon: Anchor, color: "text-blue-400" },
+  { href: "/power", label: "Power Grid", icon: Zap, color: "text-lime-400" },
+  { href: "/space", label: "Space", icon: Rocket, color: "text-violet-400" },
+  { href: "/stocks", label: "Stock Market", icon: TrendingUp, color: "text-emerald-400" },
+  { href: "/sports", label: "Sports Stats", icon: Trophy, color: "text-orange-400" },
+  { href: "/traffic", label: "Traffic", icon: Car, color: "text-yellow-400" },
   { href: "/quiz", label: "Trivia Quiz", icon: HelpCircle, color: "text-yellow-300" },
+  { href: "/weather", label: "Weather", icon: CloudSun, color: "text-sky-300" },
 ];
 
 export default function Sidebar() {
