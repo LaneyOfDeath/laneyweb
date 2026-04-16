@@ -42,7 +42,7 @@ const DELAY_LABELS = ["Free flow", "Minor delay", "Moderate delay", "Major delay
 export default function TrafficMap() {
   const [city, setCity] = useState(CITIES[0]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [hasKey, setHasKey] = useState(false);
+  const [hasKey, setHasKey] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [search, setSearch] = useState("");
@@ -94,7 +94,7 @@ export default function TrafficMap() {
         </div>
       </div>
 
-      {!hasKey && (
+      {hasKey === false && (
         <div className="mx-4 mt-3 flex items-start gap-2.5 px-4 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
           <Info className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
           <div className="text-xs text-yellow-300">

@@ -56,9 +56,9 @@ export default function TrafficMapLeaflet({ center, incidents, hasKey }: Props) 
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {hasKey && (
+      {hasKey && process.env.NEXT_PUBLIC_TOMTOM_API_KEY && (
         <TileLayer
-          url={`https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key=${typeof window !== 'undefined' ? '' : ''}`}
+          url={`https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_TOMTOM_API_KEY}`}
           opacity={0.7}
         />
       )}
