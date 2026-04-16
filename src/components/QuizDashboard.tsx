@@ -51,6 +51,10 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
+function sortAnswers(arr: string[]): string[] {
+  return [...arr].sort((a, b) => decode(a).localeCompare(decode(b)));
+}
+
 export default function QuizDashboard() {
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -79,7 +83,7 @@ export default function QuizDashboard() {
         return;
       }
       const qs: Question[] = data.results;
-      const answers = qs.map((q) => shuffle([q.correct_answer, ...q.incorrect_answers]));
+      const answers = qs.map((q) => sortAnswers(shuffle([q.correct_answer, ...q.incorrect_answers])));
       setQuestions(qs);
       setShuffledAnswers(answers);
       setCurrent(0);
