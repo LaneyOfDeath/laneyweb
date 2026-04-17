@@ -102,6 +102,12 @@ function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
       ctx.restore();
     }
 
+    function clear() {
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    map.on("movestart zoomstart", clear);
     map.on("moveend zoomend viewreset", draw);
     draw();
 
@@ -124,6 +130,7 @@ function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
     map.on("click", onClick);
 
     return () => {
+      map.off("movestart zoomstart", clear);
       map.off("moveend zoomend viewreset", draw);
       map.off("click", onClick);
       canvas.remove();
