@@ -72,7 +72,7 @@ export default function AircraftMap() {
       setData(json);
       setLastUpdate(new Date());
     } catch {
-      setError("Could not reach OpenSky Network. Retrying…");
+      setError("Could not reach aircraft API. Retrying…");
     } finally {
       setLoading(false);
     }

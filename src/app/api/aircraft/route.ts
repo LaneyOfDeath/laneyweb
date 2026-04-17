@@ -4,13 +4,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const laMin = parseFloat(searchParams.get("laMin") ?? "47");
-  const laMax = parseFloat(searchParams.get("laMax") ?? "57");
-  const loMin = parseFloat(searchParams.get("loMin") ?? "-5");
-  const loMax = parseFloat(searchParams.get("loMax") ?? "15");
+  const laMin = parseFloat(searchParams.get("laMin") ?? "35");
+  const laMax = parseFloat(searchParams.get("laMax") ?? "71");
+  const loMin = parseFloat(searchParams.get("loMin") ?? "-10");
+  const loMax = parseFloat(searchParams.get("loMax") ?? "40");
+
+  const lat = (laMin + laMax) / 2;
+  const lon = (loMin + loMax) / 2;
+  // 1 degree ≈ 60nm — cap at 700nm so we don't hammer the API
+  const distNm = Math.min(Math.max(laMax - laMin, loMax - loMin) / 2 * 60, 700);
 
   try {
-    const url = `https://api.adsb.lol/v2/bounds?lamax=${laMax}&lomax=${loMax}&lamin=${laMin}&lomin=${loMin}`;
+    const url = `https://api.adsb.lol/v2/lat/${lat.toFixed(2)}/lon/${lon.toFixed(2)}/dist/${Math.round(distNm)}`;
     const res = await fetch(url, {
       headers: { "Accept": "application/json" },
       next: { revalidate: 10 },
