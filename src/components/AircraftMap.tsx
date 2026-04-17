@@ -42,12 +42,50 @@ interface BBox {
   label: string;
 }
 
-const REGIONS: BBox[] = [
-  { label: "Europe", laMin: 35, laMax: 71, loMin: -10, loMax: 40 },
-  { label: "North America", laMin: 24, laMax: 60, loMin: -130, loMax: -60 },
-  { label: "UK & Ireland", laMin: 49, laMax: 61, loMin: -11, loMax: 2 },
-  { label: "East Coast USA", laMin: 35, laMax: 47, loMin: -82, loMax: -68 },
+const REGION_GROUPS = [
+  {
+    group: "Americas",
+    regions: [
+      { label: "North America", laMin: 24, laMax: 60, loMin: -130, loMax: -60 },
+      { label: "East Coast USA", laMin: 35, laMax: 47, loMin: -82, loMax: -68 },
+      { label: "West Coast USA", laMin: 32, laMax: 50, loMin: -125, loMax: -110 },
+      { label: "South America", laMin: -56, laMax: 13, loMin: -82, loMax: -34 },
+    ],
+  },
+  {
+    group: "Europe",
+    regions: [
+      { label: "All Europe", laMin: 35, laMax: 71, loMin: -10, loMax: 40 },
+      { label: "UK & Ireland", laMin: 49, laMax: 61, loMin: -11, loMax: 2 },
+      { label: "W. Europe", laMin: 43, laMax: 56, loMin: -5, loMax: 18 },
+    ],
+  },
+  {
+    group: "Africa / M. East",
+    regions: [
+      { label: "Middle East", laMin: 12, laMax: 42, loMin: 25, loMax: 65 },
+      { label: "Africa", laMin: -35, laMax: 37, loMin: -18, loMax: 52 },
+    ],
+  },
+  {
+    group: "Asia",
+    regions: [
+      { label: "South Asia", laMin: 6, laMax: 38, loMin: 60, loMax: 100 },
+      { label: "SE Asia", laMin: -10, laMax: 28, loMin: 95, loMax: 142 },
+      { label: "East Asia", laMin: 20, laMax: 50, loMin: 100, loMax: 148 },
+      { label: "Japan/Korea", laMin: 30, laMax: 46, loMin: 125, loMax: 148 },
+    ],
+  },
+  {
+    group: "Pacific",
+    regions: [
+      { label: "Australia", laMin: -44, laMax: -10, loMin: 112, loMax: 155 },
+      { label: "Pacific NW", laMin: 35, laMax: 60, loMin: 130, loMax: 180 },
+    ],
+  },
 ];
+
+const REGIONS: BBox[] = REGION_GROUPS.flatMap((g) => g.regions);
 
 export default function AircraftMap() {
   const [data, setData] = useState<AircraftData | null>(null);
@@ -89,19 +127,24 @@ export default function AircraftMap() {
     <div className="flex flex-col h-full">
       {/* Controls bar */}
       <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-b border-[#1e2a3a]">
-        <div className="flex gap-1.5">
-          {REGIONS.map((r) => (
-            <button
-              key={r.label}
-              onClick={() => setRegion(r)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                region.label === r.label
-                  ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
-                  : "bg-white/5 text-[#94a3b8] border border-[#1e2a3a] hover:bg-white/10"
-              }`}
-            >
-              {r.label}
-            </button>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+          {REGION_GROUPS.map((g) => (
+            <div key={g.group} className="flex items-center gap-1.5">
+              <span className="text-[10px] text-[#4a6080] uppercase tracking-wider font-semibold w-max">{g.group}</span>
+              {g.regions.map((r) => (
+                <button
+                  key={r.label}
+                  onClick={() => setRegion(r)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    region.label === r.label
+                      ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                      : "bg-white/5 text-[#94a3b8] border border-[#1e2a3a] hover:bg-white/10"
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
         <div className="ml-auto flex items-center gap-3 text-xs text-[#64748b]">

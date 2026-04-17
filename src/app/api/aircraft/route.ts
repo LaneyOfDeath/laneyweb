@@ -40,15 +40,15 @@ export async function GET(request: Request) {
     let raw: Record<string, unknown>[];
 
     if (latSpan > 15 || lonSpan > 20) {
-      // Large region — tile into overlapping 500nm circles
-      const latSteps = Math.max(2, Math.ceil(latSpan / 12));
-      const lonSteps = Math.max(2, Math.ceil(lonSpan / 18));
+      // Large region — tile into overlapping 600nm circles
+      const latSteps = Math.max(2, Math.ceil(latSpan / 16));
+      const lonSteps = Math.max(2, Math.ceil(lonSpan / 22));
       const calls: Promise<Record<string, unknown>[]>[] = [];
       for (let i = 0; i < latSteps; i++) {
         for (let j = 0; j < lonSteps; j++) {
           const lat = laMin + (i + 0.5) * (latSpan / latSteps);
           const lon = loMin + (j + 0.5) * (lonSpan / lonSteps);
-          calls.push(fetchRegion(lat, lon, 500));
+          calls.push(fetchRegion(lat, lon, 600));
         }
       }
       // Use allSettled so one failure doesn't wipe everything
