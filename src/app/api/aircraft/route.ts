@@ -10,47 +10,42 @@ export async function GET(request: Request) {
   const loMax = parseFloat(searchParams.get("loMax") ?? "15");
 
   try {
-    const url = `https://opensky-network.org/api/states/all?lamin=${laMin}&lomin=${loMin}&lamax=${laMax}&lomax=${loMax}`;
-    const headers: Record<string, string> = { "Accept": "application/json" };
-    const user = process.env.OPENSKY_USERNAME;
-    const pass = process.env.OPENSKY_PASSWORD;
-    if (user && pass) {
-      headers["Authorization"] = "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
-    }
-    const res = await fetch(url, { headers, next: { revalidate: 10 } });
+    const url = `https://api.adsb.lol/v2/bounds?lamax=${laMax}&lomax=${loMax}&lamin=${laMin}&lomin=${loMin}`;
+    const res = await fetch(url, {
+      headers: { "Accept": "application/json" },
+      next: { revalidate: 10 },
+    });
 
     if (!res.ok) {
       const body = await res.text().catch(() => "");
-      throw new Error(`OpenSky returned ${res.status}${body ? ": " + body.slice(0, 100) : ""}`);
+      throw new Error(`adsb.lol returned ${res.status}${body ? ": " + body.slice(0, 100) : ""}`);
     }
 
     const data = await res.json();
 
-    // Map OpenSky state vector array to readable objects
-    // [icao24, callsign, origin_country, time_position, last_contact,
-    //  longitude, latitude, baro_altitude, on_ground, velocity,
-    //  true_track, vertical_rate, sensors, geo_altitude, squawk, spi, position_source]
-    const flights = (data.states ?? [])
-      .filter((s: unknown[]) => s[5] !== null && s[6] !== null)
-      .map((s: unknown[]) => ({
-        icao24: s[0],
-        callsign: (s[1] as string)?.trim() || "N/A",
-        country: s[2],
-        longitude: s[5],
-        latitude: s[6],
-        altitude: s[7] ? Math.round((s[7] as number) * 3.28084) : null, // metres → ft
-        onGround: s[8],
-        velocity: s[9] ? Math.round((s[9] as number) * 1.94384) : null, // m/s → knots
-        heading: s[10] ? Math.round(s[10] as number) : null,
-        verticalRate: s[11],
-        squawk: s[14],
+    const flights = (data.ac ?? [])
+      .filter((a: Record<string, unknown>) => a.lat != null && a.lon != null)
+      .map((a: Record<string, unknown>) => ({
+        icao24: a.hex,
+        callsign: (a.flight as string)?.trim() || (a.r as string) || "N/A",
+        country: (a.r as string) ?? "",
+        longitude: a.lon,
+        latitude: a.lat,
+        altitude: a.alt_baro != null && a.alt_baro !== "ground"
+          ? Math.round(a.alt_baro as number)
+          : null,
+        onGround: a.alt_baro === "ground" || a.on_ground === true,
+        velocity: a.gs != null ? Math.round(a.gs as number) : null,
+        heading: a.track != null ? Math.round(a.track as number) : null,
+        verticalRate: a.baro_rate ?? null,
+        squawk: a.squawk ?? null,
       }))
-      .slice(0, 200); // Cap at 200 for performance
+      .slice(0, 300);
 
     return NextResponse.json({
-      total: data.states?.length ?? 0,
+      total: data.total ?? flights.length,
       shown: flights.length,
-      time: data.time,
+      time: data.now ?? Date.now() / 1000,
       flights,
     });
   } catch (err) {
