@@ -11,13 +11,17 @@ export async function GET(request: Request) {
 
   try {
     const url = `https://opensky-network.org/api/states/all?lamin=${laMin}&lomin=${loMin}&lamax=${laMax}&lomax=${loMax}`;
-    const res = await fetch(url, {
-      headers: { "Accept": "application/json" },
-      next: { revalidate: 10 },
-    });
+    const headers: Record<string, string> = { "Accept": "application/json" };
+    const user = process.env.OPENSKY_USERNAME;
+    const pass = process.env.OPENSKY_PASSWORD;
+    if (user && pass) {
+      headers["Authorization"] = "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
+    }
+    const res = await fetch(url, { headers, next: { revalidate: 10 } });
 
     if (!res.ok) {
-      throw new Error(`OpenSky returned ${res.status}`);
+      const body = await res.text().catch(() => "");
+      throw new Error(`OpenSky returned ${res.status}${body ? ": " + body.slice(0, 100) : ""}`);
     }
 
     const data = await res.json();
