@@ -37,7 +37,6 @@ function flightColor(f: Flight, selected: boolean): string {
   return "#38bdf8";
 }
 
-// Custom canvas layer — draws all planes in one pass, no DOM nodes per plane
 function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
   flights: Flight[];
   onSelectFlight: (f: Flight) => void;
@@ -57,108 +56,97 @@ function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
     canvasRef.current = canvas;
     map.getPanes().overlayPane.appendChild(canvas);
 
-    function resize() {
-      const size = map.getSize();
-      canvas.width = size.x;
-      canvas.height = size.y;
-    }
-
     function draw() {
       const size = map.getSize();
       canvas.width = size.x;
       canvas.height = size.y;
-      const ctx = canvas.getContext("2d")!;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Reposition canvas to cancel out the overlayPane's CSS transform
       const topLeft = map.containerPointToLayerPoint([0, 0]);
-      ctx.save();
-      ctx.translate(-topLeft.x, -topLeft.y);
+      L.DomUtil.setPosition(canvas, topLeft);
+
+      const ctx = canvas.getContext("2d")!;
+      ctx.clearRect(0, 0, size.x, size.y);
 
       for (const f of flightsRef.current) {
         const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
+        const x = pt.x - topLeft.x;
+        const y = pt.y - topLeft.y;
+        if (x < -20 || y < -20 || x > size.x + 20 || y > size.y + 20) continue;
+
         const selected = selectedRef.current?.icao24 === f.icao24;
         const color = flightColor(f, selected);
         const heading = (f.heading ?? 0) * (Math.PI / 180);
-        const size = selected ? 8 : 5;
+        const sz = selected ? 8 : 5;
 
         ctx.save();
-        ctx.translate(pt.x, pt.y);
+        ctx.translate(x, y);
         ctx.rotate(heading);
         ctx.fillStyle = color;
         ctx.shadowColor = color;
         ctx.shadowBlur = selected ? 6 : 2;
-
-        // Draw simple plane shape
         ctx.beginPath();
-        ctx.moveTo(0, -size);
-        ctx.lineTo(size * 0.5, size * 0.3);
+        ctx.moveTo(0, -sz);
+        ctx.lineTo(sz * 0.5, sz * 0.3);
         ctx.lineTo(0, 0);
-        ctx.lineTo(-size * 0.5, size * 0.3);
+        ctx.lineTo(-sz * 0.5, sz * 0.3);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
       }
-
-      ctx.restore();
     }
 
-    function clear() {
-      const ctx = canvas.getContext("2d");
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    map.on("movestart zoomstart", clear);
-    map.on("moveend zoomend viewreset", draw);
-    draw();
-
-    // Click handler on the map pane
     function onClick(e: L.LeafletMouseEvent) {
-      const clickPt = e.layerPoint;
       const topLeft = map.containerPointToLayerPoint([0, 0]);
+      const clickPt = map.containerPointToLayerPoint(e.containerPoint);
       let closest: Flight | null = null;
-      let closestDist = 12; // px threshold
+      let closestDist = 12;
       for (const f of flightsRef.current) {
         const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
-        const dx = (pt.x + topLeft.x) - (clickPt.x + topLeft.x);
-        const dy = (pt.y + topLeft.y) - (clickPt.y + topLeft.y);
+        const dx = pt.x - clickPt.x;
+        const dy = pt.y - clickPt.y;
         const d = Math.sqrt(dx * dx + dy * dy);
         if (d < closestDist) { closestDist = d; closest = f; }
       }
       if (closest) onSelectFlight(closest);
     }
 
+    map.on("move zoom viewreset", draw);
     map.on("click", onClick);
+    draw();
 
     return () => {
-      map.off("movestart zoomstart", clear);
-      map.off("moveend zoomend viewreset", draw);
+      map.off("move zoom viewreset", draw);
       map.off("click", onClick);
       canvas.remove();
     };
   }, [map, onSelectFlight]);
 
-  // Redraw when flights or selection changes
+  // Redraw when flights or selection change
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !map) return;
     const size = map.getSize();
     canvas.width = size.x;
     canvas.height = size.y;
-    const ctx = canvas.getContext("2d")!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     const topLeft = map.containerPointToLayerPoint([0, 0]);
-    ctx.save();
-    ctx.translate(-topLeft.x, -topLeft.y);
+    L.DomUtil.setPosition(canvas, topLeft);
+    const ctx = canvas.getContext("2d")!;
+    ctx.clearRect(0, 0, size.x, size.y);
 
     for (const f of flights) {
       const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
+      const x = pt.x - topLeft.x;
+      const y = pt.y - topLeft.y;
+      if (x < -20 || y < -20 || x > size.x + 20 || y > size.y + 20) continue;
+
       const selected = selectedFlight?.icao24 === f.icao24;
       const color = flightColor(f, selected);
       const heading = (f.heading ?? 0) * (Math.PI / 180);
       const sz = selected ? 8 : 5;
 
       ctx.save();
-      ctx.translate(pt.x, pt.y);
+      ctx.translate(x, y);
       ctx.rotate(heading);
       ctx.fillStyle = color;
       ctx.shadowColor = color;
@@ -172,8 +160,6 @@ function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
       ctx.fill();
       ctx.restore();
     }
-
-    ctx.restore();
   }, [flights, selectedFlight, map]);
 
   return null;
@@ -182,24 +168,18 @@ function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
 function SetView({ region }: { region: BBox }) {
   const map = useMap();
   useEffect(() => {
-    const center: [number, number] = [
+    map.flyTo([
       (region.laMin + region.laMax) / 2,
       (region.loMin + region.loMax) / 2,
-    ];
-    map.flyTo(center, 5, { duration: 0.3 });
+    ], 5, { duration: 0.3 });
   }, [map, region]);
   return null;
 }
 
 export default function AircraftMapLeaflet({ flights, region, onSelectFlight, selectedFlight }: Props) {
-  const center: [number, number] = [
-    (region.laMin + region.laMax) / 2,
-    (region.loMin + region.loMax) / 2,
-  ];
-
   return (
     <MapContainer
-      center={center}
+      center={[(region.laMin + region.laMax) / 2, (region.loMin + region.loMax) / 2]}
       zoom={5}
       style={{ height: "100%", width: "100%", background: "#0d1224" }}
       zoomControl={true}
