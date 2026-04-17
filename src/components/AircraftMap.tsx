@@ -118,6 +118,7 @@ export default function AircraftMap() {
 
   useEffect(() => {
     setLoading(true);
+    setData(null);
     fetchData();
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);

@@ -179,7 +179,7 @@ function SetView({ region }: { region: BBox }) {
       (region.laMin + region.laMax) / 2,
       (region.loMin + region.loMax) / 2,
     ];
-    map.flyTo(center, 5, { duration: 1 });
+    map.flyTo(center, 5, { duration: 0.3 });
   }, [map, region]);
   return null;
 }
