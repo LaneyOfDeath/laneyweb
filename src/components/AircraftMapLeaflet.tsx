@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -29,18 +29,147 @@ interface Props {
   selectedFlight: Flight | null;
 }
 
-// Rotate plane SVG by heading
-function makePlaneIcon(heading: number | null, onGround: boolean, selected: boolean) {
-  const deg = heading ?? 0;
-  const color = selected ? "#06b6d4" : onGround ? "#64748b" : "#38bdf8";
-  const size = selected ? 22 : 16;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}" style="transform:rotate(${deg}deg);filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8))"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`;
-  return L.divIcon({
-    html: svg,
-    className: "",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-  });
+function flightColor(f: Flight, selected: boolean): string {
+  if (selected) return "#06b6d4";
+  if (f.onGround) return "#64748b";
+  if (!f.altitude || f.altitude < 5000) return "#4ade80";
+  if (f.altitude < 20000) return "#facc15";
+  return "#38bdf8";
+}
+
+// Custom canvas layer — draws all planes in one pass, no DOM nodes per plane
+function CanvasFlights({ flights, onSelectFlight, selectedFlight }: {
+  flights: Flight[];
+  onSelectFlight: (f: Flight) => void;
+  selectedFlight: Flight | null;
+}) {
+  const map = useMap();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const flightsRef = useRef(flights);
+  const selectedRef = useRef(selectedFlight);
+
+  useEffect(() => { flightsRef.current = flights; }, [flights]);
+  useEffect(() => { selectedRef.current = selectedFlight; }, [selectedFlight]);
+
+  useEffect(() => {
+    const canvas = L.DomUtil.create("canvas") as HTMLCanvasElement;
+    canvas.style.cssText = "position:absolute;top:0;left:0;pointer-events:none;z-index:400";
+    canvasRef.current = canvas;
+    map.getPanes().overlayPane.appendChild(canvas);
+
+    function resize() {
+      const size = map.getSize();
+      canvas.width = size.x;
+      canvas.height = size.y;
+    }
+
+    function draw() {
+      const size = map.getSize();
+      canvas.width = size.x;
+      canvas.height = size.y;
+      const ctx = canvas.getContext("2d")!;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const topLeft = map.containerPointToLayerPoint([0, 0]);
+      ctx.save();
+      ctx.translate(-topLeft.x, -topLeft.y);
+
+      for (const f of flightsRef.current) {
+        const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
+        const selected = selectedRef.current?.icao24 === f.icao24;
+        const color = flightColor(f, selected);
+        const heading = (f.heading ?? 0) * (Math.PI / 180);
+        const size = selected ? 8 : 5;
+
+        ctx.save();
+        ctx.translate(pt.x, pt.y);
+        ctx.rotate(heading);
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = selected ? 6 : 2;
+
+        // Draw simple plane shape
+        ctx.beginPath();
+        ctx.moveTo(0, -size);
+        ctx.lineTo(size * 0.5, size * 0.3);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-size * 0.5, size * 0.3);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.restore();
+    }
+
+    map.on("moveend zoomend viewreset", draw);
+    draw();
+
+    // Click handler on the map pane
+    function onClick(e: L.LeafletMouseEvent) {
+      const clickPt = e.layerPoint;
+      const topLeft = map.containerPointToLayerPoint([0, 0]);
+      let closest: Flight | null = null;
+      let closestDist = 12; // px threshold
+      for (const f of flightsRef.current) {
+        const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
+        const dx = (pt.x + topLeft.x) - (clickPt.x + topLeft.x);
+        const dy = (pt.y + topLeft.y) - (clickPt.y + topLeft.y);
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < closestDist) { closestDist = d; closest = f; }
+      }
+      if (closest) onSelectFlight(closest);
+    }
+
+    map.on("click", onClick);
+
+    return () => {
+      map.off("moveend zoomend viewreset", draw);
+      map.off("click", onClick);
+      canvas.remove();
+    };
+  }, [map, onSelectFlight]);
+
+  // Redraw when flights or selection changes
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const size = map.getSize();
+    canvas.width = size.x;
+    canvas.height = size.y;
+    const ctx = canvas.getContext("2d")!;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const topLeft = map.containerPointToLayerPoint([0, 0]);
+    ctx.save();
+    ctx.translate(-topLeft.x, -topLeft.y);
+
+    for (const f of flights) {
+      const pt = map.latLngToLayerPoint([f.latitude, f.longitude]);
+      const selected = selectedFlight?.icao24 === f.icao24;
+      const color = flightColor(f, selected);
+      const heading = (f.heading ?? 0) * (Math.PI / 180);
+      const sz = selected ? 8 : 5;
+
+      ctx.save();
+      ctx.translate(pt.x, pt.y);
+      ctx.rotate(heading);
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = selected ? 6 : 2;
+      ctx.beginPath();
+      ctx.moveTo(0, -sz);
+      ctx.lineTo(sz * 0.5, sz * 0.3);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(-sz * 0.5, sz * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }, [flights, selectedFlight, map]);
+
+  return null;
 }
 
 function SetView({ region }: { region: BBox }) {
@@ -73,25 +202,7 @@ export default function AircraftMapLeaflet({ flights, region, onSelectFlight, se
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <SetView region={region} />
-      {flights.map((f) => (
-        <Marker
-          key={f.icao24}
-          position={[f.latitude, f.longitude]}
-          icon={makePlaneIcon(f.heading, f.onGround, selectedFlight?.icao24 === f.icao24)}
-          eventHandlers={{ click: () => onSelectFlight(f) }}
-        >
-          <Popup>
-            <div className="text-xs space-y-1" style={{ color: "#e2e8f0", minWidth: 140 }}>
-              <p className="font-bold text-sm text-cyan-400">{f.callsign || f.icao24}</p>
-              <p>{f.country}</p>
-              {f.altitude && <p>Alt: {f.altitude.toLocaleString()} ft</p>}
-              {f.velocity && <p>Speed: {f.velocity} kts</p>}
-              {f.heading !== null && <p>Hdg: {f.heading}°</p>}
-              <p>{f.onGround ? "On ground" : "Airborne"}</p>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      <CanvasFlights flights={flights} onSelectFlight={onSelectFlight} selectedFlight={selectedFlight} />
     </MapContainer>
   );
 }

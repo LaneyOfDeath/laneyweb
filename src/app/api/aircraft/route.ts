@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     const flights = raw
       .filter((a) => a.lat != null && a.lon != null)
       .sort(() => Math.random() - 0.5)
-      .slice(0, 800)
+      .slice(0, 1000)
       .map(mapAircraft);
 
     return NextResponse.json({ total: raw.length, shown: flights.length, time: Date.now() / 1000, flights });
