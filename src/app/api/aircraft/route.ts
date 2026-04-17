@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-async function fetchRegion(lat: number, lon: number, dist: number) {
+async function fetchRegion(lat: number, lon: number, dist: number): Promise<Record<string, unknown>[]> {
   const url = `https://api.adsb.lol/v2/lat/${lat.toFixed(2)}/lon/${lon.toFixed(2)}/dist/${dist}`;
-  const res = await fetch(url, { headers: { Accept: "application/json" }, next: { revalidate: 10 } });
-  if (!res.ok) throw new Error(`adsb.lol ${res.status}`);
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return [];
   const data = await res.json();
   return (data.ac ?? []) as Record<string, unknown>[];
 }
@@ -35,16 +35,14 @@ export async function GET(request: Request) {
 
   const latSpan = laMax - laMin;
   const lonSpan = loMax - loMin;
-  const centerLat = (laMin + laMax) / 2;
-  const centerLon = (loMin + loMax) / 2;
 
   try {
     let raw: Record<string, unknown>[];
 
-    if (latSpan > 20 || lonSpan > 30) {
-      // Large region — tile into a grid of 500nm circles
-      const latSteps = Math.ceil(latSpan / 14);
-      const lonSteps = Math.ceil(lonSpan / 20);
+    if (latSpan > 15 || lonSpan > 20) {
+      // Large region — tile into overlapping 500nm circles
+      const latSteps = Math.max(2, Math.ceil(latSpan / 12));
+      const lonSteps = Math.max(2, Math.ceil(lonSpan / 18));
       const calls: Promise<Record<string, unknown>[]>[] = [];
       for (let i = 0; i < latSteps; i++) {
         for (let j = 0; j < lonSteps; j++) {
@@ -53,17 +51,19 @@ export async function GET(request: Request) {
           calls.push(fetchRegion(lat, lon, 500));
         }
       }
-      const results = await Promise.all(calls);
-      // Deduplicate by hex
+      // Use allSettled so one failure doesn't wipe everything
+      const results = await Promise.allSettled(calls);
       const seen = new Set<unknown>();
-      raw = results.flat().filter((a) => {
-        if (seen.has(a.hex)) return false;
-        seen.add(a.hex);
-        return true;
-      });
+      raw = results
+        .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+        .filter((a) => {
+          if (seen.has(a.hex)) return false;
+          seen.add(a.hex);
+          return true;
+        });
     } else {
-      const dist = Math.min(Math.max(latSpan, lonSpan) / 2 * 60, 700);
-      raw = await fetchRegion(centerLat, centerLon, Math.round(dist));
+      const dist = Math.round(Math.max(latSpan, lonSpan) / 2 * 60);
+      raw = await fetchRegion((laMin + laMax) / 2, (loMin + loMax) / 2, Math.min(dist, 700));
     }
 
     const flights = raw
