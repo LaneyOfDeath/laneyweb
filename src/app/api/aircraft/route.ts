@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 async function fetchRegion(lat: number, lon: number, dist: number): Promise<Record<string, unknown>[]> {
   const url = `https://api.adsb.lol/v2/lat/${lat.toFixed(2)}/lon/${lon.toFixed(2)}/dist/${dist}`;
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, { next: { revalidate: 15 } });
   if (!res.ok) return [];
   const data = await res.json();
   return (data.ac ?? []) as Record<string, unknown>[];
