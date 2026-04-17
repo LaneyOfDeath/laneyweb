@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 async function fetchRegion(lat: number, lon: number, dist: number): Promise<Record<string, unknown>[]> {
-  const url = `https://api.adsb.lol/v2/lat/${lat.toFixed(2)}/lon/${lon.toFixed(2)}/dist/${dist}`;
+  const url = `https://api.airplanes.live/v2/point/${lat.toFixed(2)}/${lon.toFixed(2)}/${dist}`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return [];
   const data = await res.json();
