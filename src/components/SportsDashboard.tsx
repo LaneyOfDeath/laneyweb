@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Trophy, RefreshCw, Calendar, Clock, MapPin } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -321,23 +321,26 @@ export default function SportsDashboard() {
   const [data,   setData]     = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const fetchIdRef = useRef(0);
 
   const sport = LEAGUES.find(l => l.key === league)?.sport ?? "soccer";
 
   const views: readonly string[] = sport === "motorsport" ? F1_VIEWS : SOCCER_VIEWS;
 
   const fetchData = useCallback(async () => {
+    const id = ++fetchIdRef.current;
     setData(null);
     setLoading(true);
     try {
       const res  = await fetch(`/api/sports?league=${league}&type=${view}`);
       const json = await res.json();
+      if (id !== fetchIdRef.current) return; // stale response — a newer fetch is in flight
       setData(json.data ?? null);
       setLastUpdate(new Date());
     } catch {
-      setData(null);
+      if (id === fetchIdRef.current) setData(null);
     } finally {
-      setLoading(false);
+      if (id === fetchIdRef.current) setLoading(false);
     }
   }, [league, view]);
 
