@@ -31,13 +31,13 @@ interface PricesResponse {
 
 function StatRow({ label, value, sub, change }: { label: string; value: string; sub?: string; change?: number }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]/60 hover:bg-white/5">
+    <div className="flex items-center justify-between px-3 py-2 border-b border-[#1e2a3a]/60 hover:bg-white/5">
       <div>
-        <p className="text-sm text-white font-medium">{label}</p>
+        <p className="text-xs text-white font-medium">{label}</p>
         {sub && <p className="text-[10px] text-[#64748b] mt-0.5">{sub}</p>}
       </div>
       <div className="text-right">
-        <p className="text-sm font-semibold text-white">{value}</p>
+        <p className="text-xs font-semibold text-white">{value}</p>
         {change !== undefined && (
           <p className={`text-[10px] flex items-center gap-0.5 justify-end mt-0.5 ${change >= 0 ? "text-green-400" : "text-red-400"}`}>
             {change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -51,9 +51,9 @@ function StatRow({ label, value, sub, change }: { label: string; value: string; 
 
 function SectionHeader({ icon: Icon, title, color }: { icon: React.ElementType; title: string; color: string }) {
   return (
-    <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1e2a3a] bg-white/2">
-      <Icon className={`w-3.5 h-3.5 ${color}`} />
-      <span className={`text-[11px] font-semibold uppercase tracking-widest ${color}`}>{title}</span>
+    <div className="flex items-center gap-2 px-3 py-2 border-b border-[#1e2a3a] bg-white/2">
+      <Icon className={`w-3 h-3 ${color}`} />
+      <span className={`text-[10px] font-semibold uppercase tracking-widest ${color}`}>{title}</span>
     </div>
   );
 }
@@ -94,112 +94,115 @@ export default function PricesDashboard() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-3">
         {!data ? (
           <div className="flex items-center justify-center h-full">
             <RefreshCw className="w-6 h-6 text-[#64748b] animate-spin" />
           </div>
         ) : (
-          <div className="max-w-2xl mx-auto py-4 px-4 space-y-4">
+          <div className="grid grid-cols-2 gap-3 h-full">
 
-            {/* UK Economy */}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-              <SectionHeader icon={Landmark} title="UK Economy" color="text-sky-400" />
-              {data.boe ? (
-                <StatRow
-                  label="Bank of England Base Rate"
-                  value={data.boe.rate != null ? `${data.boe.rate.toFixed(2)}%` : "N/A"}
-                  sub={`Effective ${data.boe.date}`}
-                />
-              ) : (
-                <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">BoE rate unavailable</p>
-              )}
-              {data.cpi ? (
-                <StatRow
-                  label="CPI Inflation (Annual)"
-                  value={data.cpi.rate != null ? `${data.cpi.rate.toFixed(1)}%` : "N/A"}
-                  sub={`${data.cpi.date} · Source: ONS`}
-                />
-              ) : (
-                <p className="px-4 py-3 text-xs text-[#64748b]">CPI data unavailable</p>
-              )}
+            {/* Left column */}
+            <div className="flex flex-col gap-3">
+              {/* UK Economy */}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+                <SectionHeader icon={Landmark} title="UK Economy" color="text-sky-400" />
+                {data.boe ? (
+                  <StatRow
+                    label="Bank of England Base Rate"
+                    value={data.boe.rate != null ? `${data.boe.rate.toFixed(2)}%` : "N/A"}
+                    sub={`Effective ${data.boe.date}`}
+                  />
+                ) : (
+                  <p className="px-3 py-2 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">BoE rate unavailable</p>
+                )}
+                {data.cpi ? (
+                  <StatRow
+                    label="CPI Inflation (Annual)"
+                    value={data.cpi.rate != null ? `${data.cpi.rate.toFixed(1)}%` : "N/A"}
+                    sub={`${data.cpi.date} · ONS`}
+                  />
+                ) : (
+                  <p className="px-3 py-2 text-xs text-[#64748b]">CPI data unavailable</p>
+                )}
+              </div>
+
+              {/* Fuel Prices */}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+                <SectionHeader icon={Fuel} title="UK Pump Prices (p/litre)" color="text-orange-400" />
+                {data.fuel ? (
+                  <>
+                    <StatRow label="Unleaded (E10)" value={data.fuel.unleaded ? `${data.fuel.unleaded.toFixed(1)}p` : "N/A"} sub={`Week of ${data.fuel.date}`} />
+                    <StatRow label="Diesel" value={data.fuel.diesel ? `${data.fuel.diesel.toFixed(1)}p` : "N/A"} sub="gov.uk BEIS" />
+                  </>
+                ) : (
+                  <p className="px-3 py-2 text-xs text-[#64748b]">Fuel data unavailable</p>
+                )}
+              </div>
+
+              {/* Commodities */}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+                <SectionHeader icon={BarChart2} title="Commodities (GBP)" color="text-amber-400" />
+                {data.commodities?.gold ? (
+                  <StatRow
+                    label="Gold"
+                    value={`£${data.commodities.gold.priceGbp.toLocaleString("en-GB", { maximumFractionDigits: 0 })}/oz`}
+                    change={data.commodities.gold.changePercent}
+                    sub="XAU · 24h"
+                  />
+                ) : <p className="px-3 py-2 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Gold unavailable</p>}
+                {data.commodities?.silver ? (
+                  <StatRow
+                    label="Silver"
+                    value={`£${data.commodities.silver.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/oz`}
+                    change={data.commodities.silver.changePercent}
+                    sub="XAG · 24h"
+                  />
+                ) : <p className="px-3 py-2 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Silver unavailable</p>}
+                {data.commodities?.brent ? (
+                  <StatRow
+                    label="Brent Crude"
+                    value={`£${data.commodities.brent.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/bbl`}
+                    change={data.commodities.brent.changePercent}
+                    sub="BZ=F · 24h"
+                  />
+                ) : <p className="px-3 py-2 text-xs text-[#64748b]">Brent unavailable</p>}
+              </div>
             </div>
 
-            {/* Fuel Prices */}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-              <SectionHeader icon={Fuel} title="UK Pump Prices (pence/litre)" color="text-orange-400" />
-              {data.fuel ? (
-                <>
-                  <StatRow label="Unleaded (E10)" value={data.fuel.unleaded ? `${data.fuel.unleaded.toFixed(1)}p` : "N/A"} sub={`Week of ${data.fuel.date}`} />
-                  <StatRow label="Diesel" value={data.fuel.diesel ? `${data.fuel.diesel.toFixed(1)}p` : "N/A"} sub="Source: gov.uk BEIS" />
-                </>
-              ) : (
-                <p className="px-4 py-4 text-xs text-[#64748b]">Fuel data unavailable</p>
-              )}
+            {/* Right column */}
+            <div className="flex flex-col gap-3">
+              {/* Exchange Rates */}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+                <SectionHeader icon={DollarSign} title="Exchange Rates (1 GBP =)" color="text-emerald-400" />
+                {data.fx ? (
+                  <>
+                    <StatRow label="US Dollar" value={`$${data.fx.USD?.toFixed(4)}`} />
+                    <StatRow label="Euro" value={`€${data.fx.EUR?.toFixed(4)}`} />
+                    <StatRow label="Japanese Yen" value={`¥${data.fx.JPY?.toFixed(2)}`} />
+                    <StatRow label="Australian Dollar" value={`A$${data.fx.AUD?.toFixed(4)}`} />
+                    <StatRow label="Canadian Dollar" value={`C$${data.fx.CAD?.toFixed(4)}`} />
+                  </>
+                ) : (
+                  <p className="px-3 py-2 text-xs text-[#64748b]">Exchange rate data unavailable</p>
+                )}
+              </div>
+
+              {/* Crypto */}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+                <SectionHeader icon={Bitcoin} title="Crypto Prices (GBP)" color="text-yellow-400" />
+                {data.crypto ? (
+                  <>
+                    <StatRow label="Bitcoin" value={`£${data.crypto.bitcoin?.gbp?.toLocaleString()}`} change={data.crypto.bitcoin?.gbp_24h_change} sub="BTC · 24h" />
+                    <StatRow label="Ethereum" value={`£${data.crypto.ethereum?.gbp?.toLocaleString()}`} change={data.crypto.ethereum?.gbp_24h_change} sub="ETH · 24h" />
+                    <StatRow label="Solana" value={`£${data.crypto.solana?.gbp?.toLocaleString()}`} change={data.crypto.solana?.gbp_24h_change} sub="SOL · 24h" />
+                  </>
+                ) : (
+                  <p className="px-3 py-2 text-xs text-[#64748b]">Crypto data unavailable</p>
+                )}
+              </div>
             </div>
 
-            {/* Commodities */}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-              <SectionHeader icon={BarChart2} title="Commodities (GBP)" color="text-amber-400" />
-              {data.commodities?.gold ? (
-                <StatRow
-                  label="Gold"
-                  value={`£${data.commodities.gold.priceGbp.toLocaleString("en-GB", { maximumFractionDigits: 0 })}/oz`}
-                  change={data.commodities.gold.changePercent}
-                  sub="XAU · 24h change"
-                />
-              ) : <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Gold unavailable</p>}
-              {data.commodities?.silver ? (
-                <StatRow
-                  label="Silver"
-                  value={`£${data.commodities.silver.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/oz`}
-                  change={data.commodities.silver.changePercent}
-                  sub="XAG · 24h change"
-                />
-              ) : <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Silver unavailable</p>}
-              {data.commodities?.brent ? (
-                <StatRow
-                  label="Brent Crude"
-                  value={`£${data.commodities.brent.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/bbl`}
-                  change={data.commodities.brent.changePercent}
-                  sub="BZ=F · 24h change"
-                />
-              ) : <p className="px-4 py-3 text-xs text-[#64748b]">Brent unavailable</p>}
-            </div>
-
-            {/* Exchange Rates */}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-              <SectionHeader icon={DollarSign} title="Exchange Rates (1 GBP =)" color="text-emerald-400" />
-              {data.fx ? (
-                <>
-                  <StatRow label="US Dollar" value={`$${data.fx.USD?.toFixed(4)}`} />
-                  <StatRow label="Euro" value={`€${data.fx.EUR?.toFixed(4)}`} />
-                  <StatRow label="Japanese Yen" value={`¥${data.fx.JPY?.toFixed(2)}`} />
-                  <StatRow label="Australian Dollar" value={`A$${data.fx.AUD?.toFixed(4)}`} />
-                  <StatRow label="Canadian Dollar" value={`C$${data.fx.CAD?.toFixed(4)}`} />
-                </>
-              ) : (
-                <p className="px-4 py-4 text-xs text-[#64748b]">Exchange rate data unavailable</p>
-              )}
-            </div>
-
-            {/* Crypto */}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-              <SectionHeader icon={Bitcoin} title="Crypto Prices (GBP)" color="text-yellow-400" />
-              {data.crypto ? (
-                <>
-                  <StatRow label="Bitcoin" value={`£${data.crypto.bitcoin?.gbp?.toLocaleString()}`} change={data.crypto.bitcoin?.gbp_24h_change} sub="BTC · 24h change" />
-                  <StatRow label="Ethereum" value={`£${data.crypto.ethereum?.gbp?.toLocaleString()}`} change={data.crypto.ethereum?.gbp_24h_change} sub="ETH · 24h change" />
-                  <StatRow label="Solana" value={`£${data.crypto.solana?.gbp?.toLocaleString()}`} change={data.crypto.solana?.gbp_24h_change} sub="SOL · 24h change" />
-                </>
-              ) : (
-                <p className="px-4 py-4 text-xs text-[#64748b]">Crypto data unavailable</p>
-              )}
-            </div>
-
-            <p className="text-[10px] text-[#64748b] text-center pb-2">
-              Fuel: gov.uk BEIS · BoE: bankofengland.co.uk · CPI: ONS · Commodities: Yahoo Finance · Rates: exchangerate-api.com · Crypto: CoinGecko
-            </p>
           </div>
         )}
       </div>
