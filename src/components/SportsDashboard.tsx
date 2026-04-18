@@ -116,7 +116,7 @@ function MatchCard({ match, sport }: { match: any; sport: string }) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SoccerStandings({ groups }: { groups: any[] }) {
-  const entries = groups.flatMap((g: any) => g.entries);
+  const entries = groups.flatMap((g: any) => g.entries ?? []).filter(Boolean);
   if (!entries.length) return <EmptyState msg="No standings available" />;
   return (
     <div className="overflow-x-auto">
@@ -327,6 +327,7 @@ export default function SportsDashboard() {
   const views: readonly string[] = sport === "motorsport" ? F1_VIEWS : SOCCER_VIEWS;
 
   const fetchData = useCallback(async () => {
+    setData(null);
     setLoading(true);
     try {
       const res  = await fetch(`/api/sports?league=${league}&type=${view}`);
