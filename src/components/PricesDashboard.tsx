@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, TrendingUp, TrendingDown, Fuel, DollarSign, Bitcoin } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown, Fuel, DollarSign, Bitcoin, Landmark, BarChart2 } from "lucide-react";
 
 interface FuelData { date: string; unleaded: number | null; diesel: number | null; }
 interface FXData { USD: number; EUR: number; JPY: number; AUD: number; CAD: number; }
@@ -10,11 +10,22 @@ interface CryptoData {
   ethereum: { gbp: number; gbp_24h_change: number };
   solana: { gbp: number; gbp_24h_change: number };
 }
+interface BoeData { rate: number | null; date: string; }
+interface CpiData { rate: number | null; date: string; }
+interface CommodityItem { priceGbp: number; changePercent: number; }
+interface CommoditiesData {
+  gold: CommodityItem | null;
+  silver: CommodityItem | null;
+  brent: CommodityItem | null;
+}
 
 interface PricesResponse {
   fuel: FuelData | null;
   fx: FXData | null;
   crypto: CryptoData | null;
+  boe: BoeData | null;
+  cpi: CpiData | null;
+  commodities: CommoditiesData | null;
   timestamp: number;
 }
 
@@ -40,7 +51,7 @@ function StatRow({ label, value, sub, change }: { label: string; value: string; 
 
 function SectionHeader({ icon: Icon, title, color }: { icon: React.ElementType; title: string; color: string }) {
   return (
-    <div className={`flex items-center gap-2 px-4 py-2.5 border-b border-[#1e2a3a] bg-white/2`}>
+    <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1e2a3a] bg-white/2">
       <Icon className={`w-3.5 h-3.5 ${color}`} />
       <span className={`text-[11px] font-semibold uppercase tracking-widest ${color}`}>{title}</span>
     </div>
@@ -66,15 +77,14 @@ export default function PricesDashboard() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 300000); // refresh every 5 mins
+    const interval = setInterval(fetchData, 300000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Controls */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
-        <p className="text-xs text-[#64748b]">UK fuel, exchange rates & crypto</p>
+        <p className="text-xs text-[#64748b]">UK fuel, economy, exchange rates, commodities & crypto</p>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
           {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
           <button onClick={fetchData} disabled={loading}
@@ -92,6 +102,29 @@ export default function PricesDashboard() {
         ) : (
           <div className="max-w-2xl mx-auto py-4 px-4 space-y-4">
 
+            {/* UK Economy */}
+            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+              <SectionHeader icon={Landmark} title="UK Economy" color="text-sky-400" />
+              {data.boe ? (
+                <StatRow
+                  label="Bank of England Base Rate"
+                  value={data.boe.rate != null ? `${data.boe.rate.toFixed(2)}%` : "N/A"}
+                  sub={`Effective ${data.boe.date}`}
+                />
+              ) : (
+                <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">BoE rate unavailable</p>
+              )}
+              {data.cpi ? (
+                <StatRow
+                  label="CPI Inflation (Annual)"
+                  value={data.cpi.rate != null ? `${data.cpi.rate.toFixed(1)}%` : "N/A"}
+                  sub={`${data.cpi.date} · Source: ONS`}
+                />
+              ) : (
+                <p className="px-4 py-3 text-xs text-[#64748b]">CPI data unavailable</p>
+              )}
+            </div>
+
             {/* Fuel Prices */}
             <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
               <SectionHeader icon={Fuel} title="UK Pump Prices (pence/litre)" color="text-orange-400" />
@@ -103,6 +136,35 @@ export default function PricesDashboard() {
               ) : (
                 <p className="px-4 py-4 text-xs text-[#64748b]">Fuel data unavailable</p>
               )}
+            </div>
+
+            {/* Commodities */}
+            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
+              <SectionHeader icon={BarChart2} title="Commodities (GBP)" color="text-amber-400" />
+              {data.commodities?.gold ? (
+                <StatRow
+                  label="Gold"
+                  value={`£${data.commodities.gold.priceGbp.toLocaleString("en-GB", { maximumFractionDigits: 0 })}/oz`}
+                  change={data.commodities.gold.changePercent}
+                  sub="XAU · 24h change"
+                />
+              ) : <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Gold unavailable</p>}
+              {data.commodities?.silver ? (
+                <StatRow
+                  label="Silver"
+                  value={`£${data.commodities.silver.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/oz`}
+                  change={data.commodities.silver.changePercent}
+                  sub="XAG · 24h change"
+                />
+              ) : <p className="px-4 py-3 text-xs text-[#64748b] border-b border-[#1e2a3a]/60">Silver unavailable</p>}
+              {data.commodities?.brent ? (
+                <StatRow
+                  label="Brent Crude"
+                  value={`£${data.commodities.brent.priceGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/bbl`}
+                  change={data.commodities.brent.changePercent}
+                  sub="BZ=F · 24h change"
+                />
+              ) : <p className="px-4 py-3 text-xs text-[#64748b]">Brent unavailable</p>}
             </div>
 
             {/* Exchange Rates */}
@@ -136,7 +198,7 @@ export default function PricesDashboard() {
             </div>
 
             <p className="text-[10px] text-[#64748b] text-center pb-2">
-              Fuel: gov.uk BEIS · Rates: exchangerate-api.com · Crypto: CoinGecko · Refreshes every 5 minutes
+              Fuel: gov.uk BEIS · BoE: bankofengland.co.uk · CPI: ONS · Commodities: Yahoo Finance · Rates: exchangerate-api.com · Crypto: CoinGecko
             </p>
           </div>
         )}
