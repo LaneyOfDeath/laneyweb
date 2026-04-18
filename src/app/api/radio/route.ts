@@ -13,13 +13,14 @@ export async function GET(request: Request) {
 
   let url: string;
   if (q) {
-    url = `${BASE}/stations/search?name=${encodeURIComponent(q)}&limit=30&hidebroken=true&order=clickcount&reverse=true`;
+    url = `${BASE}/stations/search?name=${encodeURIComponent(q)}&limit=40&hidebroken=true&order=votes&reverse=true`;
   } else if (tag) {
-    url = `${BASE}/stations/bytag/${encodeURIComponent(tag)}?limit=30&hidebroken=true&order=clickcount&reverse=true`;
+    url = `${BASE}/stations/search?tag=${encodeURIComponent(tag)}&limit=40&hidebroken=true&order=votes&reverse=true`;
   } else if (country) {
-    url = `${BASE}/stations/bycountry/${encodeURIComponent(country)}?limit=30&hidebroken=true&order=clickcount&reverse=true`;
+    url = `${BASE}/stations/search?countrycode=${encodeURIComponent(country)}&limit=40&hidebroken=true&order=votes&reverse=true`;
   } else {
-    url = `${BASE}/stations/topclick/50?hidebroken=true`;
+    // Default: top UK stations by votes — surfaces BBC, Capital, Heart, Classic FM etc.
+    url = `${BASE}/stations/search?countrycode=GB&limit=40&hidebroken=true&order=votes&reverse=true`;
   }
 
   try {
