@@ -141,7 +141,7 @@ export default function RadioDashboard() {
             type="text" value={search}
             onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSearch()}
-            placeholder="Search by station name…"
+            placeholder="e.g. Radio X, XFM, LBC, Kiss…"
             className="flex-1 bg-transparent text-sm text-white placeholder:text-[#64748b] outline-none"
           />
           {search && <button onClick={() => setSearch("")}><X className="w-3.5 h-3.5 text-[#64748b]" /></button>}
