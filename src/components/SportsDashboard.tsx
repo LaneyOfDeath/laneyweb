@@ -350,6 +350,7 @@ export default function SportsDashboard() {
   const handleLeagueChange = (key: string) => {
     const newSport = LEAGUES.find(l => l.key === key)?.sport ?? "soccer";
     const defaultView = newSport === "motorsport" ? "drivers" : "scores";
+    setData(null);
     setLeague(key);
     setView(defaultView as View);
   };
@@ -416,7 +417,7 @@ export default function SportsDashboard() {
       <div className="px-4 py-2 border-b border-[#1e2a3a] flex items-center justify-between">
         <div className="flex gap-0.5">
           {views.map(v => (
-            <button key={v} onClick={() => setView(v as View)}
+            <button key={v} onClick={() => { setData(null); setView(v as View); }}
               className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                 view === v ? "bg-white/10 text-white" : "text-[#64748b] hover:text-[#94a3b8]"
               }`}>
