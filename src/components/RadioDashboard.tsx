@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { RefreshCw, Search, Play, Square, Radio, X, Volume2 } from "lucide-react";
+import { RefreshCw, Search, Play, Square, Radio, X, Volume2, Star } from "lucide-react";
 
 interface Station {
   id: string; name: string; url: string;
@@ -11,6 +11,28 @@ interface Station {
 }
 
 type FilterMode = "country" | "tag" | "search";
+
+// Hardcoded major UK stations — stream URLs that are stable and don't rely on community databases
+const FEATURED_UK: Station[] = [
+  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",         favicon: null, tags: ["pop","mainstream"],       country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_two",         favicon: null, tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three",       favicon: null, tags: ["classical","culture"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_fourfm",      favicon: null, tags: ["news","talk"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_five_live",   favicon: null, tags: ["news","sport"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://stream.live.vc.bbcmedia.co.uk/bbc_6music",            favicon: null, tags: ["alternative","indie"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-radiox",  name: "Radio X",          url: "https://media-ice.musicradio.com/RadioXUK",                   favicon: null, tags: ["rock","indie","xfm"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-capital", name: "Capital FM",       url: "https://media-ice.musicradio.com/CapitalUK",                  favicon: null, tags: ["pop","hits"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-heart",   name: "Heart FM",         url: "https://media-ice.musicradio.com/HeartUK",                    favicon: null, tags: ["pop","easy listening"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-classic", name: "Classic FM",       url: "https://media-ice.musicradio.com/ClassicFMMP3",               favicon: null, tags: ["classical"],             country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-lbc",     name: "LBC",              url: "https://media-ice.musicradio.com/LBCUK",                      favicon: null, tags: ["news","talk"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-smooth",  name: "Smooth Radio",     url: "https://media-ice.musicradio.com/SmoothUK",                   favicon: null, tags: ["easy listening","soul"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-magic",   name: "Magic Radio",      url: "https://media-ice.musicradio.com/MagicUK",                    favicon: null, tags: ["pop","classic"],         country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-kiss",    name: "Kiss FM UK",       url: "https://media-ice.musicradio.com/KISSUK",                     favicon: null, tags: ["dance","r&b"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-absolute",name: "Absolute Radio",   url: "https://icecast.absoluteradio.co.uk/absoluteradio.mp3",       favicon: null, tags: ["rock","classic rock"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-talksport",name:"talkSPORT",        url: "https://radio.talksport.com/stream",                          favicon: null, tags: ["sport","talk"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-planet",  name: "Planet Rock",      url: "https://icecast.absoluteradio.co.uk/planetrock.mp3",          favicon: null, tags: ["rock","classic rock"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-greatest",name: "Greatest Hits Radio",url:"https://icecast.absoluteradio.co.uk/greatesthitsradio.mp3", favicon: null, tags: ["pop","classic"],         country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+];
 
 const COUNTRIES: { label: string; code: string; flag: string }[] = [
   { label: "UK",        code: "GB", flag: "🇬🇧" },
@@ -30,15 +52,15 @@ const GENRE_TAGS: Record<string, string> = {
 };
 
 export default function RadioDashboard() {
-  const [stations, setStations] = useState<Station[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [mode, setMode]         = useState<FilterMode>("country");
+  const [stations, setStations]   = useState<Station[]>([]);
+  const [loading, setLoading]     = useState(false);
+  const [mode, setMode]           = useState<FilterMode>("country");
   const [activeCountry, setActiveCountry] = useState("GB");
   const [activeGenre, setActiveGenre]     = useState("");
-  const [search, setSearch]     = useState("");
-  const [query, setQuery]       = useState("");
-  const [playing, setPlaying]   = useState<Station | null>(null);
-  const [audioErr, setAudioErr] = useState(false);
+  const [search, setSearch]       = useState("");
+  const [query, setQuery]         = useState("");
+  const [playing, setPlaying]     = useState<Station | null>(null);
+  const [audioErr, setAudioErr]   = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
@@ -52,7 +74,6 @@ export default function RadioDashboard() {
     }
   }, []);
 
-  // Default: UK stations
   useEffect(() => {
     fetchStations(new URLSearchParams({ country: "GB" }));
   }, [fetchStations]);
@@ -100,14 +121,48 @@ export default function RadioDashboard() {
     setPlaying(s);
   };
 
-  useEffect(() => {
-    return () => { audioRef.current?.pause(); };
-  }, []);
+  useEffect(() => () => { audioRef.current?.pause(); }, []);
+
+  const showFeatured = mode === "country" && activeCountry === "GB" && !query;
+
+  // De-dupe radio-browser results against featured list
+  const featuredIds = new Set(FEATURED_UK.map(s => s.name.toLowerCase()));
+  const extraStations = stations.filter(s => !featuredIds.has(s.name.toLowerCase()));
 
   const pill = (active: boolean) =>
     `px-2.5 py-1 rounded-lg text-xs transition-colors border ${
       active ? "bg-violet-500/20 text-violet-400 border-violet-500/30" : "bg-white/5 text-[#64748b] border-[#1e2a3a] hover:text-white hover:bg-white/10"
     }`;
+
+  const StationCard = ({ s }: { s: Station }) => {
+    const isPlaying = playing?.id === s.id;
+    return (
+      <button onClick={() => playStation(s)}
+        className={`rounded-xl border p-3 flex items-center gap-3 transition-all text-left w-full ${
+          isPlaying ? "border-violet-500/40 bg-violet-500/10" : "border-[#1e2a3a] bg-[#111827] hover:bg-white/5"
+        }`}>
+        <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden bg-white/5 border border-[#1e2a3a]">
+          {s.favicon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={s.favicon} alt="" className="w-8 h-8 object-contain"
+              onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+          ) : (
+            <Radio className="w-4 h-4 text-[#64748b]" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-white truncate">{s.name}</p>
+          <p className="text-[11px] text-[#64748b] truncate">{s.country} · {s.codec}{s.bitrate > 0 ? ` ${s.bitrate}k` : ""}</p>
+          {s.tags.length > 0 && <p className="text-[10px] text-[#475569] truncate">{s.tags.join(", ")}</p>}
+        </div>
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+          isPlaying ? "bg-violet-500 text-white" : "bg-white/5 text-[#64748b] hover:text-white"
+        }`}>
+          {isPlaying ? <Square className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+        </div>
+      </button>
+    );
+  };
 
   return (
     <div className="p-6 space-y-5 max-w-5xl">
@@ -123,7 +178,7 @@ export default function RadioDashboard() {
             <Volume2 className="w-4 h-4 text-violet-400 flex-shrink-0" />
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white truncate">{playing.name}</p>
-              <p className="text-[11px] text-violet-300">{playing.country} · {playing.codec} {playing.bitrate > 0 ? `${playing.bitrate}kbps` : ""}</p>
+              <p className="text-[11px] text-violet-300">{playing.country} · {playing.codec}{playing.bitrate > 0 ? ` ${playing.bitrate}kbps` : ""}</p>
             </div>
           </div>
           {audioErr && <span className="text-xs text-red-400 flex-shrink-0">Stream error — try another station</span>}
@@ -141,7 +196,7 @@ export default function RadioDashboard() {
             type="text" value={search}
             onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSearch()}
-            placeholder="e.g. Radio X, XFM, LBC, Kiss…"
+            placeholder="Search any station…"
             className="flex-1 bg-transparent text-sm text-white placeholder:text-[#64748b] outline-none"
           />
           {search && <button onClick={() => setSearch("")}><X className="w-3.5 h-3.5 text-[#64748b]" /></button>}
@@ -163,8 +218,7 @@ export default function RadioDashboard() {
         <p className="text-[10px] font-semibold text-[#64748b] uppercase tracking-widest">By country</p>
         <div className="flex flex-wrap gap-1.5">
           {COUNTRIES.map(c => (
-            <button key={c.code} onClick={() => selectCountry(c.code)}
-              className={pill(mode === "country" && activeCountry === c.code)}>
+            <button key={c.code} onClick={() => selectCountry(c.code)} className={pill(mode === "country" && activeCountry === c.code)}>
               {c.flag} {c.label}
             </button>
           ))}
@@ -176,62 +230,51 @@ export default function RadioDashboard() {
         <p className="text-[10px] font-semibold text-[#64748b] uppercase tracking-widest">By genre</p>
         <div className="flex flex-wrap gap-1.5">
           {GENRES.map(g => (
-            <button key={g} onClick={() => selectGenre(g)}
-              className={pill(mode === "tag" && activeGenre === g)}>
+            <button key={g} onClick={() => selectGenre(g)} className={pill(mode === "tag" && activeGenre === g)}>
               {g}
             </button>
           ))}
-          {mode === "search" && query && (
-            <span className={pill(true)}>Search: {query}</span>
-          )}
+          {mode === "search" && query && <span className={pill(true)}>Search: {query}</span>}
         </div>
       </div>
 
-      {/* Station grid */}
-      {loading ? (
-        <div className="flex items-center justify-center h-40">
-          <RefreshCw className="w-6 h-6 text-[#64748b] animate-spin" />
+      {/* Featured UK stations — always shown, hardcoded streams */}
+      {showFeatured && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Star className="w-3.5 h-3.5 text-yellow-400" />
+            <p className="text-[10px] font-semibold text-yellow-400 uppercase tracking-widest">Major UK Stations</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {FEATURED_UK.map(s => <StationCard key={s.id} s={s} />)}
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {stations.map(s => {
-            const isPlaying = playing?.id === s.id;
-            return (
-              <button key={s.id} onClick={() => playStation(s)}
-                className={`rounded-xl border p-3 flex items-center gap-3 transition-all text-left ${
-                  isPlaying ? "border-violet-500/40 bg-violet-500/10" : "border-[#1e2a3a] bg-[#111827] hover:bg-white/5"
-                }`}>
-                <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden bg-white/5 border border-[#1e2a3a]">
-                  {s.favicon ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={s.favicon} alt="" className="w-8 h-8 object-contain"
-                      onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                  ) : (
-                    <Radio className="w-4 h-4 text-[#64748b]" />
-                  )}
+      )}
+
+      {/* radio-browser.info results */}
+      {(showFeatured ? extraStations.length > 0 : true) && (
+        <div className="space-y-2">
+          {showFeatured && (
+            <p className="text-[10px] font-semibold text-[#64748b] uppercase tracking-widest">More UK Stations</p>
+          )}
+          {loading ? (
+            <div className="flex items-center justify-center h-32">
+              <RefreshCw className="w-6 h-6 text-[#64748b] animate-spin" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {(showFeatured ? extraStations : stations).map(s => <StationCard key={s.id} s={s} />)}
+              {!loading && (showFeatured ? extraStations : stations).length === 0 && !showFeatured && (
+                <div className="col-span-2 rounded-xl border border-[#1e2a3a] bg-[#111827] p-8 text-center text-[#64748b] text-sm">
+                  No stations found
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{s.name}</p>
-                  <p className="text-[11px] text-[#64748b] truncate">{s.country} · {s.codec}{s.bitrate > 0 ? ` ${s.bitrate}k` : ""}</p>
-                  {s.tags.length > 0 && <p className="text-[10px] text-[#475569] truncate">{s.tags.join(", ")}</p>}
-                </div>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                  isPlaying ? "bg-violet-500 text-white" : "bg-white/5 text-[#64748b] hover:text-white"
-                }`}>
-                  {isPlaying ? <Square className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                </div>
-              </button>
-            );
-          })}
-          {stations.length === 0 && (
-            <div className="col-span-2 rounded-xl border border-[#1e2a3a] bg-[#111827] p-8 text-center text-[#64748b] text-sm">
-              No stations found
+              )}
             </div>
           )}
         </div>
       )}
 
-      <p className="text-xs text-[#64748b]">Data via radio-browser.info · Community-maintained, sorted by listener votes · Click to stream</p>
+      <p className="text-xs text-[#64748b]">Major UK stations use direct broadcast streams · Others via radio-browser.info · Click to stream</p>
     </div>
   );
 }
