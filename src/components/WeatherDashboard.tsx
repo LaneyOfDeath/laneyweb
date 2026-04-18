@@ -19,6 +19,11 @@ interface WeatherData {
     windMax: number; uvMax: number; sunrise: string; sunset: string;
   }[];
   airQuality: { aqi: number; pm25: number; pm10: number; label: string; color: string } | null;
+  sunMoon: {
+    sunrise: string | null; sunset: string | null;
+    dayLengthH: number | null; dayLengthM: number | null;
+    moon: { illumination: number; name: string; emoji: string };
+  } | null;
 }
 
 const POPULAR = ["London","New York","Tokyo","Sydney","Dubai","Paris","Los Angeles","Singapore","Lagos","Toronto"];
@@ -164,7 +169,7 @@ export default function WeatherDashboard() {
 
   if (!data) return null;
 
-  const { current, daily, hourly, airQuality, location } = data;
+  const { current, daily, hourly, airQuality, sunMoon, location } = data;
 
   return (
     <div className="p-6 space-y-6 max-w-6xl">
@@ -293,6 +298,62 @@ export default function WeatherDashboard() {
           );
         })}
       </div>
+
+      {/* Sun & Moon */}
+      {sunMoon && (
+        <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5">
+          <p className="text-xs font-semibold text-[#64748b] uppercase tracking-widest mb-4">Sun &amp; Moon — Today</p>
+          <div className="grid grid-cols-2 gap-6">
+            {/* Sun */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Sun className="w-4 h-4 text-yellow-400" />
+                <span className="text-xs font-semibold text-yellow-400 uppercase tracking-widest">Sun</span>
+              </div>
+              <div className="flex gap-6">
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Sunrise</p>
+                  <p className="text-white font-bold font-mono text-sm">
+                    {sunMoon.sunrise ? new Date(sunMoon.sunrise).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Sunset</p>
+                  <p className="text-white font-bold font-mono text-sm">
+                    {sunMoon.sunset ? new Date(sunMoon.sunset).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Day length</p>
+                  <p className="text-white font-bold font-mono text-sm">
+                    {sunMoon.dayLengthH !== null ? `${sunMoon.dayLengthH}h ${sunMoon.dayLengthM}m` : "—"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Moon */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-base leading-none">{sunMoon.moon.emoji}</span>
+                <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Moon</span>
+              </div>
+              <div className="flex gap-6 items-end">
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Phase</p>
+                  <p className="text-white font-bold text-sm">{sunMoon.moon.name}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Illumination</p>
+                  <p className="text-white font-bold font-mono text-sm">{sunMoon.moon.illumination}%</p>
+                </div>
+              </div>
+              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden w-full max-w-xs">
+                <div className="h-full rounded-full bg-gradient-to-r from-slate-400 to-white" style={{ width: `${sunMoon.moon.illumination}%` }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <p className="text-xs text-[#64748b]">Data via Open-Meteo · Free, no API key · Updates every 15 min</p>
     </div>

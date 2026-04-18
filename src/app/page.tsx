@@ -16,10 +16,13 @@ import {
   Zap,
   Wifi,
   HelpCircle,
-  Telescope,
   Droplets,
   PoundSterling,
   Shield,
+  Flame,
+  Wind,
+  Train,
+  Radio,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -130,7 +133,7 @@ const modules = [
     color: "text-violet-400",
     bg: "bg-violet-400/10",
     border: "border-violet-400/20",
-    desc: "ISS live position, rocket launches & near-Earth asteroids",
+    desc: "ISS live position, rocket launches, near-Earth asteroids, space weather & NASA photo of the day",
     badge: "Live",
     badgeColor: "green" as const,
   },
@@ -201,15 +204,59 @@ const modules = [
     badgeColor: "green" as const,
   },
   {
-    href: "/apod",
-    label: "Space Photo",
-    icon: Telescope,
+    href: "/fire",
+    label: "Global Fire Map",
+    icon: Flame,
+    color: "text-orange-400",
+    bg: "bg-orange-400/10",
+    border: "border-orange-400/20",
+    desc: "Active wildfires worldwide from NASA EONET · VIIRS & MODIS satellite detection",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/air",
+    label: "Air Quality",
+    icon: Wind,
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/10",
+    border: "border-emerald-400/20",
+    desc: "Global AQI, PM2.5, PM10, NO₂, ozone & more — search any city worldwide",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/transport",
+    label: "UK Transport",
+    icon: Train,
+    color: "text-sky-400",
+    bg: "bg-sky-400/10",
+    border: "border-sky-400/20",
+    desc: "London tube, overground, DLR, Elizabeth line & tram live service status",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/cyber",
+    label: "Cyber Security",
+    icon: Shield,
+    color: "text-red-400",
+    bg: "bg-red-400/10",
+    border: "border-red-400/20",
+    desc: "CISA Known Exploited Vulnerabilities — actively exploited CVEs with remediation deadlines",
+    badge: "KEV",
+    badgeColor: "cyan" as const,
+  },
+  {
+    href: "/radio",
+    label: "Radio",
+    icon: Radio,
     color: "text-violet-400",
     bg: "bg-violet-400/10",
     border: "border-violet-400/20",
-    desc: "NASA Astronomy Picture of the Day — daily space imagery & browse any date",
-    badge: "Daily",
-    badgeColor: "cyan" as const,
+    desc: "Stream live radio from around the world — search by station name or genre",
+    badge: "Live",
+    badgeColor: "green" as const,
   },
   {
     href: "/tor",
@@ -260,7 +307,7 @@ export default function DashboardPage() {
           <LiveBadge label="All systems live" color="green" />
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            19 live modules
+            23 live modules
           </div>
           <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
         </div>

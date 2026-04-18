@@ -113,14 +113,56 @@ async function getAsteroids() {
   } catch { return []; }
 }
 
+// Solar/space weather — NOAA SWPC (free, no key)
+async function getSolarWeather() {
+  try {
+    const [kpRes, windRes, alertsRes] = await Promise.all([
+      fetch("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",  { next: { revalidate: 300 } }),
+      fetch("https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json", { next: { revalidate: 300 } }),
+      fetch("https://services.swpc.noaa.gov/products/alerts.json",                  { next: { revalidate: 300 } }),
+    ]);
+
+    // Kp: array of objects {time_tag, Kp, ...}
+    const kpRaw: { time_tag: string; Kp: string }[] = kpRes.ok ? await kpRes.json() : [];
+    const kpHistory = kpRaw.slice(-24).map(k => ({ time: k.time_tag, value: parseFloat(k.Kp) }));
+    const latestKp = kpHistory[kpHistory.length - 1] ?? null;
+
+    // Solar wind: 2-D array — row 0 = headers ["time_tag","density","speed","temperature"]
+    const windRaw: string[][] = windRes.ok ? await windRes.json() : [];
+    let solarWind = null;
+    if (windRaw.length > 1) {
+      const hdrs = windRaw[0];
+      const row  = windRaw[windRaw.length - 1];
+      solarWind = {
+        time:        row[hdrs.indexOf("time_tag")],
+        density:     parseFloat(row[hdrs.indexOf("density")]),
+        speed:       parseFloat(row[hdrs.indexOf("speed")]),
+        temperature: parseFloat(row[hdrs.indexOf("temperature")]),
+      };
+    }
+
+    // Alerts: array of objects
+    const alertsRaw: { issue_datetime?: string; message?: string; message_code?: string }[] =
+      alertsRes.ok ? await alertsRes.json() : [];
+    const alerts = alertsRaw.slice(0, 6).map(a => ({
+      time:    a.issue_datetime ?? "",
+      code:    a.message_code  ?? "",
+      message: (a.message ?? "").slice(0, 400),
+    }));
+
+    return { kp: latestKp, kpHistory, solarWind, alerts };
+  } catch { return null; }
+}
+
 export async function GET() {
-  const [iss, crew, launches, asteroids, apod] = await Promise.all([
+  const [iss, crew, launches, asteroids, apod, solar] = await Promise.all([
     getISSPosition(),
     getISSCrew(),
     getUpcomingLaunches(),
     getAsteroids(),
     getAPOD(),
+    getSolarWeather(),
   ]);
 
-  return NextResponse.json({ iss, crew, launches, asteroids, apod, timestamp: Date.now() });
+  return NextResponse.json({ iss, crew, launches, asteroids, apod, solar, timestamp: Date.now() });
 }

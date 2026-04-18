@@ -83,6 +83,24 @@ function getWindDir(deg: number): string {
   return dirs[Math.round(deg / 22.5) % 16];
 }
 
+function getMoonPhase(date: Date): { illumination: number; name: string; emoji: string } {
+  const knownNewMoon = new Date("2000-01-06T18:14:00Z").getTime();
+  const synodicPeriod = 29.530588853;
+  const daysSince = (date.getTime() - knownNewMoon) / (1000 * 60 * 60 * 24);
+  const norm = ((daysSince % synodicPeriod) + synodicPeriod) % synodicPeriod / synodicPeriod;
+  const illum = Math.round(50 * (1 - Math.cos(2 * Math.PI * norm)));
+  let name: string, emoji: string;
+  if      (norm < 0.025 || norm >= 0.975) { name = "New Moon";        emoji = "🌑"; }
+  else if (norm < 0.25)                   { name = "Waxing Crescent"; emoji = "🌒"; }
+  else if (norm < 0.275)                  { name = "First Quarter";   emoji = "🌓"; }
+  else if (norm < 0.5)                    { name = "Waxing Gibbous";  emoji = "🌔"; }
+  else if (norm < 0.525)                  { name = "Full Moon";       emoji = "🌕"; }
+  else if (norm < 0.75)                   { name = "Waning Gibbous";  emoji = "🌖"; }
+  else if (norm < 0.775)                  { name = "Last Quarter";    emoji = "🌗"; }
+  else                                    { name = "Waning Crescent"; emoji = "🌘"; }
+  return { illumination: illum, name, emoji };
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const city = searchParams.get("city") ?? "London";
@@ -140,6 +158,12 @@ export async function GET(request: Request) {
   }));
 
   const aqi = airQuality?.current?.european_aqi ?? null;
+  const moon = getMoonPhase(new Date());
+  const todaySunrise = daily[0]?.sunrise ?? null;
+  const todaySunset  = daily[0]?.sunset  ?? null;
+  const dayLengthMs  = todaySunrise && todaySunset
+    ? new Date(todaySunset).getTime() - new Date(todaySunrise).getTime()
+    : null;
 
   return NextResponse.json({
     location: { ...location },
@@ -162,6 +186,13 @@ export async function GET(request: Request) {
     },
     hourly,
     daily,
+    sunMoon: {
+      sunrise:    todaySunrise,
+      sunset:     todaySunset,
+      dayLengthH: dayLengthMs ? Math.floor(dayLengthMs / 3600000) : null,
+      dayLengthM: dayLengthMs ? Math.floor((dayLengthMs % 3600000) / 60000) : null,
+      moon,
+    },
     airQuality: aqi !== null ? {
       aqi,
       pm25:  airQuality?.current?.pm2_5,
