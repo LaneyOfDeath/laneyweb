@@ -9,20 +9,27 @@ export const dynamic = "force-dynamic";
 
 async function fetchFuelPrices() {
   try {
-    // BEIS weekly road fuel prices CSV
-    const res = await fetch(
-      "https://assets.publishing.service.gov.uk/media/weekly-road-fuel-prices.csv",
+    // Scrape the stats page to get the current CSV URL (gov.uk uses content-hashed URLs that change on each upload)
+    const statsPage = await fetch(
+      "https://www.gov.uk/government/statistics/weekly-road-fuel-prices",
       { cache: "no-store" }
     );
+    if (!statsPage.ok) return null;
+    const html = await statsPage.text();
+    const match = html.match(/https:\/\/assets\.publishing\.service\.gov\.uk\/media\/[a-f0-9]+\/[^"']+\.csv/i);
+    if (!match) return null;
+
+    const res = await fetch(match[0], { cache: "no-store" });
     if (!res.ok) return null;
     const text = await res.text();
     const lines = text.trim().split("\n").filter(Boolean);
-    // Last row = most recent week
     const last = lines[lines.length - 1].split(",");
-    const headers = lines[0].split(",");
+    // Strip BOM from first header if present
+    const headers = lines[0].replace(/^\uFEFF/, "").split(",");
     const dateIdx = headers.findIndex((h) => h.toLowerCase().includes("date"));
-    const unleadedIdx = headers.findIndex((h) => h.toLowerCase().includes("unleaded") || h.toLowerCase().includes("petrol"));
-    const dieselIdx = headers.findIndex((h) => h.toLowerCase().includes("diesel"));
+    // ULSP pump price is column 1, ULSD is column 2
+    const unleadedIdx = headers.findIndex((h) => h.toLowerCase().includes("ulsp") && h.toLowerCase().includes("pump"));
+    const dieselIdx = headers.findIndex((h) => h.toLowerCase().includes("ulsd") && h.toLowerCase().includes("pump"));
     return {
       date: last[dateIdx >= 0 ? dateIdx : 0]?.replace(/"/g, "").trim(),
       unleaded: parseFloat(last[unleadedIdx >= 0 ? unleadedIdx : 1]) || null,
