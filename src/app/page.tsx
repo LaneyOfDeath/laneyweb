@@ -23,6 +23,7 @@ import {
   Wind,
   Train,
   Radio,
+  Plane,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -46,6 +47,17 @@ const modules = [
     bg: "bg-blue-400/10",
     border: "border-blue-400/20",
     desc: "AIS vessel positions, port activity & sea conditions",
+    badge: "Live",
+    badgeColor: "green" as const,
+  },
+  {
+    href: "/flights",
+    label: "Airport Flights",
+    icon: Plane,
+    color: "text-sky-400",
+    bg: "bg-sky-400/10",
+    border: "border-sky-400/20",
+    desc: "Live departures & arrivals for airports worldwide — search any airport by name",
     badge: "Live",
     badgeColor: "green" as const,
   },
@@ -307,7 +319,7 @@ export default function DashboardPage() {
           <LiveBadge label="All systems live" color="green" />
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            23 live modules
+            24 live modules
           </div>
           <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
         </div>
