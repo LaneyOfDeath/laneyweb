@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { RefreshCw, Search, Play, Square, Radio, X, Volume2, Star } from "lucide-react";
+import { RefreshCw, Search, Play, Square, X, Volume2, Star } from "lucide-react";
+
+const PALETTE = ["#7c3aed","#0891b2","#047857","#b45309","#be123c","#4338ca","#c2410c","#0f766e"];
+function stationColor(name: string) {
+  const hash = name.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return PALETTE[hash % PALETTE.length];
+}
+function stationInitials(name: string) {
+  const words = name.replace(/[^a-zA-Z0-9 ]/g, "").split(" ").filter(Boolean);
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
 
 interface Station {
   id: string; name: string; url: string;
@@ -12,26 +23,29 @@ interface Station {
 
 type FilterMode = "country" | "tag" | "search";
 
+const CLR = "https://logo.clearbit.com";
+const BBC_IMG = (net: string) => `https://sounds.files.bbci.co.uk/2.3.0/networks/${net}/squares/default_live_600.jpg`;
+
 // Hardcoded major UK stations — stream URLs that are stable and don't rely on community databases
 const FEATURED_UK: Station[] = [
-  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",         favicon: null, tags: ["pop","mainstream"],       country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_two",         favicon: null, tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three",       favicon: null, tags: ["classical","culture"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_fourfm",      favicon: null, tags: ["news","talk"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_five_live",   favicon: null, tags: ["news","sport"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://stream.live.vc.bbcmedia.co.uk/bbc_6music",            favicon: null, tags: ["alternative","indie"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-radiox",  name: "Radio X",          url: "https://media-ice.musicradio.com/RadioXUK",                   favicon: null, tags: ["rock","indie","xfm"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-capital", name: "Capital FM",       url: "https://media-ice.musicradio.com/CapitalUK",                  favicon: null, tags: ["pop","hits"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-heart",   name: "Heart FM",         url: "https://media-ice.musicradio.com/HeartUK",                    favicon: null, tags: ["pop","easy listening"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-classic", name: "Classic FM",       url: "https://media-ice.musicradio.com/ClassicFMMP3",               favicon: null, tags: ["classical"],             country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-lbc",     name: "LBC",              url: "https://media-ice.musicradio.com/LBCUK",                      favicon: null, tags: ["news","talk"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-smooth",  name: "Smooth Radio",     url: "https://media-ice.musicradio.com/SmoothUK",                   favicon: null, tags: ["easy listening","soul"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-magic",   name: "Magic Radio",      url: "https://media-ice.musicradio.com/MagicUK",                    favicon: null, tags: ["pop","classic"],         country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-kiss",    name: "Kiss FM UK",       url: "https://media-ice.musicradio.com/KISSUK",                     favicon: null, tags: ["dance","r&b"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-absolute",name: "Absolute Radio",   url: "https://icecast.absoluteradio.co.uk/absoluteradio.mp3",       favicon: null, tags: ["rock","classic rock"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-talksport",name:"talkSPORT",        url: "https://radio.talksport.com/stream",                          favicon: null, tags: ["sport","talk"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-planet",  name: "Planet Rock",      url: "https://icecast.absoluteradio.co.uk/planetrock.mp3",          favicon: null, tags: ["rock","classic rock"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
-  { id: "f-greatest",name: "Greatest Hits Radio",url:"https://icecast.absoluteradio.co.uk/greatesthitsradio.mp3", favicon: null, tags: ["pop","classic"],         country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",         favicon: BBC_IMG("bbc_radio_one"),        tags: ["pop","mainstream"],       country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_two",         favicon: BBC_IMG("bbc_radio_two"),        tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three",       favicon: BBC_IMG("bbc_radio_three"),      tags: ["classical","culture"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_fourfm",      favicon: BBC_IMG("bbc_radio_four"),       tags: ["news","talk"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_five_live",   favicon: BBC_IMG("bbc_radio_five_live"),  tags: ["news","sport"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://stream.live.vc.bbcmedia.co.uk/bbc_6music",            favicon: BBC_IMG("bbc_6music"),           tags: ["alternative","indie"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-radiox",  name: "Radio X",          url: "https://media-ice.musicradio.com/RadioXUK",                   favicon: `${CLR}/radiox.co.uk`,           tags: ["rock","indie","xfm"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-capital", name: "Capital FM",       url: "https://media-ice.musicradio.com/CapitalUK",                  favicon: `${CLR}/capitalfm.com`,          tags: ["pop","hits"],             country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-heart",   name: "Heart FM",         url: "https://media-ice.musicradio.com/HeartUK",                    favicon: `${CLR}/heart.co.uk`,            tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-classic", name: "Classic FM",       url: "https://media-ice.musicradio.com/ClassicFMMP3",               favicon: `${CLR}/classicfm.com`,          tags: ["classical"],              country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-lbc",     name: "LBC",              url: "https://media-ice.musicradio.com/LBCUK",                      favicon: `${CLR}/lbc.co.uk`,              tags: ["news","talk"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-smooth",  name: "Smooth Radio",     url: "https://media-ice.musicradio.com/SmoothUK",                   favicon: `${CLR}/smoothradio.com`,        tags: ["easy listening","soul"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-magic",   name: "Magic Radio",      url: "https://media-ice.musicradio.com/MagicUK",                    favicon: `${CLR}/magic.co.uk`,            tags: ["pop","classic"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-kiss",    name: "Kiss FM UK",       url: "https://media-ice.musicradio.com/KISSUK",                     favicon: `${CLR}/kissfmuk.com`,           tags: ["dance","r&b"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-absolute",name: "Absolute Radio",   url: "https://icecast.absoluteradio.co.uk/absoluteradio.mp3",       favicon: `${CLR}/absoluteradio.co.uk`,    tags: ["rock","classic rock"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-talksport",name:"talkSPORT",        url: "https://radio.talksport.com/stream",                          favicon: `${CLR}/talksport.com`,          tags: ["sport","talk"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-planet",  name: "Planet Rock",      url: "https://icecast.absoluteradio.co.uk/planetrock.mp3",          favicon: `${CLR}/planetrock.com`,         tags: ["rock","classic rock"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
+  { id: "f-greatest",name: "Greatest Hits Radio",url:"https://icecast.absoluteradio.co.uk/greatesthitsradio.mp3", favicon: `${CLR}/greatesthitsradio.co.uk`,tags: ["pop","classic"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
 ];
 
 const COUNTRIES: { label: string; code: string; flag: string }[] = [
@@ -141,13 +155,16 @@ export default function RadioDashboard() {
         className={`rounded-xl border p-3 flex items-center gap-3 transition-all text-left w-full ${
           isPlaying ? "border-violet-500/40 bg-violet-500/10" : "border-[#1e2a3a] bg-[#111827] hover:bg-white/5"
         }`}>
-        <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden bg-white/5 border border-[#1e2a3a]">
-          {s.favicon ? (
+        <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden bg-white/5 border border-[#1e2a3a] relative">
+          {/* Initials background — always rendered, hidden if image loads */}
+          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white rounded-lg"
+            style={{ background: stationColor(s.name) }}>
+            {stationInitials(s.name)}
+          </span>
+          {s.favicon && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={s.favicon} alt="" className="w-8 h-8 object-contain"
+            <img src={s.favicon} alt="" className="relative w-full h-full object-cover rounded-lg"
               onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-          ) : (
-            <Radio className="w-4 h-4 text-[#64748b]" />
           )}
         </div>
         <div className="flex-1 min-w-0">
