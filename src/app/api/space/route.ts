@@ -62,6 +62,28 @@ async function getUpcomingLaunches() {
   } catch { return []; }
 }
 
+// NASA Astronomy Picture of the Day
+async function getAPOD() {
+  try {
+    const key = process.env.NASA_API_KEY ?? "DEMO_KEY";
+    const res = await fetch(
+      `https://api.nasa.gov/planetary/apod?api_key=${key}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return null;
+    const d = await res.json();
+    return {
+      title:       d.title as string,
+      date:        d.date as string,
+      explanation: d.explanation as string,
+      url:         d.url as string,
+      hdurl:       (d.hdurl ?? d.url) as string,
+      mediaType:   d.media_type as string,
+      copyright:   (d.copyright ?? null) as string | null,
+    };
+  } catch { return null; }
+}
+
 // Near-Earth asteroids — NASA NeoWs (free, DEMO_KEY = 30 req/hour)
 async function getAsteroids() {
   try {
@@ -92,12 +114,13 @@ async function getAsteroids() {
 }
 
 export async function GET() {
-  const [iss, crew, launches, asteroids] = await Promise.all([
+  const [iss, crew, launches, asteroids, apod] = await Promise.all([
     getISSPosition(),
     getISSCrew(),
     getUpcomingLaunches(),
     getAsteroids(),
+    getAPOD(),
   ]);
 
-  return NextResponse.json({ iss, crew, launches, asteroids, timestamp: Date.now() });
+  return NextResponse.json({ iss, crew, launches, asteroids, apod, timestamp: Date.now() });
 }

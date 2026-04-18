@@ -1,14 +1,20 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Rocket, Users, AlertTriangle, Globe2 } from "lucide-react";
+import { RefreshCw, Rocket, Users, AlertTriangle, Globe2, Camera } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const SpaceMapLeaflet = dynamic(() => import("./SpaceMapLeaflet"), { ssr: false });
 
+interface APODData {
+  title: string; date: string; explanation: string;
+  url: string; hdurl: string; mediaType: string; copyright: string | null;
+}
+
 interface SpaceData {
   iss: { lat: number; lon: number; timestamp: number } | null;
   crew: { name: string; craft: string }[];
+  apod: APODData | null;
   launches: {
     id: string; name: string; net: string; status: string;
     rocket: string; provider: string; pad: string; location: string;
@@ -37,7 +43,7 @@ export default function SpaceDashboard() {
   const [data, setData] = useState<SpaceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [tab, setTab] = useState<"iss" | "launches" | "asteroids">("iss");
+  const [tab, setTab] = useState<"iss" | "launches" | "asteroids" | "apod">("iss");
 
   const fetchData = useCallback(async () => {
     try {
@@ -65,9 +71,10 @@ export default function SpaceDashboard() {
   }, []);
 
   const tabs = [
-    { id: "iss" as const, label: "ISS Live", icon: Globe2 },
-    { id: "launches" as const, label: "Launches", icon: Rocket },
-    { id: "asteroids" as const, label: "Asteroids", icon: AlertTriangle },
+    { id: "iss" as const,       label: "ISS Live",       icon: Globe2        },
+    { id: "launches" as const,  label: "Launches",       icon: Rocket        },
+    { id: "asteroids" as const, label: "Asteroids",      icon: AlertTriangle },
+    { id: "apod" as const,      label: "Photo of Day",   icon: Camera        },
   ];
 
   return (
@@ -226,6 +233,45 @@ export default function SpaceDashboard() {
             </div>
           )}
           <p className="text-xs text-[#64748b] pt-2">Data via NASA NeoWs · Today&apos;s close approaches</p>
+        </div>
+      )}
+
+      {/* APOD TAB */}
+      {tab === "apod" && (
+        <div className="space-y-4">
+          {loading && <p className="text-sm text-[#64748b] p-4">Loading picture of the day…</p>}
+          {!loading && !data?.apod && (
+            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-6 text-center text-[#64748b] text-sm">
+              Picture unavailable — NASA DEMO_KEY may be rate limited
+            </div>
+          )}
+          {data?.apod && (
+            <>
+              {data.apod.mediaType === "image" ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={data.apod.hdurl || data.apod.url}
+                  alt={data.apod.title}
+                  className="w-full rounded-xl border border-[#1e2a3a] object-contain max-h-[520px] bg-black"
+                />
+              ) : (
+                <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden" style={{ height: 400 }}>
+                  <iframe src={data.apod.url} className="w-full h-full" allowFullScreen title={data.apod.title} />
+                </div>
+              )}
+              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <h2 className="text-white font-bold text-lg leading-snug">{data.apod.title}</h2>
+                  <span className="text-xs text-[#64748b] whitespace-nowrap flex-shrink-0 mt-1">{data.apod.date}</span>
+                </div>
+                {data.apod.copyright && (
+                  <p className="text-[11px] text-[#475569]">© {data.apod.copyright.trim()}</p>
+                )}
+                <p className="text-sm text-[#94a3b8] leading-relaxed">{data.apod.explanation}</p>
+              </div>
+              <p className="text-xs text-[#64748b]">Data via NASA APOD API · Updates daily</p>
+            </>
+          )}
         </div>
       )}
     </div>
