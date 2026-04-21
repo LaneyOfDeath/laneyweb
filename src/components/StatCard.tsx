@@ -1,15 +1,23 @@
+"use client";
 import { clsx } from "clsx";
 import { LucideIcon } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
 
 interface StatCardProps {
   label: string;
   value: string | number;
+  decimals?: number;
   sub?: string;
   icon?: LucideIcon;
   iconColor?: string;
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
   glowColor?: "cyan" | "blue" | "green" | "orange" | "purple" | "pink";
+}
+
+function AnimatedNumber({ end, decimals = 0 }: { end: number; decimals?: number }) {
+  const count = useCountUp(end, 1200, decimals);
+  return <>{decimals > 0 ? count.toFixed(decimals) : count.toLocaleString()}</>;
 }
 
 const glowMap = {
@@ -24,6 +32,7 @@ const glowMap = {
 export default function StatCard({
   label,
   value,
+  decimals,
   sub,
   icon: Icon,
   iconColor = "text-cyan-400",
@@ -47,7 +56,11 @@ export default function StatCard({
           </div>
         )}
       </div>
-      <p className="mt-2 text-2xl font-bold text-white tabular-nums">{value}</p>
+      <p className="mt-2 text-2xl font-bold text-white tabular-nums">
+        {typeof value === "number"
+          ? <AnimatedNumber end={value} decimals={decimals} />
+          : value}
+      </p>
       <div className="flex items-center gap-2 mt-1">
         {trend && trendValue && (
           <span
