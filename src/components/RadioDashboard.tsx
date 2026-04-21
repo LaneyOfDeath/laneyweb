@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Hls from "hls.js";
 import { RefreshCw, Search, Play, Square, X, Volume2, Star } from "lucide-react";
 
 const PALETTE = ["#7c3aed","#0891b2","#047857","#b45309","#be123c","#4338ca","#c2410c","#0f766e"];
@@ -133,19 +132,28 @@ export default function RadioDashboard() {
     errTimerRef.current = setTimeout(() => setAudioErr(true), 10000);
 
     const isHls = s.url.includes(".m3u8");
-    if (isHls && Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(s.url);
-      hls.attachMedia(audio);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        audio.play().catch(() => {});
+    audio.addEventListener("canplay", onCanPlay);
+
+    if (isHls) {
+      import("hls.js").then(({ default: Hls }) => {
+        if (Hls.isSupported()) {
+          const hls = new Hls({ enableWorker: false });
+          hls.loadSource(s.url);
+          hls.attachMedia(audio);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(() => {}));
+          hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) onError(); });
+          hlsRef.current = hls;
+        } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
+          // Safari native HLS
+          audio.src = s.url;
+          audio.onerror = onError;
+          audio.play().catch(() => {});
+        } else {
+          onError();
+        }
       });
-      hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) onError(); });
-      audio.addEventListener("canplay", onCanPlay);
-      hlsRef.current = hls;
     } else {
       audio.src = s.url;
-      audio.addEventListener("canplay", onCanPlay);
       audio.onerror = onError;
       audio.play().catch(() => {});
     }
