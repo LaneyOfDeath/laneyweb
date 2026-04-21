@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Search, Wind, X } from "lucide-react";
+import CountUp from "@/components/CountUp";
 import { clsx } from "clsx";
 
 interface AirData {
@@ -124,7 +125,7 @@ export default function AirDashboard() {
                   <Wind className="w-4 h-4 text-[#64748b]" />
                   <span className="text-xs text-[#64748b]">US AQI</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{data.usAqi ?? "—"}</p>
+                <p className="text-2xl font-bold text-white">{data.usAqi != null ? <CountUp end={data.usAqi} /> : "—"}</p>
               </div>
             </div>
 

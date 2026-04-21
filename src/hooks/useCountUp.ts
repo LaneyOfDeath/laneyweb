@@ -1,25 +1,29 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useCountUp(end: number, duration = 1200, decimals = 0) {
   const [count, setCount] = useState(0);
-  const frameRef = useRef<number>();
-  const startRef = useRef<number>();
 
   useEffect(() => {
-    if (isNaN(end) || end === 0) { setCount(end); return; }
-    startRef.current = undefined;
+    if (!end) { setCount(end); return; }
+    const steps = Math.max(30, Math.round(duration / 16));
+    const increment = end / steps;
+    let current = 0;
+    let step = 0;
 
-    const animate = (timestamp: number) => {
-      if (!startRef.current) startRef.current = timestamp;
-      const progress = Math.min((timestamp - startRef.current) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(parseFloat((eased * end).toFixed(decimals)));
-      if (progress < 1) frameRef.current = requestAnimationFrame(animate);
-    };
+    const timer = setInterval(() => {
+      step++;
+      const eased = 1 - Math.pow(1 - step / steps, 3);
+      current = eased * end;
+      if (step >= steps) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(parseFloat(current.toFixed(decimals)));
+      }
+    }, duration / steps);
 
-    frameRef.current = requestAnimationFrame(animate);
-    return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
+    return () => clearInterval(timer);
   }, [end, duration, decimals]);
 
   return count;

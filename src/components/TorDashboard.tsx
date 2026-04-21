@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Shield, Wifi, Globe, Server } from "lucide-react";
+import CountUp from "@/components/CountUp";
 
 interface TorData {
   summary: { relays: number; bridges: number } | null;
@@ -75,8 +76,8 @@ export default function TorDashboard() {
 
             {/* Stat cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <StatCard label="Relays" value={data.summary?.relays?.toLocaleString() ?? "—"} sub="Active nodes" icon={Server} color="text-purple-400" />
-              <StatCard label="Bridges" value={data.summary?.bridges?.toLocaleString() ?? "—"} sub="Hidden relays" icon={Shield} color="text-violet-400" />
+              <StatCard label="Relays" value={data.summary?.relays ?? "—"} sub="Active nodes" icon={Server} color="text-purple-400" />
+              <StatCard label="Bridges" value={data.summary?.bridges ?? "—"} sub="Hidden relays" icon={Shield} color="text-violet-400" />
               <StatCard label="Bandwidth In" value={data.bandwidth?.readGbps ? `${data.bandwidth.readGbps} Gbps` : "—"} sub={data.bandwidth?.date ?? ""} icon={Wifi} color="text-cyan-400" />
               <StatCard label="Bandwidth Out" value={data.bandwidth?.writeGbps ? `${data.bandwidth.writeGbps} Gbps` : "—"} sub="Outbound traffic" icon={Wifi} color="text-blue-400" />
             </div>

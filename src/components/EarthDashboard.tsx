@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, AlertTriangle, Flame, Mountain } from "lucide-react";
+import CountUp from "@/components/CountUp";
 import dynamic from "next/dynamic";
 
 const EarthMapLeaflet = dynamic(() => import("./EarthMapLeaflet"), { ssr: false });
@@ -99,7 +100,7 @@ export default function EarthDashboard() {
             { label: "Strongest", value: quakes.length ? `M${Math.max(...quakes.map(q => q.mag)).toFixed(1)}` : "—", color: "text-orange-400" },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-3 text-center">
-              <p className={`text-xl font-black ${color}`}>{value}</p>
+              <p className={`text-xl font-black ${color}`}>{typeof value === "number" ? <CountUp end={value} /> : value}</p>
               <p className="text-[10px] text-[#64748b] mt-0.5">{label}</p>
             </div>
           ))}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, AlertTriangle, Droplets, MapPin } from "lucide-react";
+import CountUp from "@/components/CountUp";
 
 interface FloodWarning {
   id: string;
@@ -113,7 +114,7 @@ export default function FloodDashboard() {
                 const cfg = SEVERITY_CONFIG[level];
                 return (
                   <div key={level} className={`rounded-xl border ${cfg.border} ${cfg.bg} p-4`}>
-                    <p className={`text-2xl font-black ${cfg.color}`}>{counts[level]}</p>
+                    <p className={`text-2xl font-black ${cfg.color}`}><CountUp end={counts[level]} /></p>
                     <p className="text-[10px] text-[#94a3b8] mt-1 leading-tight">{cfg.label}</p>
                   </div>
                 );
