@@ -77,7 +77,7 @@ export default function RadioDashboard() {
   const [audioErr, setAudioErr]   = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
-  const errTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const errTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
     setLoading(true);
