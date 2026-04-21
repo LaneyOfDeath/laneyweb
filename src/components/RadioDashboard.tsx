@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Hls from "hls.js";
 import { RefreshCw, Search, Play, Square, X, Volume2, Star } from "lucide-react";
 
 const PALETTE = ["#7c3aed","#0891b2","#047857","#b45309","#be123c","#4338ca","#c2410c","#0f766e"];
@@ -27,12 +28,12 @@ const GFAV = (domain: string) => `https://www.google.com/s2/favicons?sz=128&doma
 
 // Hardcoded major UK stations — stream URLs that are stable and don't rely on community databases
 const FEATURED_UK: Station[] = [
-  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",         favicon: GFAV("bbc.co.uk/radio1"),        tags: ["pop","mainstream"],       country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_two",         favicon: GFAV("bbc.co.uk/radio2"),        tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_three",       favicon: GFAV("bbc.co.uk/radio3"),        tags: ["classical","culture"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_fourfm",      favicon: GFAV("bbc.co.uk/radio4"),        tags: ["news","talk"],            country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_five_live",   favicon: GFAV("bbc.co.uk/5live"),         tags: ["news","sport"],           country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
-  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://stream.live.vc.bbcmedia.co.uk/bbc_6music",            favicon: GFAV("bbc.co.uk/6music"),        tags: ["alternative","indie"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "AAC", bitrate: 128, clicks: 0 },
+  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d96000.norewind.m3u8",                    favicon: GFAV("bbc.co.uk/radio1"),    tags: ["pop","mainstream"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d96000.norewind.m3u8",                    favicon: GFAV("bbc.co.uk/radio2"),    tags: ["pop","easy listening"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",              favicon: GFAV("bbc.co.uk/radio3"),    tags: ["classical","culture"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d96000.norewind.m3u8",          favicon: GFAV("bbc.co.uk/radio4"),    tags: ["news","talk"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d96000.norewind.m3u8",  favicon: GFAV("bbc.co.uk/5live"),     tags: ["news","sport"],         country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://as-hls-ww-live.akamaized.net/pool_904/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d96000.norewind.m3u8",                            favicon: GFAV("bbc.co.uk/6music"),    tags: ["alternative","indie"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
   { id: "f-radiox",  name: "Radio X",          url: "https://media-ice.musicradio.com/RadioXUK",                   favicon: GFAV("radiox.co.uk"),            tags: ["rock","indie","xfm"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
   { id: "f-capital", name: "Capital FM",       url: "https://media-ice.musicradio.com/CapitalUK",                  favicon: GFAV("capitalfm.com"),           tags: ["pop","hits"],             country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
   { id: "f-heart",   name: "Heart FM",         url: "https://media-ice.musicradio.com/HeartUK",                    favicon: GFAV("heart.co.uk"),             tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
@@ -75,6 +76,7 @@ export default function RadioDashboard() {
   const [playing, setPlaying]     = useState<Station | null>(null);
   const [audioErr, setAudioErr]   = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hlsRef = useRef<Hls | null>(null);
   const errTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
@@ -119,35 +121,40 @@ export default function RadioDashboard() {
   };
 
   const playStation = (s: Station) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.src = "";
-    }
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ""; }
+    if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
     if (errTimerRef.current) clearTimeout(errTimerRef.current);
-    if (playing?.id === s.id) {
-      setPlaying(null);
-      return;
-    }
+    if (playing?.id === s.id) { setPlaying(null); return; }
+
     setAudioErr(false);
-    const audio = new Audio(s.url);
-    audio.addEventListener("canplay", () => {
-      if (errTimerRef.current) clearTimeout(errTimerRef.current);
-      setAudioErr(false);
-    });
-    audio.onerror = () => {
-      if (errTimerRef.current) clearTimeout(errTimerRef.current);
-      setAudioErr(true);
-    };
+    const audio = new Audio();
+    const onCanPlay = () => { clearTimeout(errTimerRef.current); setAudioErr(false); };
+    const onError = () => { clearTimeout(errTimerRef.current); setAudioErr(true); };
     errTimerRef.current = setTimeout(() => setAudioErr(true), 10000);
-    audio.play().catch(() => {
-      if (errTimerRef.current) clearTimeout(errTimerRef.current);
-      setAudioErr(true);
-    });
+
+    const isHls = s.url.includes(".m3u8");
+    if (isHls && Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(s.url);
+      hls.attachMedia(audio);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        audio.play().catch(onError);
+      });
+      hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) onError(); });
+      audio.addEventListener("canplay", onCanPlay);
+      hlsRef.current = hls;
+    } else {
+      audio.src = s.url;
+      audio.addEventListener("canplay", onCanPlay);
+      audio.onerror = onError;
+      audio.play().catch(onError);
+    }
+
     audioRef.current = audio;
     setPlaying(s);
   };
 
-  useEffect(() => () => { audioRef.current?.pause(); }, []);
+  useEffect(() => () => { audioRef.current?.pause(); hlsRef.current?.destroy(); }, []);
 
   const showFeatured = mode === "country" && activeCountry === "GB" && !query;
 
