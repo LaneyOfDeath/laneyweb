@@ -28,12 +28,12 @@ const GFAV = (domain: string) => `https://www.google.com/s2/favicons?sz=128&doma
 
 // Hardcoded major UK stations — stream URLs that are stable and don't rely on community databases
 const FEATURED_UK: Station[] = [
-  { id: "f-bbc1",    name: "BBC Radio 1",      url: "http://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/ak/bbc_radio_one.m3u8",              favicon: GFAV("bbc.co.uk/radio1"),  tags: ["pop","mainstream"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
-  { id: "f-bbc2",    name: "BBC Radio 2",      url: "http://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/cf/bbc_radio_two.m3u8",              favicon: GFAV("bbc.co.uk/radio2"),  tags: ["pop","easy listening"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
-  { id: "f-bbc3",    name: "BBC Radio 3",      url: "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",        favicon: GFAV("bbc.co.uk/radio3"),  tags: ["classical","culture"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
-  { id: "f-bbc4",    name: "BBC Radio 4",      url: "http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio=128000.norewind.m3u8",      favicon: GFAV("bbc.co.uk/radio4"),  tags: ["news","talk"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
-  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8", favicon: GFAV("bbc.co.uk/5live"), tags: ["news","sport"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
-  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio=320000.norewind.m3u8",                        favicon: GFAV("bbc.co.uk/6music"),  tags: ["alternative","indie"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 320, clicks: 0 },
+  { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/ak/bbc_radio_one.m3u8",              favicon: GFAV("bbc.co.uk/radio1"),  tags: ["pop","mainstream"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/cf/bbc_radio_two.m3u8",              favicon: GFAV("bbc.co.uk/radio2"),  tags: ["pop","easy listening"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",        favicon: GFAV("bbc.co.uk/radio3"),  tags: ["classical","culture"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
+  { id: "f-bbc4",    name: "BBC Radio 4",      url: "https://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio=128000.norewind.m3u8",      favicon: GFAV("bbc.co.uk/radio4"),  tags: ["news","talk"],          country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
+  { id: "f-bbc5",    name: "BBC Radio 5 Live", url: "https://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8", favicon: GFAV("bbc.co.uk/5live"), tags: ["news","sport"],    country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
+  { id: "f-bbc6",    name: "BBC Radio 6 Music",url: "https://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio=320000.norewind.m3u8",                        favicon: GFAV("bbc.co.uk/6music"),  tags: ["alternative","indie"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 320, clicks: 0 },
   { id: "f-radiox",  name: "Radio X",          url: "https://media-ice.musicradio.com/RadioXUK",                   favicon: GFAV("radiox.co.uk"),            tags: ["rock","indie","xfm"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
   { id: "f-capital", name: "Capital FM",       url: "https://media-ice.musicradio.com/CapitalUK",                  favicon: GFAV("capitalfm.com"),           tags: ["pop","hits"],             country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
   { id: "f-heart",   name: "Heart FM",         url: "https://media-ice.musicradio.com/HeartUK",                    favicon: GFAV("heart.co.uk"),             tags: ["pop","easy listening"],   country: "United Kingdom", countryCode: "GB", language: "english", codec: "MP3", bitrate: 128, clicks: 0 },
@@ -138,7 +138,7 @@ export default function RadioDashboard() {
       hls.loadSource(s.url);
       hls.attachMedia(audio);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        audio.play().catch(onError);
+        audio.play().catch(() => {});
       });
       hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) onError(); });
       audio.addEventListener("canplay", onCanPlay);
@@ -147,7 +147,7 @@ export default function RadioDashboard() {
       audio.src = s.url;
       audio.addEventListener("canplay", onCanPlay);
       audio.onerror = onError;
-      audio.play().catch(onError);
+      audio.play().catch(() => {});
     }
 
     audioRef.current = audio;
