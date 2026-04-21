@@ -7,10 +7,15 @@ export const dynamic = "force-dynamic";
 
 async function fetchRelayCount() {
   try {
-    const res = await fetch("https://onionoo.torproject.org/summary?limit=1", { cache: "no-store" });
+    const res = await fetch("https://metrics.torproject.org/networksize.json", { cache: "no-store" });
     if (!res.ok) return null;
     const data = await res.json();
-    return { relays: data.relays_published, bridges: data.bridges_published };
+    const lastRelay = data.relays?.data?.at(-1);
+    const lastBridge = data.bridges?.data?.at(-1);
+    return {
+      relays: lastRelay?.[1] ?? null,
+      bridges: lastBridge?.[1] ?? null,
+    };
   } catch { return null; }
 }
 
