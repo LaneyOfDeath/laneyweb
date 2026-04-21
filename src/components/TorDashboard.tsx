@@ -13,7 +13,7 @@ interface TorData {
 }
 
 function StatCard({ label, value, sub, icon: Icon, color }: {
-  label: string; value: string; sub?: string; icon: React.ElementType; color: string;
+  label: string; value: string | number; sub?: string; icon: React.ElementType; color: string;
 }) {
   return (
     <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-4">
@@ -21,7 +21,9 @@ function StatCard({ label, value, sub, icon: Icon, color }: {
         <Icon className={`w-4 h-4 ${color}`} />
         <span className="text-[11px] text-[#64748b] uppercase tracking-wider">{label}</span>
       </div>
-      <p className={`text-2xl font-black ${color}`}>{value}</p>
+      <p className={`text-2xl font-black ${color}`}>
+        {typeof value === "number" ? <CountUp end={value} /> : value}
+      </p>
       {sub && <p className="text-[10px] text-[#64748b] mt-1">{sub}</p>}
     </div>
   );
