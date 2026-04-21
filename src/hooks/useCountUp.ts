@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export function useCountUp(end: number, duration = 1200, decimals = 0) {
+export function useCountUp(end: number, duration = 2500, decimals = 0) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
