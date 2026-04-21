@@ -13,12 +13,12 @@ interface StatCardProps {
 }
 
 const glowMap = {
-  cyan: "shadow-[0_0_0_1px_rgba(6,182,212,0.2),0_4px_24px_rgba(6,182,212,0.08)]",
-  blue: "shadow-[0_0_0_1px_rgba(59,130,246,0.2),0_4px_24px_rgba(59,130,246,0.08)]",
-  green: "shadow-[0_0_0_1px_rgba(16,185,129,0.2),0_4px_24px_rgba(16,185,129,0.08)]",
-  orange: "shadow-[0_0_0_1px_rgba(245,158,11,0.2),0_4px_24px_rgba(245,158,11,0.08)]",
-  purple: "shadow-[0_0_0_1px_rgba(139,92,246,0.2),0_4px_24px_rgba(139,92,246,0.08)]",
-  pink: "shadow-[0_0_0_1px_rgba(236,72,153,0.2),0_4px_24px_rgba(236,72,153,0.08)]",
+  cyan: "shadow-[0_0_0_1px_rgba(0,245,255,0.25),0_4px_24px_rgba(0,245,255,0.1)]",
+  blue: "shadow-[0_0_0_1px_rgba(59,130,246,0.25),0_4px_24px_rgba(59,130,246,0.1)]",
+  green: "shadow-[0_0_0_1px_rgba(16,185,129,0.25),0_4px_24px_rgba(16,185,129,0.1)]",
+  orange: "shadow-[0_0_0_1px_rgba(245,158,11,0.25),0_4px_24px_rgba(245,158,11,0.1)]",
+  purple: "shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_4px_24px_rgba(139,92,246,0.1)]",
+  pink: "shadow-[0_0_0_1px_rgba(255,0,110,0.25),0_4px_24px_rgba(255,0,110,0.1)]",
 };
 
 export default function StatCard({
@@ -34,13 +34,13 @@ export default function StatCard({
   return (
     <div
       className={clsx(
-        "rounded-xl p-4 border border-[#1e2a3a]",
-        "bg-[#111827]",
+        "rounded-xl p-4 border border-[#1e1e2e]",
+        "bg-[#0f0f17]",
         glowMap[glowColor]
       )}
     >
       <div className="flex items-start justify-between">
-        <p className="text-xs font-medium text-[#64748b] uppercase tracking-wider">{label}</p>
+        <p className="text-xs font-medium text-[#4a4a6a] uppercase tracking-wider">{label}</p>
         {Icon && (
           <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center">
             <Icon className={clsx("w-3.5 h-3.5", iconColor)} />
@@ -55,13 +55,13 @@ export default function StatCard({
               "text-xs font-medium",
               trend === "up" && "text-green-400",
               trend === "down" && "text-red-400",
-              trend === "neutral" && "text-[#64748b]"
+              trend === "neutral" && "text-[#4a4a6a]"
             )}
           >
             {trend === "up" ? "▲" : trend === "down" ? "▼" : "—"} {trendValue}
           </span>
         )}
-        {sub && <span className="text-xs text-[#64748b]">{sub}</span>}
+        {sub && <span className="text-xs text-[#4a4a6a]">{sub}</span>}
       </div>
     </div>
   );

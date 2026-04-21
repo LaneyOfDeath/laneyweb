@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a1628;
+  --background: #0a0a0f;
   --foreground: #e2e8f0;
-  --sidebar-bg: #091422;
-  --card-bg: #0d1e30;
-  --card-border: #1a3248;
-  --accent-primary: #06b6d4;
-  --accent-secondary: #3b82f6;
+  --sidebar-bg: #06060b;
+  --card-bg: #0f0f17;
+  --card-border: #1e1e2e;
+  --accent-primary: #00f5ff;
+  --accent-secondary: #ff006e;
   --accent-green: #10b981;
   --accent-red: #ef4444;
   --accent-orange: #f59e0b;
   --accent-purple: #8b5cf6;
-  --text-muted: #64748b;
-  --text-secondary: #94a3b8;
+  --text-muted: #4a4a6a;
+  --text-secondary: #8888aa;
 }
 
 @theme inline {
@@ -34,49 +34,49 @@ html, body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: var(--font-geist-mono), "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(6,182,212,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(16,185,129,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(59,130,246,0.08) 0%, transparent 60%);
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,245,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255,0,110,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(139,92,246,0.06) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a3a52; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
 
 /* ── Leaflet ────────────────────────────────────────────────────────────────── */
 .leaflet-container {
-  background: #080c18 !important;
+  background: #05050a !important;
   font-family: inherit !important;
 }
 .leaflet-tile-pane {
-  filter: brightness(0.75) saturate(0.85) hue-rotate(200deg);
+  filter: brightness(0.65) saturate(0.7) hue-rotate(220deg);
 }
 .leaflet-control-attribution {
-  background: rgba(8,12,24,0.85) !important;
-  color: #64748b !important;
+  background: rgba(5,5,10,0.9) !important;
+  color: #4a4a6a !important;
   font-size: 10px !important;
 }
-.leaflet-control-attribution a { color: #06b6d4 !important; }
+.leaflet-control-attribution a { color: #00f5ff !important; }
 .leaflet-bar a {
-  background: #0f1623 !important;
+  background: #0f0f17 !important;
   color: #e2e8f0 !important;
-  border-color: #1a2640 !important;
+  border-color: #1e1e2e !important;
 }
-.leaflet-bar a:hover { background: #1a2640 !important; }
+.leaflet-bar a:hover { background: #1e1e2e !important; }
 .leaflet-popup-content-wrapper {
-  background: #0f1623 !important;
+  background: #0f0f17 !important;
   color: #e2e8f0 !important;
-  border: 1px solid #1a2640 !important;
+  border: 1px solid #1e1e2e !important;
   border-radius: 10px !important;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(6,182,212,0.1) !important;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,245,255,0.12) !important;
 }
-.leaflet-popup-tip { background: #0f1623 !important; }
+.leaflet-popup-tip { background: #0f0f17 !important; }
 
 /* ── Animations ─────────────────────────────────────────────────────────────── */
 @keyframes pulse-ring {
@@ -97,7 +97,7 @@ body {
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, #1a2640 25%, #243352 50%, #1a2640 75%);
+  background: linear-gradient(90deg, #0f0f17 25%, #1a1a2e 50%, #0f0f17 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -132,30 +132,30 @@ body {
 
 /* ── Gradient text ──────────────────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  background: linear-gradient(135deg, #00f5ff, #ff006e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .gradient-text-purple {
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  background: linear-gradient(135deg, #8b5cf6, #ff006e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .gradient-text-green {
-  background: linear-gradient(135deg, #10b981, #06b6d4);
+  background: linear-gradient(135deg, #10b981, #00f5ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* ── Card glow effects ──────────────────────────────────────────────────────── */
-.card-glow-cyan  { box-shadow: 0 0 0 1px rgba(6,182,212,0.2),  0 4px 32px rgba(6,182,212,0.1); }
-.card-glow-blue  { box-shadow: 0 0 0 1px rgba(59,130,246,0.2),  0 4px 32px rgba(59,130,246,0.1); }
-.card-glow-green { box-shadow: 0 0 0 1px rgba(16,185,129,0.2), 0 4px 32px rgba(16,185,129,0.1); }
-.card-glow-purple{ box-shadow: 0 0 0 1px rgba(139,92,246,0.2), 0 4px 32px rgba(139,92,246,0.1); }
-.card-glow-pink  { box-shadow: 0 0 0 1px rgba(236,72,153,0.2), 0 4px 32px rgba(236,72,153,0.1); }
-.card-glow-amber { box-shadow: 0 0 0 1px rgba(245,158,11,0.2), 0 4px 32px rgba(245,158,11,0.1); }
+.card-glow-cyan  { box-shadow: 0 0 0 1px rgba(0,245,255,0.25),  0 4px 32px rgba(0,245,255,0.12); }
+.card-glow-blue  { box-shadow: 0 0 0 1px rgba(59,130,246,0.25),  0 4px 32px rgba(59,130,246,0.12); }
+.card-glow-green { box-shadow: 0 0 0 1px rgba(16,185,129,0.25), 0 4px 32px rgba(16,185,129,0.12); }
+.card-glow-purple{ box-shadow: 0 0 0 1px rgba(139,92,246,0.25), 0 4px 32px rgba(139,92,246,0.12); }
+.card-glow-pink  { box-shadow: 0 0 0 1px rgba(255,0,110,0.25),  0 4px 32px rgba(255,0,110,0.12); }
+.card-glow-amber { box-shadow: 0 0 0 1px rgba(245,158,11,0.25), 0 4px 32px rgba(245,158,11,0.12); }
 
 /* ── Ticker ─────────────────────────────────────────────────────────────────── */

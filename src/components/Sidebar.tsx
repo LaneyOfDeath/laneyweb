@@ -72,24 +72,24 @@ export default function Sidebar() {
     <aside
       className={clsx(
         "flex flex-col h-full transition-all duration-300 ease-in-out flex-shrink-0",
-        "border-r border-[#1a2640]",
+        "border-r border-[#1e1e2e]",
         mobile ? "w-72" : collapsed ? "w-16" : "w-60"
       )}
       style={{
-        background: "linear-gradient(180deg, #0c1120 0%, #0a0e1c 50%, #0c1028 100%)",
-        boxShadow: "inset -1px 0 0 rgba(6,182,212,0.06)",
+        background: "linear-gradient(180deg, #09090f 0%, #06060b 50%, #09090e 100%)",
+        boxShadow: "inset -1px 0 0 rgba(0,245,255,0.08)",
       }}
     >
       {/* Logo */}
       <div className={clsx(
-        "flex items-center gap-3 px-4 py-5 border-b border-[#1a2640]",
+        "flex items-center gap-3 px-4 py-5 border-b border-[#1e1e2e]",
         !mobile && collapsed && "justify-center"
       )}
-        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.08) 0%, transparent 100%)" }}
+        style={{ background: "linear-gradient(135deg, rgba(0,245,255,0.06) 0%, transparent 100%)" }}
       >
         <div className="relative flex-shrink-0">
           <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center"
-            style={{ boxShadow: "0 0 12px rgba(6,182,212,0.2)" }}>
+            style={{ boxShadow: "0 0 16px rgba(0,245,255,0.3)" }}>
             <Globe className="w-5 h-5 text-cyan-400" />
           </div>
           <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-[#0a0e1c]"
@@ -98,7 +98,7 @@ export default function Sidebar() {
         {(mobile || !collapsed) && (
           <div className="flex-1">
             <p className="font-black text-sm tracking-wide"
-              style={{ background: "linear-gradient(135deg, #06b6d4, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              style={{ background: "linear-gradient(135deg, #00f5ff, #ff006e)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               LANEYWEB
             </p>
             <p className="text-[10px] text-[#4a6080] uppercase tracking-widest">Live Intelligence</p>
@@ -139,12 +139,12 @@ export default function Sidebar() {
               className={clsx(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
                 "transition-all duration-200 group relative",
-                active ? "text-white" : "text-[#64748b] hover:bg-white/5 hover:text-[#94a3b8]",
+                active ? "text-white" : "text-[#4a4a6a] hover:bg-white/5 hover:text-[#8888aa]",
                 !mobile && collapsed && "justify-center"
               )}
               style={active ? {
-                background: "rgba(255,255,255,0.06)",
-                boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)",
+                background: "rgba(0,245,255,0.06)",
+                boxShadow: "inset 0 0 0 1px rgba(0,245,255,0.12)",
               } : undefined}
             >
               {active && (
@@ -169,7 +169,7 @@ export default function Sidebar() {
 
       {/* Collapse toggle — desktop only */}
       {!mobile && (
-        <div className="border-t border-[#1a2640] p-2">
+        <div className="border-t border-[#1e1e2e] p-2">
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={clsx(
@@ -190,7 +190,7 @@ export default function Sidebar() {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#0d1e30] border border-[#1a3248] text-[#94a3b8] hover:text-white"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#0f0f17] border border-[#1e1e2e] text-[#8888aa] hover:text-white"
       >
         <Menu className="w-5 h-5" />
       </button>
