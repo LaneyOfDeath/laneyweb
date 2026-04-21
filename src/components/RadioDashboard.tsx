@@ -75,6 +75,7 @@ export default function RadioDashboard() {
   const [playing, setPlaying]     = useState<Station | null>(null);
   const [audioErr, setAudioErr]   = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const errTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
     setLoading(true);
@@ -122,14 +123,26 @@ export default function RadioDashboard() {
       audioRef.current.pause();
       audioRef.current.src = "";
     }
+    if (errTimerRef.current) clearTimeout(errTimerRef.current);
     if (playing?.id === s.id) {
       setPlaying(null);
       return;
     }
     setAudioErr(false);
     const audio = new Audio(s.url);
-    audio.onerror = () => setAudioErr(true);
-    audio.play().catch(() => setAudioErr(true));
+    audio.addEventListener("canplay", () => {
+      if (errTimerRef.current) clearTimeout(errTimerRef.current);
+      setAudioErr(false);
+    });
+    audio.onerror = () => {
+      if (errTimerRef.current) clearTimeout(errTimerRef.current);
+      setAudioErr(true);
+    };
+    errTimerRef.current = setTimeout(() => setAudioErr(true), 10000);
+    audio.play().catch(() => {
+      if (errTimerRef.current) clearTimeout(errTimerRef.current);
+      setAudioErr(true);
+    });
     audioRef.current = audio;
     setPlaying(s);
   };
