@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
+  --background: #0e0e18;
   --foreground: #e2e8f0;
-  --sidebar-bg: #06060b;
-  --card-bg: #0f0f17;
-  --card-border: #1e1e2e;
+  --sidebar-bg: #0b0b14;
+  --card-bg: #13131f;
+  --card-border: #252538;
   --accent-primary: #00f5ff;
   --accent-secondary: #ff006e;
   --accent-green: #10b981;
   --accent-red: #ef4444;
   --accent-orange: #f59e0b;
   --accent-purple: #8b5cf6;
-  --text-muted: #4a4a6a;
-  --text-secondary: #8888aa;
+  --text-muted: #60607a;
+  --text-secondary: #9898b8;
 }
 
 @theme inline {
@@ -37,25 +37,25 @@ body {
   font-family: var(--font-geist-mono), "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,245,255,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255,0,110,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(139,92,246,0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,245,255,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255,0,110,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(139,92,246,0.08) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #252538; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
 
 /* ── Leaflet ────────────────────────────────────────────────────────────────── */
 .leaflet-container {
-  background: #05050a !important;
+  background: #090910 !important;
   font-family: inherit !important;
 }
 .leaflet-tile-pane {
-  filter: brightness(0.65) saturate(0.7) hue-rotate(220deg);
+  filter: brightness(0.75) saturate(0.8) hue-rotate(220deg);
 }
 .leaflet-control-attribution {
   background: rgba(5,5,10,0.9) !important;
@@ -97,7 +97,7 @@ body {
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, #0f0f17 25%, #1a1a2e 50%, #0f0f17 75%);
+  background: linear-gradient(90deg, #13131f 25%, #1e1e30 50%, #13131f 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

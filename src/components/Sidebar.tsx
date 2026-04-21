@@ -72,17 +72,17 @@ export default function Sidebar() {
     <aside
       className={clsx(
         "flex flex-col h-full transition-all duration-300 ease-in-out flex-shrink-0",
-        "border-r border-[#1e1e2e]",
+        "border-r border-[#252538]",
         mobile ? "w-72" : collapsed ? "w-16" : "w-60"
       )}
       style={{
-        background: "linear-gradient(180deg, #09090f 0%, #06060b 50%, #09090e 100%)",
+        background: "linear-gradient(180deg, #0d0d18 0%, #0b0b14 50%, #0d0d17 100%)",
         boxShadow: "inset -1px 0 0 rgba(0,245,255,0.08)",
       }}
     >
       {/* Logo */}
       <div className={clsx(
-        "flex items-center gap-3 px-4 py-5 border-b border-[#1e1e2e]",
+        "flex items-center gap-3 px-4 py-5 border-b border-[#252538]",
         !mobile && collapsed && "justify-center"
       )}
         style={{ background: "linear-gradient(135deg, rgba(0,245,255,0.06) 0%, transparent 100%)" }}
@@ -139,7 +139,7 @@ export default function Sidebar() {
               className={clsx(
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
                 "transition-all duration-200 group relative",
-                active ? "text-white" : "text-[#4a4a6a] hover:bg-white/5 hover:text-[#8888aa]",
+                active ? "text-white" : "text-[#60607a] hover:bg-white/5 hover:text-[#9898b8]",
                 !mobile && collapsed && "justify-center"
               )}
               style={active ? {
@@ -169,7 +169,7 @@ export default function Sidebar() {
 
       {/* Collapse toggle — desktop only */}
       {!mobile && (
-        <div className="border-t border-[#1e1e2e] p-2">
+        <div className="border-t border-[#252538] p-2">
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={clsx(
@@ -190,7 +190,7 @@ export default function Sidebar() {
       {/* Mobile hamburger button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#0f0f17] border border-[#1e1e2e] text-[#8888aa] hover:text-white"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#13131f] border border-[#252538] text-[#9898b8] hover:text-white"
       >
         <Menu className="w-5 h-5" />
       </button>

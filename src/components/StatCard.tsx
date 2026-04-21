@@ -34,13 +34,13 @@ export default function StatCard({
   return (
     <div
       className={clsx(
-        "rounded-xl p-4 border border-[#1e1e2e]",
-        "bg-[#0f0f17]",
+        "rounded-xl p-4 border border-[#252538]",
+        "bg-[#13131f]",
         glowMap[glowColor]
       )}
     >
       <div className="flex items-start justify-between">
-        <p className="text-xs font-medium text-[#4a4a6a] uppercase tracking-wider">{label}</p>
+        <p className="text-xs font-medium text-[#60607a] uppercase tracking-wider">{label}</p>
         {Icon && (
           <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center">
             <Icon className={clsx("w-3.5 h-3.5", iconColor)} />
@@ -55,13 +55,13 @@ export default function StatCard({
               "text-xs font-medium",
               trend === "up" && "text-green-400",
               trend === "down" && "text-red-400",
-              trend === "neutral" && "text-[#4a4a6a]"
+              trend === "neutral" && "text-[#60607a]"
             )}
           >
             {trend === "up" ? "▲" : trend === "down" ? "▼" : "—"} {trendValue}
           </span>
         )}
-        {sub && <span className="text-xs text-[#4a4a6a]">{sub}</span>}
+        {sub && <span className="text-xs text-[#60607a]">{sub}</span>}
       </div>
     </div>
   );
