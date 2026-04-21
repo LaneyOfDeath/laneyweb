@@ -106,70 +106,98 @@ const PHASE_GAUGE: Record<Phase, { label: string; unit: string; max: number; col
 export default function SpeedDashboard() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [gaugeVal, setGaugeVal] = useState(0);
+  const [gaugeMax, setGaugeMax] = useState(100);
   const [results, setResults] = useState<Results>({ ping: null, download: null, upload: null });
-  const running = useRef(false);
+  const acRef = useRef<AbortController | null>(null);
+
+  const bump = (mbps: number) => {
+    setGaugeVal(mbps);
+    setGaugeMax((m) => (mbps > m * 0.75 ? Math.min(m * 2, 2000) : m));
+  };
 
   const runTest = useCallback(async () => {
-    if (running.current) return;
-    running.current = true;
+    if (acRef.current) return;
     setResults({ ping: null, download: null, upload: null });
 
     // ── Ping ─────────────────────────────────────────────────────────
     setPhase("ping");
     setGaugeVal(0);
+    setGaugeMax(300);
     const pings: number[] = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       const t0 = performance.now();
       await fetch("/api/speed/ping", { cache: "no-store" });
       pings.push(performance.now() - t0);
-      const avg = pings.reduce((a, b) => a + b) / pings.length;
-      setGaugeVal(avg);
-      await new Promise((r) => setTimeout(r, 80));
+      setGaugeVal(pings[pings.length - 1]);
+      await new Promise((r) => setTimeout(r, 60));
     }
     const pingMs = Math.round(pings.slice(2).reduce((a, b) => a + b) / (pings.length - 2));
     setResults((r) => ({ ...r, ping: pingMs }));
 
-    // ── Download ──────────────────────────────────────────────────────
+    // ── Download — 6 parallel streams for 8 s ────────────────────────
     setPhase("download");
     setGaugeVal(0);
+    setGaugeMax(100);
     {
+      const ac = new AbortController();
+      acRef.current = ac;
       const t0 = performance.now();
-      let bytes = 0;
-      const res = await fetch("/api/speed/download", { cache: "no-store" });
-      const reader = res.body!.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        bytes += value.length;
-        const secs = (performance.now() - t0) / 1000;
-        setGaugeVal((bytes * 8) / (secs * 1_000_000));
-      }
-      const elapsed = (performance.now() - t0) / 1000;
-      const dl = (bytes * 8) / (elapsed * 1_000_000);
+      let totalBytes = 0;
+      const workers = Array.from({ length: 6 }, async () => {
+        while (!ac.signal.aborted) {
+          try {
+            const res = await fetch("/api/speed/download", { cache: "no-store", signal: ac.signal });
+            const reader = res.body!.getReader();
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              totalBytes += value.length;
+              bump((totalBytes * 8) / ((performance.now() - t0) / 1000 * 1_000_000));
+            }
+          } catch { break; }
+        }
+      });
+      setTimeout(() => ac.abort(), 8000);
+      await Promise.allSettled(workers);
+      const dl = (totalBytes * 8) / (Math.min(performance.now() - t0, 8000) / 1000 * 1_000_000);
       setResults((r) => ({ ...r, download: dl }));
+      acRef.current = null;
     }
 
-    // ── Upload ────────────────────────────────────────────────────────
+    // ── Upload — 4 parallel streams for 6 s ─────────────────────────
     setPhase("upload");
     setGaugeVal(0);
+    setGaugeMax(100);
     {
-      const SIZE = 2 * 1024 * 1024; // 2 MB
-      const body = new Uint8Array(SIZE);
+      const ac = new AbortController();
+      acRef.current = ac;
       const t0 = performance.now();
-      await fetch("/api/speed/upload", { method: "POST", body, cache: "no-store" });
-      const elapsed = (performance.now() - t0) / 1000;
-      const ul = (SIZE * 8) / (elapsed * 1_000_000);
-      setGaugeVal(ul);
+      let totalBytes = 0;
+      const chunk = new Uint8Array(1024 * 1024); // 1 MB
+      const workers = Array.from({ length: 4 }, async () => {
+        while (!ac.signal.aborted) {
+          try {
+            await fetch("/api/speed/upload", { method: "POST", body: chunk, cache: "no-store", signal: ac.signal });
+            totalBytes += chunk.length;
+            bump((totalBytes * 8) / ((performance.now() - t0) / 1000 * 1_000_000));
+          } catch { break; }
+        }
+      });
+      setTimeout(() => ac.abort(), 6000);
+      await Promise.allSettled(workers);
+      const ul = (totalBytes * 8) / (Math.min(performance.now() - t0, 6000) / 1000 * 1_000_000);
       setResults((r) => ({ ...r, upload: ul }));
+      acRef.current = null;
     }
 
     setPhase("done");
-    running.current = false;
   }, []);
 
   const reset = useCallback(() => {
+    acRef.current?.abort();
     setPhase("idle");
     setGaugeVal(0);
+    setGaugeMax(100);
     setResults({ ping: null, download: null, upload: null });
   }, []);
 
@@ -182,7 +210,7 @@ export default function SpeedDashboard() {
       <div className="flex flex-col items-center gap-2">
         <Gauge
           value={gaugeVal}
-          max={gauge.max}
+          max={gaugeMax}
           label={gauge.label}
           unit={gauge.unit}
           color={gauge.color}

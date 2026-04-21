@@ -1,7 +1,7 @@
 export const runtime = "edge";
 
 const CHUNK_SIZE = 65536; // 64 KB
-const CHUNKS = 64;        // 64 × 64 KB = 4 MB
+const CHUNKS = 256;       // 256 × 64 KB = 16 MB
 
 export async function GET() {
   const chunk = new Uint8Array(CHUNK_SIZE);
