@@ -131,7 +131,8 @@ export default function DashboardPage() {
       <div className="p-4 space-y-6">
         {sections.map(({ title, modules }) => (
           <div key={title}>
-            <p className="text-[10px] font-semibold text-[#4a6080] uppercase tracking-widest mb-2.5">
+            <p className="text-sm font-black uppercase tracking-widest mb-2.5"
+              style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               {title}
             </p>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
