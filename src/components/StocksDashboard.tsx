@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, TrendingDown, RefreshCw, Activity } from "lucide-react";
+import { SkeletonStatCard } from "@/components/Skeleton";
 import { clsx } from "clsx";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface Quote {
   symbol: string;
@@ -136,7 +138,7 @@ export default function StocksDashboard() {
           ))}
         </div>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button
             onClick={fetchData}
             disabled={loading}
@@ -156,9 +158,7 @@ export default function StocksDashboard() {
 
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-          {Array.from({ length: 15 }).map((_, i) => (
-            <div key={i} className="h-28 rounded-xl bg-[#111827] border border-[#1e2a3a] animate-pulse" />
-          ))}
+          {Array.from({ length: 15 }).map((_, i) => <SkeletonStatCard key={i} />)}
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">

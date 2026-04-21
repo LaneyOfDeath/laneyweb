@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Shield, Search, X, ChevronDown, ChevronUp } from "lucide-react";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface Vuln {
   cveId: string;
@@ -58,7 +59,7 @@ export default function CyberDashboard() {
         </div>
         {catalog && <span className="text-xs text-[#64748b]">v{catalog}</span>}
         <div className="ml-auto flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>

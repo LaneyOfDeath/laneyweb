@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad2, Users, RefreshCw, Search, Tv2, Gift, Calendar, Star, ExternalLink, X } from "lucide-react";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface SteamGame { appid: number; name: string; developer: string; ccu: number; average_2weeks: number; genre: string; }
@@ -197,7 +198,7 @@ export default function GamingDashboard() {
           ))}
         </div>
         <div className="flex items-center gap-2 text-xs text-[#64748b]">
-          {lastUpdate && <span>{lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Newspaper, ExternalLink, RefreshCw, Clock } from "lucide-react";
+import { SkeletonNewsCard } from "@/components/Skeleton";
 import { formatDistanceToNow } from "date-fns";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface Article {
   title: string;
@@ -66,7 +68,7 @@ export default function NewsDashboard() {
           ))}
         </div>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button
             onClick={fetchData}
             disabled={loading}
@@ -85,9 +87,7 @@ export default function NewsDashboard() {
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="h-48 rounded-xl bg-[#111827] border border-[#1e2a3a] animate-pulse" />
-          ))}
+          {Array.from({ length: 9 }).map((_, i) => <SkeletonNewsCard key={i} />)}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

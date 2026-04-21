@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, AlertTriangle, Droplets, MapPin } from "lucide-react";
 import CountUp from "@/components/CountUp";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface FloodWarning {
   id: string;
@@ -93,7 +94,7 @@ export default function FloodDashboard() {
           })}
         </div>
         <div className="ml-auto flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

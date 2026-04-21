@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Search, Wind, X } from "lucide-react";
 import CountUp from "@/components/CountUp";
 import { clsx } from "clsx";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface AirData {
   location: { name: string; country: string; lat: number; lon: number };
@@ -84,7 +85,7 @@ export default function AirDashboard() {
         <button onClick={() => fetchData(city)} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         </button>
-        {lastUpdate && <span className="text-xs text-[#64748b]">Updated {lastUpdate.toLocaleTimeString()}</span>}
+        {lastUpdate && <LiveTimestamp date={lastUpdate} />}
       </div>
 
       {/* City pills */}

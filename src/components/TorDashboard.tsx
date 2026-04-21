@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Shield, Wifi, Globe, Server } from "lucide-react";
 import CountUp from "@/components/CountUp";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface TorData {
   summary: { relays: number; bridges: number } | null;
@@ -60,7 +61,7 @@ export default function TorDashboard() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
         <p className="text-xs text-[#64748b]">Tor network statistics — public data, no Tor browser required</p>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

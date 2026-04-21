@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, TrendingUp, TrendingDown, Fuel, DollarSign, Bitcoin, Landmark, BarChart2 } from "lucide-react";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface FuelData { date: string; unleaded: number | null; diesel: number | null; }
 interface FXData { USD: number; EUR: number; JPY: number; AUD: number; CAD: number; }
@@ -86,7 +87,7 @@ export default function PricesDashboard() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
         <p className="text-xs text-[#64748b]">UK fuel, economy, exchange rates, commodities & crypto</p>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

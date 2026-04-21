@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Trophy, RefreshCw, Calendar, Clock, MapPin } from "lucide-react";
+import { SkeletonRow } from "@/components/Skeleton";
 import { clsx } from "clsx";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 const LEAGUES = [
   { key: "epl",        name: "Premier League",   flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", sport: "soccer"     },
@@ -366,9 +368,7 @@ export default function SportsDashboard() {
   const renderContent = () => {
     if (loading) return (
       <div className="p-3 space-y-2">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="h-16 rounded-xl bg-[#111827] animate-pulse" />
-        ))}
+        {Array.from({ length: 8 }).map((_, i) => <SkeletonRow key={i} />)}
       </div>
     );
     if (!data || (Array.isArray(data) && !data.length)) return <EmptyState msg="No data available" />;
@@ -426,7 +426,7 @@ export default function SportsDashboard() {
           ))}
         </div>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>{lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

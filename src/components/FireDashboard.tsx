@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Flame } from "lucide-react";
 import dynamic from "next/dynamic";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 const FireMapLeaflet = dynamic(() => import("./FireMapLeaflet"), { ssr: false });
 
@@ -45,7 +46,7 @@ export default function FireDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {lastUpdate && <span>Updated {lastUpdate.toLocaleTimeString()}</span>}
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>

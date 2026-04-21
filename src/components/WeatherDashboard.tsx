@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Search, RefreshCw, Wind, Droplets, Eye, Gauge, Thermometer, Sun, CloudRain, X } from "lucide-react";
+import { SkeletonLine, SkeletonStatCard } from "@/components/Skeleton";
 import { clsx } from "clsx";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface WeatherData {
   location: { name: string; country: string; lat: number; lon: number };
@@ -148,10 +150,12 @@ export default function WeatherDashboard() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-full">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-        <p className="text-sm text-[#64748b]">Fetching weather…</p>
+    <div className="p-6 space-y-5 max-w-4xl">
+      <div className="space-y-2"><SkeletonLine w="w-48" h="h-8" /><SkeletonLine w="w-32" h="h-4" /></div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{Array.from({length:4}).map((_,i)=><SkeletonStatCard key={i}/>)}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-[#252538] bg-[#13131f] p-4 space-y-3">{Array.from({length:5}).map((_,i)=><SkeletonLine key={i} w={i%2===0?"w-full":"w-3/4"} h="h-3"/>)}</div>
+        <div className="rounded-xl border border-[#252538] bg-[#13131f] p-4 space-y-3">{Array.from({length:5}).map((_,i)=><SkeletonLine key={i} w={i%2===0?"w-full":"w-2/3"} h="h-3"/>)}</div>
       </div>
     </div>
   );
@@ -196,7 +200,7 @@ export default function WeatherDashboard() {
         <button onClick={() => fetchData(city)} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         </button>
-        {lastUpdate && <span className="text-xs text-[#64748b]">Updated {lastUpdate.toLocaleTimeString()}</span>}
+        {lastUpdate && <LiveTimestamp date={lastUpdate} />}
       </div>
 
       {/* Popular cities */}

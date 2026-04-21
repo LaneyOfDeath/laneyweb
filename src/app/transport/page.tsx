@@ -8,7 +8,7 @@ export default function TransportPage() {
       <PageHeader
         icon={Train}
         title="UK Transport"
-        subtitle="London tube, overground, DLR, Elizabeth line & tram live service status"
+        subtitle="TfL live service status & National Rail live departures/arrivals"
         iconColor="text-sky-400"
         live
       />
