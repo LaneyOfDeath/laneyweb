@@ -7,14 +7,12 @@ export const dynamic = "force-dynamic";
 
 async function fetchRelayCount() {
   try {
-    const res = await fetch("https://metrics.torproject.org/networksize.json", { cache: "no-store" });
+    const res = await fetch("https://onionoo.torproject.org/summary?limit=1&fields=r", { cache: "no-store" });
     if (!res.ok) return null;
     const data = await res.json();
-    const lastRelay = data.relays?.data?.at(-1);
-    const lastBridge = data.bridges?.data?.at(-1);
     return {
-      relays: lastRelay?.[1] ?? null,
-      bridges: lastBridge?.[1] ?? null,
+      relays: (data.relays_truncated ?? 0) + (data.relays?.length ?? 0),
+      bridges: (data.bridges_truncated ?? 0) + (data.bridges?.length ?? 0),
     };
   } catch { return null; }
 }
