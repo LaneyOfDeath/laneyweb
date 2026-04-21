@@ -32,6 +32,7 @@ import {
   Flame,
   Wind,
   Train,
+  Gauge,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -60,6 +61,7 @@ const navItems = [
   { href: "/tor", label: "Tor Network", icon: Shield, color: "text-purple-400" },
   { href: "/traffic", label: "Traffic", icon: Car, color: "text-yellow-400" },
   { href: "/quiz", label: "Trivia Quiz", icon: HelpCircle, color: "text-yellow-300" },
+  { href: "/speed", label: "Speed Test", icon: Gauge, color: "text-cyan-400" },
   { href: "/weather", label: "Weather", icon: CloudSun, color: "text-sky-300" },
 ];
 
