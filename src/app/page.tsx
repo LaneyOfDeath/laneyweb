@@ -366,19 +366,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Footer note */}
-      <div className="px-6 pb-8">
-        <div className="rounded-2xl border border-[#1a2640] bg-[#0d1e30] p-4">
-          <p className="text-xs text-[#64748b] leading-relaxed">
-            <span className="text-[#94a3b8] font-medium">Data sources:</span> OpenSky Network
-            (aircraft), OpenStreetMap (maps), Alpha Vantage (stocks), TheSportsDB (sports),
-            NewsAPI (news), SteamSpy / IGDB (gaming), MarineTraffic (marine), TomTom (traffic),
-            Open-Meteo (weather), The Space Devs / NASA (space), USGS (earthquakes), National Grid ESO (power),
-            Wikimedia EventStream (internet). Free-tier APIs — upgrade any key in{" "}
-            <code className="text-cyan-400 text-[11px]">.env.local</code> to remove rate limits.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
