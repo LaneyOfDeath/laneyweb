@@ -1,305 +1,107 @@
 import Link from "next/link";
 import {
-  Car,
-  Anchor,
-  PlaneTakeoff,
-  MapPin,
-  Trophy,
-  TrendingUp,
-  Newspaper,
-  Gamepad2,
-  Globe,
-  ArrowRight,
-  CloudSun,
-  Rocket,
-  Mountain,
-  Zap,
-  Wifi,
-  HelpCircle,
-  Droplets,
-  PoundSterling,
-  Shield,
-  Flame,
-  Wind,
-  Train,
-  Radio,
-  Plane,
+  Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
+  Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
-const modules = [
+type BadgeColor = "green" | "yellow" | "cyan";
+
+interface Module {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  color: string;
+  bg: string;
+  border: string;
+  badge: string;
+  badgeColor: BadgeColor;
+}
+
+const sections: { title: string; modules: Module[] }[] = [
   {
-    href: "/traffic",
-    label: "Traffic",
-    icon: Car,
-    color: "text-yellow-400",
-    bg: "bg-yellow-400/10",
-    border: "border-yellow-400/20",
-    desc: "Live road congestion, incidents & travel times worldwide",
-    badge: "Live",
-    badgeColor: "green" as const,
+    title: "Transport",
+    modules: [
+      { href: "/traffic",   label: "Traffic",         icon: Car,          color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/marine",    label: "Marine",          icon: Anchor,       color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
+      { href: "/flights",   label: "Flights",         icon: Plane,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
+      { href: "/aircraft",  label: "Aircraft",        icon: PlaneTakeoff, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
+      { href: "/transport", label: "UK Transport",    icon: Train,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
+      { href: "/gps",       label: "GPS / Maps",      icon: MapPin,       color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "cyan"  },
+    ],
   },
   {
-    href: "/marine",
-    label: "Marine Traffic",
-    icon: Anchor,
-    color: "text-blue-400",
-    bg: "bg-blue-400/10",
-    border: "border-blue-400/20",
-    desc: "AIS vessel positions, port activity & sea conditions",
-    badge: "Live",
-    badgeColor: "green" as const,
+    title: "Environment",
+    modules: [
+      { href: "/weather",   label: "Weather",         icon: CloudSun,     color: "text-sky-300",    bg: "bg-sky-300/10",    border: "border-sky-300/20",    badge: "Live",    badgeColor: "green" },
+      { href: "/air",       label: "Air Quality",     icon: Wind,         color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green" },
+      { href: "/earth",     label: "Earth Activity",  icon: Mountain,     color: "text-amber-400",  bg: "bg-amber-400/10",  border: "border-amber-400/20",  badge: "Live",    badgeColor: "green" },
+      { href: "/fire",      label: "Fire Map",        icon: Flame,        color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/flood",     label: "Flood Warnings",  icon: Droplets,     color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
+      { href: "/power",     label: "Power Grid",      icon: Zap,          color: "text-lime-400",   bg: "bg-lime-400/10",   border: "border-lime-400/20",   badge: "Live",    badgeColor: "green" },
+    ],
   },
   {
-    href: "/flights",
-    label: "Airport Flights",
-    icon: Plane,
-    color: "text-sky-400",
-    bg: "bg-sky-400/10",
-    border: "border-sky-400/20",
-    desc: "Live departures & arrivals for airports worldwide — search any airport by name",
-    badge: "Live",
-    badgeColor: "green" as const,
+    title: "Space & Technology",
+    modules: [
+      { href: "/space",     label: "Space",           icon: Rocket,       color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/iss",       label: "ISS Tracker",     icon: Rocket,       color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",    badgeColor: "green" },
+      { href: "/internet",  label: "Internet",        icon: Wifi,         color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",    badgeColor: "green" },
+      { href: "/cyber",     label: "Cyber Security",  icon: Shield,       color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "KEV",     badgeColor: "cyan"  },
+      { href: "/tor",       label: "Tor Network",     icon: Shield,       color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Stats",   badgeColor: "cyan"  },
+      { href: "/speed",     label: "Speed Test",      icon: Gauge,        color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Tool",    badgeColor: "cyan"  },
+    ],
   },
   {
-    href: "/aircraft",
-    label: "Aircraft Tracking",
-    icon: PlaneTakeoff,
-    color: "text-sky-400",
-    bg: "bg-sky-400/10",
-    border: "border-sky-400/20",
-    desc: "Real-time flight positions via OpenSky Network ADS-B",
-    badge: "Live",
-    badgeColor: "green" as const,
+    title: "Finance",
+    modules: [
+      { href: "/stocks",    label: "Stock Market",    icon: TrendingUp,   color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green" },
+      { href: "/prices",    label: "UK Prices",       icon: PoundSterling,color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
+    ],
   },
   {
-    href: "/gps",
-    label: "GPS / Maps",
-    icon: MapPin,
-    color: "text-green-400",
-    bg: "bg-green-400/10",
-    border: "border-green-400/20",
-    desc: "Interactive world map with search, coordinates & layers",
-    badge: "Live",
-    badgeColor: "cyan" as const,
-  },
-  {
-    href: "/sports",
-    label: "Sports Stats",
-    icon: Trophy,
-    color: "text-orange-400",
-    bg: "bg-orange-400/10",
-    border: "border-orange-400/20",
-    desc: "Scores, standings, fixtures & stats across all major sports",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/stocks",
-    label: "Stock Market",
-    icon: TrendingUp,
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10",
-    border: "border-emerald-400/20",
-    desc: "Live indices, equities, forex & crypto market data",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/news",
-    label: "Live News",
-    icon: Newspaper,
-    color: "text-purple-400",
-    bg: "bg-purple-400/10",
-    border: "border-purple-400/20",
-    desc: "Global breaking news across all categories & regions",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/gaming",
-    label: "Gaming Top 10",
-    icon: Gamepad2,
-    color: "text-pink-400",
-    bg: "bg-pink-400/10",
-    border: "border-pink-400/20",
-    desc: "Worldwide game sales charts, Steam top players & releases",
-    badge: "Updated",
-    badgeColor: "yellow" as const,
-  },
-  {
-    href: "/weather",
-    label: "Weather",
-    icon: CloudSun,
-    color: "text-sky-300",
-    bg: "bg-sky-300/10",
-    border: "border-sky-300/20",
-    desc: "Global conditions, 24h hourly, 7-day forecast & air quality index",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/space",
-    label: "Space",
-    icon: Rocket,
-    color: "text-violet-400",
-    bg: "bg-violet-400/10",
-    border: "border-violet-400/20",
-    desc: "ISS live position, rocket launches, near-Earth asteroids, space weather & NASA photo of the day",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/earth",
-    label: "Earth Activity",
-    icon: Mountain,
-    color: "text-amber-400",
-    bg: "bg-amber-400/10",
-    border: "border-amber-400/20",
-    desc: "Live seismic events, wildfires & volcanic activity worldwide",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/power",
-    label: "Power Grid",
-    icon: Zap,
-    color: "text-lime-400",
-    bg: "bg-lime-400/10",
-    border: "border-lime-400/20",
-    desc: "UK National Grid live fuel mix, carbon intensity & demand",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/internet",
-    label: "Internet",
-    icon: Wifi,
-    color: "text-rose-400",
-    bg: "bg-rose-400/10",
-    border: "border-rose-400/20",
-    desc: "Wikipedia live edits, GitHub trending & internet pulse",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/flood",
-    label: "Flood Warnings",
-    icon: Droplets,
-    color: "text-blue-400",
-    bg: "bg-blue-400/10",
-    border: "border-blue-400/20",
-    desc: "UK Environment Agency live flood warnings, alerts & severe warnings",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/iss",
-    label: "ISS Tracker",
-    icon: Rocket,
-    color: "text-cyan-400",
-    bg: "bg-cyan-400/10",
-    border: "border-cyan-400/20",
-    desc: "International Space Station live position, NASA video feed & crew list",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/prices",
-    label: "UK Prices",
-    icon: PoundSterling,
-    color: "text-orange-400",
-    bg: "bg-orange-400/10",
-    border: "border-orange-400/20",
-    desc: "UK fuel pump prices, live exchange rates & crypto in GBP",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/fire",
-    label: "Global Fire Map",
-    icon: Flame,
-    color: "text-orange-400",
-    bg: "bg-orange-400/10",
-    border: "border-orange-400/20",
-    desc: "Active wildfires worldwide from NASA EONET · VIIRS & MODIS satellite detection",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/air",
-    label: "Air Quality",
-    icon: Wind,
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10",
-    border: "border-emerald-400/20",
-    desc: "Global AQI, PM2.5, PM10, NO₂, ozone & more — search any city worldwide",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/transport",
-    label: "UK Transport",
-    icon: Train,
-    color: "text-sky-400",
-    bg: "bg-sky-400/10",
-    border: "border-sky-400/20",
-    desc: "London tube, overground, DLR, Elizabeth line & tram live service status",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/cyber",
-    label: "Cyber Security",
-    icon: Shield,
-    color: "text-red-400",
-    bg: "bg-red-400/10",
-    border: "border-red-400/20",
-    desc: "CISA Known Exploited Vulnerabilities — actively exploited CVEs with remediation deadlines",
-    badge: "KEV",
-    badgeColor: "cyan" as const,
-  },
-  {
-    href: "/radio",
-    label: "Radio",
-    icon: Radio,
-    color: "text-violet-400",
-    bg: "bg-violet-400/10",
-    border: "border-violet-400/20",
-    desc: "Stream live radio from around the world — search by station name or genre",
-    badge: "Live",
-    badgeColor: "green" as const,
-  },
-  {
-    href: "/tor",
-    label: "Tor Network",
-    icon: Shield,
-    color: "text-purple-400",
-    bg: "bg-purple-400/10",
-    border: "border-purple-400/20",
-    desc: "Tor relay stats, bandwidth, top nodes & country breakdown — no Tor browser needed",
-    badge: "Stats",
-    badgeColor: "cyan" as const,
-  },
-  {
-    href: "/quiz",
-    label: "Trivia Quiz",
-    icon: HelpCircle,
-    color: "text-yellow-300",
-    bg: "bg-yellow-300/10",
-    border: "border-yellow-300/20",
-    desc: "10-question trivia quiz — pick your category & difficulty",
-    badge: "Fun",
-    badgeColor: "yellow" as const,
+    title: "Entertainment",
+    modules: [
+      { href: "/news",      label: "Live News",       icon: Newspaper,    color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/sports",    label: "Sports Stats",    icon: Trophy,       color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/gaming",    label: "Gaming Top 10",   icon: Gamepad2,     color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-pink-400/20",   badge: "Updated", badgeColor: "yellow"},
+      { href: "/radio",     label: "Radio",           icon: Radio,        color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/quiz",      label: "Trivia Quiz",     icon: HelpCircle,   color: "text-yellow-300", bg: "bg-yellow-300/10", border: "border-yellow-300/20", badge: "Fun",     badgeColor: "yellow"},
+    ],
   },
 ];
+
+const totalModules = sections.reduce((n, s) => n + s.modules.length, 0);
+
+function ModuleCard({ href, label, icon: Icon, color, bg, border, badge, badgeColor }: Module) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col gap-2.5 p-3 rounded-xl border border-[#1a2640] bg-[#0d1e30]
+                 hover:border-[#243352] transition-all duration-200 relative overflow-hidden"
+    >
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl ${bg}`}
+        style={{ filter: "blur(1px)" }} />
+      <div className="relative flex items-center justify-between">
+        <div className={`w-8 h-8 rounded-lg ${bg} border ${border} flex items-center justify-center
+                        group-hover:scale-110 transition-transform duration-200`}>
+          <Icon className={`w-3.5 h-3.5 ${color}`} />
+        </div>
+        <LiveBadge label={badge} color={badgeColor} />
+      </div>
+      <p className={`relative text-xs font-semibold text-white leading-tight group-hover:${color} transition-colors duration-200`}>
+        {label}
+      </p>
+    </Link>
+  );
+}
 
 export default function DashboardPage() {
   return (
     <div className="min-h-full">
       {/* Hero */}
       <div className="relative px-6 pt-4 pb-3 border-b border-[#1a2640] overflow-hidden">
-        {/* Background glows */}
         <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full aurora"
           style={{ background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)", filter: "blur(40px)" }} />
         <div className="absolute -bottom-10 right-20 w-48 h-48 rounded-full aurora"
@@ -319,53 +121,27 @@ export default function DashboardPage() {
           <LiveBadge label="All systems live" color="green" />
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            24 live modules
+            {totalModules} modules
           </div>
           <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
         </div>
       </div>
 
-      {/* Module grid */}
-      <div className="p-4">
-        <p className="text-xs font-semibold text-[#4a6080] uppercase tracking-widest mb-3">
-          Active modules
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
-          {modules.map(
-            ({ href, label, icon: Icon, color, bg, border, desc, badge, badgeColor }) => (
-              <Link
-                key={href}
-                href={href}
-                className="group flex flex-col gap-2 p-4 rounded-xl border border-[#1a2640] bg-[#0d1e30]
-                           hover:border-[#243352] transition-all duration-300 relative overflow-hidden"
-                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
-              >
-                {/* Hover glow */}
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl ${bg}`}
-                  style={{ filter: "blur(1px)" }} />
-
-                <div className="relative flex items-start justify-between">
-                  <div className={`w-9 h-9 rounded-lg ${bg} border ${border} flex items-center justify-center transition-all duration-300 group-hover:scale-110`}>
-                    <Icon className={`w-4 h-4 ${color}`} />
-                  </div>
-                  <LiveBadge label={badge} color={badgeColor} />
-                </div>
-                <div className="relative">
-                  <h2 className={`font-semibold text-white text-xs transition-colors duration-200 group-hover:${color}`}>
-                    {label}
-                  </h2>
-                  <p className="text-[11px] text-[#4a6080] mt-0.5 leading-relaxed group-hover:text-[#64748b] transition-colors line-clamp-2">{desc}</p>
-                </div>
-                <div className={`relative flex items-center gap-1 text-[10px] text-[#4a6080] group-hover:${color} transition-colors mt-auto`}>
-                  <span>Open module</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-200" />
-                </div>
-              </Link>
-            )
-          )}
-        </div>
+      {/* Sections */}
+      <div className="p-4 space-y-6">
+        {sections.map(({ title, modules }) => (
+          <div key={title}>
+            <p className="text-[10px] font-semibold text-[#4a6080] uppercase tracking-widest mb-2.5">
+              {title}
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+              {modules.map((m) => (
+                <ModuleCard key={m.href} {...m} />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-
     </div>
   );
 }
