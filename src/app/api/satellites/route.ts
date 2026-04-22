@@ -3,10 +3,12 @@ import { twoline2satrec, propagate, gstime, eciToGeodetic, degreesLat, degreesLo
 
 export const dynamic = "force-dynamic";
 
+const BASE = "https://celestrak.org/NORAD/elements/gp.php?FORMAT=tle&GROUP=";
+
 const GROUPS: Record<string, { url: string; label: string; color: string; limit: number }> = {
-  stations: { url: "https://celestrak.org/pub/TLE/stations.txt",  label: "Space Stations", color: "#06b6d4", limit: 100 },
-  starlink:  { url: "https://celestrak.org/pub/TLE/starlink.txt",  label: "Starlink",       color: "#a78bfa", limit: 400 },
-  gps:       { url: "https://celestrak.org/pub/TLE/gps-ops.txt",   label: "GPS",            color: "#10b981", limit: 100 },
+  stations: { url: BASE + "stations", label: "Space Stations", color: "#06b6d4", limit: 100 },
+  starlink:  { url: BASE + "starlink", label: "Starlink",       color: "#a78bfa", limit: 400 },
+  gps:       { url: BASE + "gps-ops",  label: "GPS",            color: "#10b981", limit: 100 },
 };
 
 function parseTLEs(text: string) {
