@@ -36,6 +36,7 @@ import {
   Telescope,
   Flower2,
   Satellite,
+  MessagesSquare,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -66,6 +67,7 @@ const navItems = [
   { href: "/stocks", label: "Stock Market", icon: TrendingUp, color: "text-emerald-400" },
   { href: "/tor", label: "Tor Network", icon: Shield, color: "text-purple-400" },
   { href: "/traffic", label: "Traffic", icon: Car, color: "text-yellow-400" },
+  { href: "/mastodon", label: "Mastodon Trending", icon: MessagesSquare, color: "text-indigo-400" },
   { href: "/quiz", label: "Trivia Quiz", icon: HelpCircle, color: "text-yellow-300" },
   { href: "/speed", label: "Speed Test", icon: Gauge, color: "text-cyan-400" },
   { href: "/weather", label: "Weather", icon: CloudSun, color: "text-sky-300" },

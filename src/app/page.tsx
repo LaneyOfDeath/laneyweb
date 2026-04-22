@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite, MessagesSquare,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -70,6 +70,7 @@ const sections: { title: string; modules: Module[] }[] = [
       { href: "/sports",    label: "Sports Stats",    icon: Trophy,       color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/gaming",    label: "Gaming Top 10",   icon: Gamepad2,     color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-pink-400/20",   badge: "Updated", badgeColor: "yellow"},
       { href: "/radio",     label: "Radio",           icon: Radio,        color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/mastodon",  label: "Mastodon Trending", icon: MessagesSquare, color: "text-indigo-400", bg: "bg-indigo-400/10", border: "border-indigo-400/20", badge: "Live",  badgeColor: "green" },
       { href: "/quiz",      label: "Trivia Quiz",     icon: HelpCircle,   color: "text-yellow-300", bg: "bg-yellow-300/10", border: "border-yellow-300/20", badge: "Fun",     badgeColor: "yellow"},
     ],
   },
