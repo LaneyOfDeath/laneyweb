@@ -35,6 +35,7 @@ import {
   Gauge,
   Telescope,
   Flower2,
+  Satellite,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -57,7 +58,8 @@ const navItems = [
   { href: "/cyber", label: "Cyber Security", icon: Shield, color: "text-red-400" },
   { href: "/fire", label: "Global Fire Map", icon: Flame, color: "text-orange-400" },
   { href: "/radio", label: "Radio", icon: Radio, color: "text-violet-400" },
-  { href: "/apod", label: "Astronomy APOD", icon: Telescope, color: "text-violet-400" },
+  { href: "/apod",       label: "Astronomy APOD",   icon: Telescope, color: "text-violet-400" },
+  { href: "/satellites", label: "Satellite Tracker", icon: Satellite, color: "text-violet-400" },
   { href: "/space", label: "Space", icon: Rocket, color: "text-violet-400" },
   { href: "/transport", label: "UK Transport", icon: Train, color: "text-sky-400" },
   { href: "/sports", label: "Sports Stats", icon: Trophy, color: "text-orange-400" },

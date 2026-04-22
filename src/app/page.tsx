@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -46,7 +46,8 @@ const sections: { title: string; modules: Module[] }[] = [
   {
     title: "Space & Technology",
     modules: [
-      { href: "/apod",      label: "Astronomy APOD",  icon: Telescope,    color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Daily",   badgeColor: "cyan"  },
+      { href: "/apod",       label: "Astronomy APOD",   icon: Telescope,  color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Daily",   badgeColor: "cyan"  },
+      { href: "/satellites", label: "Satellite Tracker", icon: Satellite,  color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/space",     label: "Space",           icon: Rocket,       color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/iss",       label: "ISS Tracker",     icon: Rocket,       color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",    badgeColor: "green" },
       { href: "/internet",  label: "Internet",        icon: Wifi,         color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",    badgeColor: "green" },
