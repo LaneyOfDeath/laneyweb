@@ -1,16 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, TrendingUp, TrendingDown, Fuel, DollarSign, Bitcoin, Landmark, BarChart2 } from "lucide-react";
+import { RefreshCw, TrendingUp, TrendingDown, Fuel, DollarSign, Landmark, BarChart2 } from "lucide-react";
 import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface FuelData { date: string; unleaded: number | null; diesel: number | null; }
 interface FXData { USD: number; EUR: number; JPY: number; AUD: number; CAD: number; }
-interface CryptoData {
-  bitcoin: { gbp: number; gbp_24h_change: number };
-  ethereum: { gbp: number; gbp_24h_change: number };
-  solana: { gbp: number; gbp_24h_change: number };
-}
 interface BoeData { rate: number | null; date: string; }
 interface CpiData { rate: number | null; date: string; }
 interface CommodityItem { priceGbp: number; changePercent: number; }
@@ -23,7 +18,6 @@ interface CommoditiesData {
 interface PricesResponse {
   fuel: FuelData | null;
   fx: FXData | null;
-  crypto: CryptoData | null;
   boe: BoeData | null;
   cpi: CpiData | null;
   commodities: CommoditiesData | null;
@@ -85,7 +79,7 @@ export default function PricesDashboard() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a3a]">
-        <p className="text-xs text-[#64748b]">UK fuel, economy, exchange rates, commodities & crypto</p>
+        <p className="text-xs text-[#64748b]">UK fuel, economy, exchange rates & commodities</p>
         <div className="flex items-center gap-3 text-xs text-[#64748b]">
           {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
@@ -189,19 +183,6 @@ export default function PricesDashboard() {
                 )}
               </div>
 
-              {/* Crypto */}
-              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden">
-                <SectionHeader icon={Bitcoin} title="Crypto Prices (GBP)" color="text-yellow-400" />
-                {data.crypto ? (
-                  <>
-                    <StatRow label="Bitcoin" value={`£${data.crypto.bitcoin?.gbp?.toLocaleString()}`} change={data.crypto.bitcoin?.gbp_24h_change} sub="BTC · 24h" />
-                    <StatRow label="Ethereum" value={`£${data.crypto.ethereum?.gbp?.toLocaleString()}`} change={data.crypto.ethereum?.gbp_24h_change} sub="ETH · 24h" />
-                    <StatRow label="Solana" value={`£${data.crypto.solana?.gbp?.toLocaleString()}`} change={data.crypto.solana?.gbp_24h_change} sub="SOL · 24h" />
-                  </>
-                ) : (
-                  <p className="px-3 py-2 text-xs text-[#64748b]">Crypto data unavailable</p>
-                )}
-              </div>
             </div>
 
           </div>

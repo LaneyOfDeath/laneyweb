@@ -1,16 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Rocket, Users, AlertTriangle, Globe2, Camera, Sun, Wind, Radio } from "lucide-react";
-import dynamic from "next/dynamic";
+import { RefreshCw, Rocket, AlertTriangle, Sun, Wind, Radio } from "lucide-react";
 import LiveTimestamp from "@/components/LiveTimestamp";
-
-const SpaceMapLeaflet = dynamic(() => import("./SpaceMapLeaflet"), { ssr: false });
-
-interface APODData {
-  title: string; date: string; explanation: string;
-  url: string; hdurl: string; mediaType: string; copyright: string | null;
-}
 
 interface SolarData {
   kp: { time: string; value: number } | null;
@@ -20,9 +12,6 @@ interface SolarData {
 }
 
 interface SpaceData {
-  iss: { lat: number; lon: number; timestamp: number } | null;
-  crew: { name: string; craft: string }[];
-  apod: APODData | null;
   solar: SolarData | null;
   launches: {
     id: string; name: string; net: string; status: string;
@@ -80,7 +69,7 @@ export default function SpaceDashboard() {
   const [data, setData] = useState<SpaceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [tab, setTab] = useState<"iss" | "launches" | "asteroids" | "apod" | "solar">("iss");
+  const [tab, setTab] = useState<"launches" | "asteroids" | "solar">("launches");
 
   const fetchData = useCallback(async () => {
     try {
@@ -102,15 +91,13 @@ export default function SpaceDashboard() {
       const json = await res.json();
       setData(json);
       setLastUpdate(new Date());
-    }, 10000);
+    }, 60000);
     return () => clearInterval(t);
   }, []);
 
   const tabs = [
-    { id: "iss"       as const, label: "ISS Live",      icon: Globe2        },
     { id: "launches"  as const, label: "Launches",      icon: Rocket        },
     { id: "asteroids" as const, label: "Asteroids",     icon: AlertTriangle },
-    { id: "apod"      as const, label: "Photo of Day",  icon: Camera        },
     { id: "solar"     as const, label: "Space Weather", icon: Sun           },
   ];
 
@@ -138,50 +125,6 @@ export default function SpaceDashboard() {
           </button>
         </div>
       </div>
-
-      {/* ISS TAB */}
-      {tab === "iss" && (
-        <div className="space-y-4">
-          <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden" style={{ height: 400 }}>
-            {data?.iss ? (
-              <SpaceMapLeaflet lat={data.iss.lat} lon={data.iss.lon} />
-            ) : (
-              <div className="flex items-center justify-center h-full text-[#64748b] text-sm">
-                {loading ? "Loading ISS position…" : "ISS position unavailable"}
-              </div>
-            )}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {data?.iss && (
-              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-4 space-y-2">
-                <p className="text-xs font-semibold text-[#64748b] uppercase tracking-widest">ISS Position</p>
-                <div className="flex gap-6 mt-2">
-                  <div><p className="text-[10px] text-[#64748b]">Latitude</p><p className="text-white font-bold font-mono">{data.iss.lat.toFixed(4)}°</p></div>
-                  <div><p className="text-[10px] text-[#64748b]">Longitude</p><p className="text-white font-bold font-mono">{data.iss.lon.toFixed(4)}°</p></div>
-                  <div><p className="text-[10px] text-[#64748b]">Altitude</p><p className="text-white font-bold font-mono">~408 km</p></div>
-                  <div><p className="text-[10px] text-[#64748b]">Speed</p><p className="text-white font-bold font-mono">27,600 km/h</p></div>
-                </div>
-              </div>
-            )}
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Users className="w-4 h-4 text-violet-400" />
-                <p className="text-xs font-semibold text-[#64748b] uppercase tracking-widest">Crew aboard ISS</p>
-                <span className="ml-auto text-xs text-violet-400 font-bold">{data?.crew.length ?? 0} astronauts</span>
-              </div>
-              <div className="space-y-1.5">
-                {(data?.crew ?? []).map((c, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-xs text-violet-300 font-bold">{i + 1}</div>
-                    <span className="text-sm text-white">{c.name}</span>
-                  </div>
-                ))}
-                {!data?.crew.length && <p className="text-xs text-[#64748b]">Loading crew data…</p>}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* LAUNCHES TAB */}
       {tab === "launches" && (
@@ -256,43 +199,6 @@ export default function SpaceDashboard() {
         </div>
       )}
 
-      {/* APOD TAB */}
-      {tab === "apod" && (
-        <div className="space-y-4">
-          {loading && <p className="text-sm text-[#64748b] p-4">Loading picture of the day…</p>}
-          {!loading && !data?.apod && (
-            <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-6 text-center text-[#64748b] text-sm">
-              Picture unavailable — NASA DEMO_KEY may be rate limited
-            </div>
-          )}
-          {data?.apod && (
-            <>
-              {data.apod.mediaType === "image" ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={data.apod.hdurl || data.apod.url}
-                  alt={data.apod.title}
-                  className="w-full rounded-xl border border-[#1e2a3a] object-contain max-h-[520px] bg-black"
-                />
-              ) : (
-                <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] overflow-hidden" style={{ height: 400 }}>
-                  <iframe src={data.apod.url} className="w-full h-full" allowFullScreen title={data.apod.title} />
-                </div>
-              )}
-              <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5 space-y-3">
-                <div className="flex items-start justify-between gap-4">
-                  <h2 className="text-white font-bold text-lg leading-snug">{data.apod.title}</h2>
-                  <span className="text-xs text-[#64748b] whitespace-nowrap flex-shrink-0 mt-1">{data.apod.date}</span>
-                </div>
-                {data.apod.copyright && <p className="text-[11px] text-[#475569]">© {data.apod.copyright.trim()}</p>}
-                <p className="text-sm text-[#94a3b8] leading-relaxed">{data.apod.explanation}</p>
-              </div>
-              <p className="text-xs text-[#64748b]">Data via NASA APOD API · Updates daily</p>
-            </>
-          )}
-        </div>
-      )}
-
       {/* SOLAR WEATHER TAB */}
       {tab === "solar" && (
         <div className="space-y-4">
@@ -308,7 +214,6 @@ export default function SpaceDashboard() {
             return (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Kp index */}
                   <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5">
                     <p className="text-xs font-semibold text-[#64748b] uppercase tracking-widest mb-3">Planetary Kp Index</p>
                     {kp && info ? (
@@ -337,7 +242,6 @@ export default function SpaceDashboard() {
                     )}
                   </div>
 
-                  {/* Solar wind */}
                   <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5">
                     <div className="flex items-center gap-2 mb-4">
                       <Wind className="w-4 h-4 text-orange-400" />
@@ -363,7 +267,6 @@ export default function SpaceDashboard() {
                   </div>
                 </div>
 
-                {/* Alerts */}
                 <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <Radio className="w-4 h-4 text-yellow-400" />
