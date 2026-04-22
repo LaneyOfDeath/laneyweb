@@ -74,10 +74,12 @@ export default function RadioDashboard() {
   const [query, setQuery]         = useState("");
   const [playing, setPlaying]     = useState<Station | null>(null);
   const [audioErr, setAudioErr]   = useState(false);
+  const [nowPlaying, setNowPlaying] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hlsRef = useRef<any>(null);
   const errTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const npTimerRef  = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
     setLoading(true);
@@ -120,11 +122,23 @@ export default function RadioDashboard() {
     setSearch("");
   };
 
+  const fetchNowPlaying = useCallback(async (s: Station) => {
+    try {
+      const params = new URLSearchParams({ stationId: s.id, url: s.url });
+      const res = await fetch(`/api/nowplaying?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setNowPlaying(data.nowPlaying ?? null);
+      }
+    } catch { /* silent */ }
+  }, []);
+
   const playStation = (s: Station) => {
     if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ""; }
     if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
     if (errTimerRef.current) clearTimeout(errTimerRef.current);
-    if (playing?.id === s.id) { setPlaying(null); return; }
+    if (npTimerRef.current) clearInterval(npTimerRef.current);
+    if (playing?.id === s.id) { setPlaying(null); setNowPlaying(null); return; }
 
     setAudioErr(false);
     const audio = new Audio();
@@ -161,9 +175,17 @@ export default function RadioDashboard() {
 
     audioRef.current = audio;
     setPlaying(s);
+    setNowPlaying(null);
+    // Fetch immediately then every 30s
+    fetchNowPlaying(s);
+    npTimerRef.current = setInterval(() => fetchNowPlaying(s), 30000);
   };
 
-  useEffect(() => () => { audioRef.current?.pause(); hlsRef.current?.destroy(); }, []);
+  useEffect(() => () => {
+    audioRef.current?.pause();
+    hlsRef.current?.destroy();
+    if (npTimerRef.current) clearInterval(npTimerRef.current);
+  }, []);
 
   const showFeatured = mode === "country" && activeCountry === "GB" && !query;
 
@@ -223,7 +245,11 @@ export default function RadioDashboard() {
             <Volume2 className="w-4 h-4 text-violet-400 flex-shrink-0" />
             <div className="min-w-0">
               <p className="text-sm font-semibold text-white truncate">{playing.name}</p>
-              <p className="text-[11px] text-violet-300">{playing.country} · {playing.codec}{playing.bitrate > 0 ? ` ${playing.bitrate}kbps` : ""}</p>
+              {nowPlaying ? (
+                <p className="text-[11px] text-violet-200 truncate font-medium">♪ {nowPlaying}</p>
+              ) : (
+                <p className="text-[11px] text-violet-300">{playing.country} · {playing.codec}{playing.bitrate > 0 ? ` ${playing.bitrate}kbps` : ""}</p>
+              )}
             </div>
           </div>
           {audioErr && <span className="text-xs text-red-400 flex-shrink-0">Stream error — try another station</span>}
