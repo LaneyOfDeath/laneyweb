@@ -33,6 +33,8 @@ import {
   Wind,
   Train,
   Gauge,
+  Telescope,
+  Flower2,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -51,9 +53,11 @@ const navItems = [
   { href: "/power", label: "Power Grid", icon: Zap, color: "text-lime-400" },
   { href: "/prices", label: "UK Prices", icon: PoundSterling, color: "text-orange-400" },
   { href: "/air", label: "Air Quality", icon: Wind, color: "text-emerald-400" },
+  { href: "/pollen", label: "Pollen Forecast", icon: Flower2, color: "text-green-400" },
   { href: "/cyber", label: "Cyber Security", icon: Shield, color: "text-red-400" },
   { href: "/fire", label: "Global Fire Map", icon: Flame, color: "text-orange-400" },
   { href: "/radio", label: "Radio", icon: Radio, color: "text-violet-400" },
+  { href: "/apod", label: "Astronomy APOD", icon: Telescope, color: "text-violet-400" },
   { href: "/space", label: "Space", icon: Rocket, color: "text-violet-400" },
   { href: "/transport", label: "UK Transport", icon: Train, color: "text-sky-400" },
   { href: "/sports", label: "Sports Stats", icon: Trophy, color: "text-orange-400" },

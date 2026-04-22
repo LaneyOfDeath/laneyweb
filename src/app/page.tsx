@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -36,6 +36,7 @@ const sections: { title: string; modules: Module[] }[] = [
     modules: [
       { href: "/weather",   label: "Weather",         icon: CloudSun,     color: "text-sky-300",    bg: "bg-sky-300/10",    border: "border-sky-300/20",    badge: "Live",    badgeColor: "green" },
       { href: "/air",       label: "Air Quality",     icon: Wind,         color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green" },
+      { href: "/pollen",    label: "Pollen Forecast", icon: Flower2,      color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "green" },
       { href: "/earth",     label: "Earth Activity",  icon: Mountain,     color: "text-amber-400",  bg: "bg-amber-400/10",  border: "border-amber-400/20",  badge: "Live",    badgeColor: "green" },
       { href: "/fire",      label: "Fire Map",        icon: Flame,        color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/flood",     label: "Flood Warnings",  icon: Droplets,     color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
@@ -45,6 +46,7 @@ const sections: { title: string; modules: Module[] }[] = [
   {
     title: "Space & Technology",
     modules: [
+      { href: "/apod",      label: "Astronomy APOD",  icon: Telescope,    color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Daily",   badgeColor: "cyan"  },
       { href: "/space",     label: "Space",           icon: Rocket,       color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/iss",       label: "ISS Tracker",     icon: Rocket,       color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",    badgeColor: "green" },
       { href: "/internet",  label: "Internet",        icon: Wifi,         color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",    badgeColor: "green" },
