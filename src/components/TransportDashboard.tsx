@@ -273,7 +273,7 @@ function TrainsPanel() {
 
       {!loading && !error && services.length === 0 && (
         <div className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-8 text-center text-[#64748b] text-sm">
-          No {type} found — check your RTT credentials in .env.local
+          No {type} found for this station
         </div>
       )}
 
@@ -316,7 +316,7 @@ function TrainsPanel() {
         </div>
       )}
 
-      <p className="text-xs text-[#64748b]">Data via Realtime Trains (RTT) · Free open data</p>
+      <p className="text-xs text-[#64748b]">Data via TransportAPI · Darwin real-time feed</p>
     </div>
   );
 }
