@@ -20,7 +20,8 @@ export async function GET(req: Request) {
 
   const url =
     `https://transportapi.com/v3/uk/train/station/${station}/live.json` +
-    `?app_id=${appId}&app_key=${appKey}&darwin=true&train_status=passenger`;
+    `?app_id=${appId}&app_key=${appKey}&darwin=true&train_status=passenger` +
+    `&type=${type === "arrivals" ? "arr" : "dep"}`;
 
   try {
     const res = await fetch(url, { cache: "no-store" });
