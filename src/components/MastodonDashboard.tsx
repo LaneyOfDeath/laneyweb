@@ -91,7 +91,7 @@ export default function MastodonDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {data && <LiveTimestamp ts={data.timestamp} className="text-[10px] text-[#64748b]" />}
+          {data && <LiveTimestamp date={new Date(data.timestamp)} />}
           <button onClick={load} disabled={loading}
             className="p-1.5 rounded-lg bg-[#111827] border border-[#1e2a3a] hover:border-indigo-500/40 transition-colors disabled:opacity-40">
             <RefreshCw className={`w-3.5 h-3.5 text-[#64748b] ${loading ? "animate-spin" : ""}`} />
