@@ -7,14 +7,13 @@ import {
   LayoutDashboard, Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp,
   Newspaper, Gamepad2, Menu, X, Radio, Plane, Globe, CloudSun, Rocket,
   Mountain, Zap, Wifi, HelpCircle, Droplets, PoundSterling, Shield, Flame,
-  Wind, Train, Gauge, Flower2, Satellite, MessagesSquare, AlertTriangle,
+  Train, Gauge, Satellite, MessagesSquare, AlertTriangle,
 } from "lucide-react";
 import { clsx } from "clsx";
 
 const navItems = [
   { href: "/",           label: "Dashboard",        icon: LayoutDashboard, color: "text-cyan-400"    },
   { href: "/aircraft",   label: "Aircraft",          icon: PlaneTakeoff,    color: "text-sky-400"     },
-  { href: "/air",        label: "Air Quality",       icon: Wind,            color: "text-emerald-400" },
   { href: "/crime",      label: "Crime Map",         icon: AlertTriangle,   color: "text-red-400"     },
   { href: "/cyber",      label: "Cyber Security",    icon: Shield,          color: "text-red-400"     },
   { href: "/earth",      label: "Earth Activity",    icon: Mountain,        color: "text-amber-400"   },
@@ -28,7 +27,6 @@ const navItems = [
   { href: "/marine",     label: "Marine",            icon: Anchor,          color: "text-blue-400"    },
   { href: "/mastodon",   label: "Mastodon",          icon: MessagesSquare,  color: "text-indigo-400"  },
   { href: "/news",       label: "Live News",         icon: Newspaper,       color: "text-purple-400"  },
-  { href: "/pollen",     label: "Pollen",            icon: Flower2,         color: "text-green-400"   },
   { href: "/power",      label: "Power Grid",        icon: Zap,             color: "text-lime-400"    },
   { href: "/prices",     label: "UK Prices",         icon: PoundSterling,   color: "text-orange-400"  },
   { href: "/quiz",       label: "Trivia Quiz",       icon: HelpCircle,      color: "text-yellow-300"  },

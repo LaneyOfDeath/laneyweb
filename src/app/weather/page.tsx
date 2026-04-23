@@ -8,7 +8,7 @@ export default function WeatherPage() {
       <PageHeader
         icon={CloudSun}
         title="Weather"
-        subtitle="Global conditions, hourly forecasts & air quality via Open-Meteo"
+        subtitle="Weather · Air Quality · Pollen — all via Open-Meteo, no key required"
         iconColor="text-sky-300"
         live
       />

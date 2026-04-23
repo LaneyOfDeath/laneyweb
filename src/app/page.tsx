@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Flower2, Satellite, MessagesSquare, AlertTriangle,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Satellite, MessagesSquare, AlertTriangle,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -35,8 +35,6 @@ const sections: { title: string; modules: Module[] }[] = [
     title: "Environment",
     modules: [
       { href: "/weather",   label: "Weather",         icon: CloudSun,     color: "text-sky-300",    bg: "bg-sky-300/10",    border: "border-sky-300/20",    badge: "Live",    badgeColor: "green" },
-      { href: "/air",       label: "Air Quality",     icon: Wind,         color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green" },
-      { href: "/pollen",    label: "Pollen Forecast", icon: Flower2,      color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "green" },
       { href: "/earth",     label: "Earth Activity",  icon: Mountain,     color: "text-amber-400",  bg: "bg-amber-400/10",  border: "border-amber-400/20",  badge: "Live",    badgeColor: "green" },
       { href: "/fire",      label: "Fire Map",        icon: Flame,        color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
       { href: "/flood",     label: "Flood Warnings",  icon: Droplets,     color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
