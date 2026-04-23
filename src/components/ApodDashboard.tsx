@@ -79,7 +79,7 @@ export default function ApodDashboard() {
         <span className="ml-auto text-xs text-[#64748b]">NASA Astronomy Picture of the Day</span>
       </div>
 
-      <div className="flex-1 p-4 flex flex-col gap-4">
+      <div className="flex-1 p-4 flex flex-col gap-4 max-w-5xl mx-auto w-full">
         {loading && (
           <div className="flex-1 flex items-center justify-center">
             <RefreshCw className="w-6 h-6 text-violet-400 animate-spin" />

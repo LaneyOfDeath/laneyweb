@@ -93,12 +93,11 @@ export default function EarthDashboard() {
 
       {/* Summary strip */}
       {tab === "quakes" && !loading && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {[
             { label: "Last 24h (M2.5+)", value: quakes.length, color: "text-white" },
             { label: "Significant (M5+)", value: major.length, color: major.length > 0 ? "text-red-400" : "text-green-400" },
             { label: "Deepest", value: quakes.length ? `${Math.max(...quakes.map(q => q.depth)).toFixed(0)} km` : "—", color: "text-[#94a3b8]" },
-            { label: "Strongest", value: quakes.length ? `M${Math.max(...quakes.map(q => q.mag)).toFixed(1)}` : "—", color: "text-orange-400" },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-xl border border-[#1e2a3a] bg-[#111827] p-3 text-center">
               <p className={`text-xl font-black ${color}`}>{typeof value === "number" ? <CountUp end={value} /> : value}</p>

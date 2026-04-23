@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { RefreshCw, Users, MapPin, Tv } from "lucide-react";
+import LiveTimestamp from "@/components/LiveTimestamp";
 
 const MapComponent = dynamic(() => import("./ISSMapLeaflet"), {
   ssr: false,
@@ -22,6 +23,7 @@ export default function ISSDashboard() {
   const [data, setData] = useState<ISSData | null>(null);
   const [loading, setLoading] = useState(false);
   const [showLive, setShowLive] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -29,6 +31,7 @@ export default function ISSDashboard() {
       const res = await fetch("/api/space");
       const json = await res.json();
       setData({ iss: json.iss, crew: json.crew });
+      setLastUpdate(new Date());
     } finally {
       setLoading(false);
     }
@@ -64,8 +67,8 @@ export default function ISSDashboard() {
             <Tv className="w-3 h-3 inline mr-1" />NASA Live Feed
           </button>
         </div>
-        <div className="flex items-center gap-3 text-xs text-[#64748b]">
-          {iss && <span>Last update: {new Date(iss.timestamp * 1000).toLocaleTimeString()}</span>}
+        <div className="flex items-center gap-3">
+          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
           <button onClick={fetchData} disabled={loading}
             className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#94a3b8] hover:text-white transition-colors disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />

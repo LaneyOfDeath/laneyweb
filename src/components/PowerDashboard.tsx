@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Zap, Wind, Leaf } from "lucide-react";
+import { RefreshCw, Zap, Wind } from "lucide-react";
 import LiveTimestamp from "@/components/LiveTimestamp";
 
 interface PowerData {
@@ -114,22 +114,16 @@ export default function PowerDashboard() {
 
   return (
     <div className="p-6 space-y-6 max-w-6xl">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-white font-bold">UK National Grid</h2>
-          <p className="text-xs text-[#64748b]">Live carbon intensity & generation mix</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {lastUpdate && <LiveTimestamp date={lastUpdate} />}
-          <button onClick={fetchData} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-          </button>
-        </div>
+      {/* Refresh */}
+      <div className="flex items-center justify-end gap-3">
+        {lastUpdate && <LiveTimestamp date={lastUpdate} />}
+        <button onClick={fetchData} className="p-2 bg-white/5 border border-[#1e2a3a] rounded-xl text-[#94a3b8] hover:text-white transition-colors">
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+        </button>
       </div>
 
       {/* Hero stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
           {
             icon: Zap,
@@ -138,14 +132,6 @@ export default function PowerDashboard() {
             unit: "gCO₂/kWh",
             color: intensity ? indexColor(intensity.index) : "#94a3b8",
             sub: intensity ? intensityLabel(intensity.index) : "",
-          },
-          {
-            icon: Leaf,
-            label: "Renewable",
-            value: `${renewables.toFixed(1)}%`,
-            unit: "of mix",
-            color: "#10b981",
-            sub: "Wind + Solar + Hydro + Bio",
           },
           {
             icon: Wind,

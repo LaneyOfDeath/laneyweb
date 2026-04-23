@@ -316,21 +316,17 @@ export default function WeatherDashboard() {
               </div>
               <div className="flex gap-6">
                 <div>
-                  <p className="text-[10px] text-[#64748b]">Sunrise</p>
-                  <p className="text-white font-bold font-mono text-sm">
-                    {sunMoon.sunrise ? new Date(sunMoon.sunrise).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-[#64748b]">Sunset</p>
-                  <p className="text-white font-bold font-mono text-sm">
-                    {sunMoon.sunset ? new Date(sunMoon.sunset).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
-                  </p>
-                </div>
-                <div>
                   <p className="text-[10px] text-[#64748b]">Day length</p>
                   <p className="text-white font-bold font-mono text-sm">
                     {sunMoon.dayLengthH !== null ? `${sunMoon.dayLengthH}h ${sunMoon.dayLengthM}m` : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#64748b]">Sunrise / Sunset</p>
+                  <p className="text-white font-bold font-mono text-sm">
+                    {sunMoon.sunrise ? new Date(sunMoon.sunrise).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
+                    {" · "}
+                    {sunMoon.sunset ? new Date(sunMoon.sunset).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"}
                   </p>
                 </div>
               </div>
