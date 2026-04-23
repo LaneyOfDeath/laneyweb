@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import FeedbackButton from "@/components/FeedbackButton";
+import { RadioProvider } from "@/context/RadioContext";
+import RadioMiniPlayer from "@/components/RadioMiniPlayer";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -28,11 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="h-full flex overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto min-h-0 pt-12 md:pt-0">
-          {children}
-        </main>
-        <FeedbackButton />
+        <RadioProvider>
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto min-h-0 pt-12 md:pt-0">
+            {children}
+          </main>
+          <FeedbackButton />
+          <RadioMiniPlayer />
+        </RadioProvider>
         <Analytics />
       </body>
     </html>

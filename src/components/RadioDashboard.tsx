@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { RefreshCw, Search, Play, Square, X, Volume2, Star } from "lucide-react";
+import { useRadio, type RadioStation } from "@/context/RadioContext";
 
 const PALETTE = ["#7c3aed","#0891b2","#047857","#b45309","#be123c","#4338ca","#c2410c","#0f766e"];
 function stationColor(name: string) {
@@ -14,19 +15,11 @@ function stationInitials(name: string) {
   return name.slice(0, 2).toUpperCase();
 }
 
-interface Station {
-  id: string; name: string; url: string;
-  favicon: string | null; tags: string[];
-  country: string; countryCode: string;
-  language: string; codec: string; bitrate: number; clicks: number;
-}
-
 type FilterMode = "country" | "tag" | "search";
 
 const GFAV = (domain: string) => `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-// Hardcoded major UK stations — stream URLs that are stable and don't rely on community databases
-const FEATURED_UK: Station[] = [
+const FEATURED_UK: RadioStation[] = [
   { id: "f-bbc1",    name: "BBC Radio 1",      url: "https://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d128000.norewind.m3u8",              favicon: GFAV("bbc.co.uk/radio1"),  tags: ["pop","mainstream"],     country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
   { id: "f-bbc2",    name: "BBC Radio 2",      url: "https://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d128000.norewind.m3u8",              favicon: GFAV("bbc.co.uk/radio2"),  tags: ["pop","easy listening"], country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 128, clicks: 0 },
   { id: "f-bbc3",    name: "BBC Radio 3",      url: "https://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d96000.norewind.m3u8",        favicon: GFAV("bbc.co.uk/radio3"),  tags: ["classical","culture"],  country: "United Kingdom", countryCode: "GB", language: "english", codec: "HLS", bitrate: 96, clicks: 0 },
@@ -65,21 +58,15 @@ const GENRE_TAGS: Record<string, string> = {
 };
 
 export default function RadioDashboard() {
-  const [stations, setStations]   = useState<Station[]>([]);
+  const { playing, nowPlaying, audioErr, playStation } = useRadio();
+
+  const [stations, setStations]   = useState<RadioStation[]>([]);
   const [loading, setLoading]     = useState(false);
   const [mode, setMode]           = useState<FilterMode>("country");
   const [activeCountry, setActiveCountry] = useState("GB");
   const [activeGenre, setActiveGenre]     = useState("");
   const [search, setSearch]       = useState("");
   const [query, setQuery]         = useState("");
-  const [playing, setPlaying]     = useState<Station | null>(null);
-  const [audioErr, setAudioErr]   = useState(false);
-  const [nowPlaying, setNowPlaying] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const hlsRef = useRef<any>(null);
-  const errTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const npTimerRef  = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const fetchStations = useCallback(async (params: URLSearchParams) => {
     setLoading(true);
@@ -97,99 +84,23 @@ export default function RadioDashboard() {
   }, [fetchStations]);
 
   const selectCountry = (code: string) => {
-    setMode("country");
-    setActiveCountry(code);
-    setActiveGenre("");
-    setQuery("");
+    setMode("country"); setActiveCountry(code); setActiveGenre(""); setQuery("");
     fetchStations(new URLSearchParams({ country: code }));
   };
 
   const selectGenre = (g: string) => {
-    setMode("tag");
-    setActiveGenre(g);
-    setActiveCountry("");
-    setQuery("");
+    setMode("tag"); setActiveGenre(g); setActiveCountry(""); setQuery("");
     fetchStations(new URLSearchParams({ tag: GENRE_TAGS[g] ?? g }));
   };
 
   const handleSearch = () => {
     if (!search.trim()) return;
-    setMode("search");
-    setQuery(search.trim());
-    setActiveCountry("");
-    setActiveGenre("");
+    setMode("search"); setQuery(search.trim()); setActiveCountry(""); setActiveGenre("");
     fetchStations(new URLSearchParams({ q: search.trim() }));
     setSearch("");
   };
 
-  const fetchNowPlaying = useCallback(async (s: Station) => {
-    try {
-      const params = new URLSearchParams({ stationId: s.id, url: s.url });
-      const res = await fetch(`/api/nowplaying?${params}`);
-      if (res.ok) {
-        const data = await res.json();
-        setNowPlaying(data.nowPlaying ?? null);
-      }
-    } catch { /* silent */ }
-  }, []);
-
-  const playStation = (s: Station) => {
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ""; }
-    if (hlsRef.current) { hlsRef.current.destroy(); hlsRef.current = null; }
-    if (errTimerRef.current) clearTimeout(errTimerRef.current);
-    if (npTimerRef.current) clearInterval(npTimerRef.current);
-    if (playing?.id === s.id) { setPlaying(null); setNowPlaying(null); return; }
-
-    setAudioErr(false);
-    const audio = new Audio();
-    const onCanPlay = () => { clearTimeout(errTimerRef.current); setAudioErr(false); };
-    const onError = () => { clearTimeout(errTimerRef.current); setAudioErr(true); };
-    errTimerRef.current = setTimeout(() => setAudioErr(true), 10000);
-
-    const isHls = s.url.includes(".m3u8");
-    audio.addEventListener("canplay", onCanPlay);
-
-    if (isHls) {
-      import("hls.js").then(({ default: Hls }) => {
-        if (Hls.isSupported()) {
-          const hls = new Hls({ enableWorker: false });
-          hls.loadSource(s.url);
-          hls.attachMedia(audio);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play().catch(() => {}));
-          hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) onError(); });
-          hlsRef.current = hls;
-        } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
-          // Safari native HLS
-          audio.src = s.url;
-          audio.onerror = onError;
-          audio.play().catch(() => {});
-        } else {
-          onError();
-        }
-      });
-    } else {
-      audio.src = s.url;
-      audio.onerror = onError;
-      audio.play().catch(() => {});
-    }
-
-    audioRef.current = audio;
-    setPlaying(s);
-    setNowPlaying(null);
-    // Fetch immediately then every 30s
-    fetchNowPlaying(s);
-    npTimerRef.current = setInterval(() => fetchNowPlaying(s), 30000);
-  };
-
-  useEffect(() => () => {
-    audioRef.current?.pause();
-    hlsRef.current?.destroy();
-    if (npTimerRef.current) clearInterval(npTimerRef.current);
-  }, []);
-
   const showFeatured = mode === "country" && activeCountry === "GB" && !query;
-
-  // De-dupe radio-browser results against featured list
   const featuredIds = new Set(FEATURED_UK.map(s => s.name.toLowerCase()));
   const extraStations = stations.filter(s => !featuredIds.has(s.name.toLowerCase()));
 
@@ -198,7 +109,7 @@ export default function RadioDashboard() {
       active ? "bg-violet-500/20 text-violet-400 border-violet-500/30" : "bg-white/5 text-[#64748b] border-[#1e2a3a] hover:text-white hover:bg-white/10"
     }`;
 
-  const StationCard = ({ s }: { s: Station }) => {
+  const StationCard = ({ s }: { s: RadioStation }) => {
     const isPlaying = playing?.id === s.id;
     return (
       <button onClick={() => playStation(s)}
@@ -206,7 +117,6 @@ export default function RadioDashboard() {
           isPlaying ? "border-violet-500/40 bg-violet-500/10" : "border-[#1e2a3a] bg-[#111827] hover:bg-white/5"
         }`}>
         <div className="w-10 h-10 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden bg-white/5 border border-[#1e2a3a] relative">
-          {/* Initials background — always rendered, hidden if image loads */}
           <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white rounded-lg"
             style={{ background: stationColor(s.name) }}>
             {stationInitials(s.name)}
@@ -232,7 +142,7 @@ export default function RadioDashboard() {
   };
 
   return (
-    <div className="p-6 space-y-5 max-w-5xl">
+    <div className="p-6 space-y-5 max-w-5xl pb-14">
       {/* Now playing bar */}
       {playing && (
         <div className="rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-3 flex items-center gap-3">
@@ -309,7 +219,7 @@ export default function RadioDashboard() {
         </div>
       </div>
 
-      {/* Featured UK stations — always shown, hardcoded streams */}
+      {/* Featured UK stations */}
       {showFeatured && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
