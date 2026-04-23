@@ -24,7 +24,7 @@ const sections: { title: string; modules: Module[] }[] = [
   {
     title: "Transport",
     modules: [
-      { href: "/transport", label: "UK Transport",    icon: Train,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/transport", label: "UK Live Transport Data", icon: Train, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
       { href: "/vessels",   label: "Vessels",         icon: PlaneTakeoff, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
       { href: "/gps",       label: "GPS / Maps",      icon: MapPin,       color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "cyan"   },
     ],

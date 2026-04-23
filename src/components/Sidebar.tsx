@@ -26,7 +26,7 @@ const navItems = [
   { href: "/space",     label: "Space",             icon: Rocket,          color: "text-violet-400"  },
   { href: "/speed",     label: "Speed Test",        icon: Gauge,           color: "text-cyan-400"    },
   { href: "/sports",    label: "Sports",            icon: Trophy,          color: "text-orange-400"  },
-  { href: "/transport", label: "UK Transport",      icon: Train,           color: "text-sky-400"     },
+  { href: "/transport", label: "UK Live Transport Data", icon: Train,       color: "text-sky-400"     },
   { href: "/vessels",   label: "Vessels",           icon: PlaneTakeoff,    color: "text-sky-400"     },
   { href: "/weather",   label: "Weather",           icon: CloudSun,        color: "text-sky-300"     },
 ];
