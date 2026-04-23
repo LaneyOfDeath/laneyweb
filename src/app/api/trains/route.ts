@@ -19,9 +19,9 @@ export async function GET(req: Request) {
   const appKey = process.env.TRANSPORTAPI_APP_KEY ?? "";
 
   const url =
-    `https://transportapi.com/v3/uk/train/station/${station}/live.json` +
-    `?app_id=${appId}&app_key=${appKey}&darwin=true&train_status=passenger` +
-    `&type=${type === "arrivals" ? "arr" : "dep"}`;
+    `https://transportapi.com/v3/uk/train/station_timetables/${station}.json` +
+    `?app_id=${appId}&app_key=${appKey}&live=true&train_status=passenger` +
+    `&type=${type === "arrivals" ? "arrival" : "departure"}`;
 
   try {
     const res = await fetch(url, { cache: "no-store" });
