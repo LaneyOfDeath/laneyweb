@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite, MessagesSquare,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite, MessagesSquare, AlertTriangle,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -56,6 +56,7 @@ const sections: { title: string; modules: Module[] }[] = [
     title: "Technology",
     modules: [
       { href: "/internet",  label: "Internet Trends",  icon: Wifi,         color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",   badgeColor: "green" },
+      { href: "/crime",     label: "UK Crime Map",     icon: AlertTriangle,color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "Live",   badgeColor: "green" },
       { href: "/cyber",     label: "Cyber Security",   icon: Shield,       color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "KEV",    badgeColor: "cyan"  },
       { href: "/tor",       label: "Tor Network",      icon: Shield,       color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Stats",  badgeColor: "cyan"  },
       { href: "/mastodon",  label: "Mastodon Trending",icon: MessagesSquare,color:"text-indigo-400", bg: "bg-indigo-400/10", border: "border-indigo-400/20", badge: "Live",   badgeColor: "green" },
