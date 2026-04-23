@@ -9,7 +9,7 @@ export default function RadioMiniPlayer() {
   if (!playing) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 md:left-44 right-0 z-40 border-t border-violet-500/30 bg-[#0b0b14]/95 backdrop-blur-sm px-4 py-2 flex items-center gap-3">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-sm rounded-2xl border border-violet-500/30 bg-[#0b0b14]/95 backdrop-blur-sm shadow-lg shadow-black/40 px-4 py-2.5 flex items-center gap-3">
       <div className="flex gap-px items-end h-4 flex-shrink-0">
         {[10, 6, 14, 5, 11].map((h, i) => (
           <div key={i} className="w-0.5 bg-violet-400 rounded-sm animate-pulse"
