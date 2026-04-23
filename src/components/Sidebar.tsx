@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp,
   Newspaper, Gamepad2, Menu, X, Radio, Plane, Globe, CloudSun, Rocket,
   Mountain, Zap, Wifi, HelpCircle, Droplets, PoundSterling, Shield, Flame,
-  Wind, Train, Gauge, Telescope, Flower2, Satellite, MessagesSquare, AlertTriangle,
+  Wind, Train, Gauge, Flower2, Satellite, MessagesSquare, AlertTriangle,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -15,7 +15,6 @@ const navItems = [
   { href: "/",           label: "Dashboard",        icon: LayoutDashboard, color: "text-cyan-400"    },
   { href: "/aircraft",   label: "Aircraft",          icon: PlaneTakeoff,    color: "text-sky-400"     },
   { href: "/air",        label: "Air Quality",       icon: Wind,            color: "text-emerald-400" },
-  { href: "/apod",       label: "APOD",              icon: Telescope,       color: "text-violet-400"  },
   { href: "/crime",      label: "Crime Map",         icon: AlertTriangle,   color: "text-red-400"     },
   { href: "/cyber",      label: "Cyber Security",    icon: Shield,          color: "text-red-400"     },
   { href: "/earth",      label: "Earth Activity",    icon: Mountain,        color: "text-amber-400"   },

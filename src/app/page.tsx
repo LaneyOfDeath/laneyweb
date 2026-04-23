@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
   Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Telescope, Flower2, Satellite, MessagesSquare, AlertTriangle,
+  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Flower2, Satellite, MessagesSquare, AlertTriangle,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -46,7 +46,6 @@ const sections: { title: string; modules: Module[] }[] = [
   {
     title: "Space",
     modules: [
-      { href: "/apod",       label: "Astronomy APOD",    icon: Telescope,  color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Daily",  badgeColor: "cyan"  },
       { href: "/iss",        label: "ISS Tracker",       icon: Rocket,     color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",   badgeColor: "green" },
       { href: "/satellites", label: "Satellite Tracker", icon: Satellite,  color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",   badgeColor: "green" },
       { href: "/space",      label: "Launches & Space",  icon: Rocket,     color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",   badgeColor: "green" },
