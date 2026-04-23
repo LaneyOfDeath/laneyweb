@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Train, Search, ArrowRight, ArrowLeft, Clock } from "lucide-react";
+import { RefreshCw, Train, Search, ArrowRight, ArrowLeft, Clock, Car, Plane } from "lucide-react";
+import TrafficMap from "./TrafficMap";
+import FlightsDashboard from "./FlightsDashboard";
 import LiveTimestamp from "@/components/LiveTimestamp";
 
 /* ── TfL types ── */
@@ -324,14 +326,21 @@ function TrainsPanel() {
 /* ══════════════════════════════════════════════════════════ */
 /* Main export                                                */
 /* ══════════════════════════════════════════════════════════ */
+const TRANSPORT_TABS = [
+  { key: "tfl"     as const, label: "TfL London",   icon: Train },
+  { key: "trains"  as const, label: "National Rail", icon: Train },
+  { key: "traffic" as const, label: "Traffic",       icon: Car   },
+  { key: "flights" as const, label: "Flights",       icon: Plane },
+] as const;
+
 export default function TransportDashboard() {
-  const [tab, setTab] = useState<"tfl"|"trains">("tfl");
+  const [tab, setTab] = useState<"tfl"|"trains"|"traffic"|"flights">("tfl");
 
   return (
-    <div className="p-6 space-y-5 max-w-5xl">
+    <div>
       {/* Tab bar */}
-      <div className="flex rounded-xl border border-[#1e2a3a] overflow-hidden w-fit">
-        {([["tfl", "TfL London"], ["trains", "National Rail"]] as const).map(([key, label]) => (
+      <div className="flex rounded-xl border border-[#1e2a3a] overflow-hidden w-fit mx-6 mt-6 mb-5">
+        {TRANSPORT_TABS.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
@@ -342,8 +351,22 @@ export default function TransportDashboard() {
         ))}
       </div>
 
-      {tab === "tfl"    && <TflPanel    />}
-      {tab === "trains" && <TrainsPanel />}
+      {tab === "tfl" && (
+        <div className="px-6 pb-6 max-w-5xl">
+          <TflPanel />
+        </div>
+      )}
+      {tab === "trains" && (
+        <div className="px-6 pb-6 max-w-5xl">
+          <TrainsPanel />
+        </div>
+      )}
+      {tab === "traffic" && (
+        <div className="px-4 pb-4" style={{ height: 640 }}>
+          <TrafficMap />
+        </div>
+      )}
+      {tab === "flights" && <FlightsDashboard />}
     </div>
   );
 }

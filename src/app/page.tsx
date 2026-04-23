@@ -1,8 +1,9 @@
 import Link from "next/link";
 import {
-  Car, Anchor, PlaneTakeoff, MapPin, Trophy, TrendingUp, Newspaper,
-  Gamepad2, Globe, CloudSun, Rocket, Mountain, Zap, Wifi, HelpCircle,
-  Droplets, PoundSterling, Shield, Flame, Wind, Train, Radio, Plane, Gauge, Satellite, MessagesSquare, AlertTriangle,
+  PlaneTakeoff, MapPin, Trophy, TrendingUp,
+  Gamepad2, Globe, CloudSun, Rocket, Zap, HelpCircle,
+  Shield, Flame, AlertTriangle,
+  Train, Radio, Gauge,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 
@@ -23,58 +24,47 @@ const sections: { title: string; modules: Module[] }[] = [
   {
     title: "Transport",
     modules: [
-      { href: "/traffic",   label: "Traffic",         icon: Car,          color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20", badge: "Live",    badgeColor: "green" },
-      { href: "/marine",    label: "Marine",          icon: Anchor,       color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
-      { href: "/flights",   label: "Flights",         icon: Plane,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
-      { href: "/aircraft",  label: "Aircraft",        icon: PlaneTakeoff, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
-      { href: "/transport", label: "UK Transport",    icon: Train,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green" },
-      { href: "/gps",       label: "GPS / Maps",      icon: MapPin,       color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "cyan"  },
+      { href: "/transport", label: "UK Transport",    icon: Train,        color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/vessels",   label: "Vessels",         icon: PlaneTakeoff, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/gps",       label: "GPS / Maps",      icon: MapPin,       color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "cyan"   },
     ],
   },
   {
     title: "Environment",
     modules: [
-      { href: "/weather",   label: "Weather",         icon: CloudSun,     color: "text-sky-300",    bg: "bg-sky-300/10",    border: "border-sky-300/20",    badge: "Live",    badgeColor: "green" },
-      { href: "/earth",     label: "Earth Activity",  icon: Mountain,     color: "text-amber-400",  bg: "bg-amber-400/10",  border: "border-amber-400/20",  badge: "Live",    badgeColor: "green" },
-      { href: "/fire",      label: "Fire Map",        icon: Flame,        color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
-      { href: "/flood",     label: "Flood Warnings",  icon: Droplets,     color: "text-blue-400",   bg: "bg-blue-400/10",   border: "border-blue-400/20",   badge: "Live",    badgeColor: "green" },
-      { href: "/power",     label: "Power Grid",      icon: Zap,          color: "text-lime-400",   bg: "bg-lime-400/10",   border: "border-lime-400/20",   badge: "Live",    badgeColor: "green" },
+      { href: "/weather",   label: "Weather",         icon: CloudSun,     color: "text-sky-300",    bg: "bg-sky-300/10",    border: "border-sky-300/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/hazards",   label: "Hazards",         icon: Flame,        color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green"  },
+      { href: "/power",     label: "Power Grid",      icon: Zap,          color: "text-lime-400",   bg: "bg-lime-400/10",   border: "border-lime-400/20",   badge: "Live",    badgeColor: "green"  },
     ],
   },
   {
     title: "Space",
     modules: [
-      { href: "/iss",        label: "ISS Tracker",       icon: Rocket,     color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",   badgeColor: "green" },
-      { href: "/satellites", label: "Satellite Tracker", icon: Satellite,  color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",   badgeColor: "green" },
-      { href: "/space",      label: "Launches & Space",  icon: Rocket,     color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",   badgeColor: "green" },
+      { href: "/space",     label: "Space",           icon: Rocket,       color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green"  },
     ],
   },
   {
     title: "Technology",
     modules: [
-      { href: "/internet",  label: "Internet Trends",  icon: Wifi,         color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",   badgeColor: "green" },
-      { href: "/crime",     label: "UK Crime Map",     icon: AlertTriangle,color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "Live",   badgeColor: "green" },
-      { href: "/cyber",     label: "Cyber Security",   icon: Shield,       color: "text-red-400",    bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "KEV",    badgeColor: "cyan"  },
-      { href: "/tor",       label: "Tor Network",      icon: Shield,       color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Stats",  badgeColor: "cyan"  },
-      { href: "/mastodon",  label: "Mastodon Trending",icon: MessagesSquare,color:"text-indigo-400", bg: "bg-indigo-400/10", border: "border-indigo-400/20", badge: "Live",   badgeColor: "green" },
-      { href: "/speed",     label: "Speed Test",       icon: Gauge,        color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Tool",   badgeColor: "cyan"  },
+      { href: "/social",    label: "Online & Social", icon: Globe,        color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",    badgeColor: "green"  },
+      { href: "/crime",     label: "Police Crime Data",icon: AlertTriangle,color: "text-red-400",   bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/security",  label: "Security",        icon: Shield,       color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Live",    badgeColor: "green"  },
+      { href: "/speed",     label: "Speed Test",      icon: Gauge,        color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Tool",    badgeColor: "cyan"   },
     ],
   },
   {
     title: "Finance",
     modules: [
-      { href: "/stocks",    label: "Stock Market",    icon: TrendingUp,   color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green" },
-      { href: "/prices",    label: "UK Prices",       icon: PoundSterling,color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
+      { href: "/finance",   label: "Finance",         icon: TrendingUp,   color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green"  },
     ],
   },
   {
     title: "Entertainment",
     modules: [
-      { href: "/news",      label: "Live News",       icon: Newspaper,    color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Live",    badgeColor: "green" },
-      { href: "/sports",    label: "Sports Stats",    icon: Trophy,       color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green" },
-      { href: "/gaming",    label: "Gaming Top 10",   icon: Gamepad2,     color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-pink-400/20",   badge: "Updated", badgeColor: "yellow"},
-      { href: "/radio",     label: "Radio",           icon: Radio,        color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green" },
-      { href: "/quiz",      label: "Trivia Quiz",     icon: HelpCircle,   color: "text-yellow-300", bg: "bg-yellow-300/10", border: "border-yellow-300/20", badge: "Fun",     badgeColor: "yellow"},
+      { href: "/sports",    label: "Sports Stats",    icon: Trophy,       color: "text-orange-400", bg: "bg-orange-400/10", border: "border-orange-400/20", badge: "Live",    badgeColor: "green"  },
+      { href: "/gaming",    label: "Gaming Top 10",   icon: Gamepad2,     color: "text-pink-400",   bg: "bg-pink-400/10",   border: "border-pink-400/20",   badge: "Updated", badgeColor: "yellow" },
+      { href: "/radio",     label: "Radio",           icon: Radio,        color: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/20", badge: "Live",    badgeColor: "green"  },
+      { href: "/quiz",      label: "Trivia Quiz",     icon: HelpCircle,   color: "text-yellow-300", bg: "bg-yellow-300/10", border: "border-yellow-300/20", badge: "Fun",     badgeColor: "yellow" },
     ],
   },
 ];

@@ -7,7 +7,7 @@ export default function CrimePage() {
     <div className="flex flex-col h-full">
       <PageHeader
         icon={AlertTriangle}
-        title="UK Crime Map"
+        title="Police Crime Data"
         subtitle="Street-level crime data by area and category · England & Wales · data.police.uk"
         iconColor="text-red-400"
         live

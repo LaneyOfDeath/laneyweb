@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Rocket, AlertTriangle, Sun, Wind, Radio, Telescope } from "lucide-react";
+import { RefreshCw, Rocket, AlertTriangle, Sun, Wind, Radio, Telescope, Satellite, Globe } from "lucide-react";
 import LiveTimestamp from "@/components/LiveTimestamp";
 import ApodDashboard from "@/components/ApodDashboard";
+import ISSDashboard from "@/components/ISSDashboard";
+import SatelliteDashboard from "@/components/SatelliteDashboard";
 
 interface SolarData {
   kp: { time: string; value: number } | null;
@@ -70,7 +72,7 @@ export default function SpaceDashboard() {
   const [data, setData] = useState<SpaceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [tab, setTab] = useState<"launches" | "asteroids" | "solar" | "apod">("launches");
+  const [tab, setTab] = useState<"launches" | "asteroids" | "solar" | "apod" | "iss" | "satellites">("launches");
 
   const fetchData = useCallback(async () => {
     try {
@@ -97,10 +99,12 @@ export default function SpaceDashboard() {
   }, []);
 
   const tabs = [
-    { id: "launches"  as const, label: "Launches",      icon: Rocket        },
-    { id: "asteroids" as const, label: "Asteroids",     icon: AlertTriangle },
-    { id: "solar"     as const, label: "Space Weather", icon: Sun           },
-    { id: "apod"      as const, label: "APOD",          icon: Telescope     },
+    { id: "launches"   as const, label: "Launches",      icon: Rocket        },
+    { id: "asteroids"  as const, label: "Asteroids",     icon: AlertTriangle },
+    { id: "solar"      as const, label: "Space Weather", icon: Sun           },
+    { id: "apod"       as const, label: "APOD",          icon: Telescope     },
+    { id: "iss"        as const, label: "ISS Tracker",   icon: Globe         },
+    { id: "satellites" as const, label: "Satellites",    icon: Satellite     },
   ];
 
   return (
@@ -205,6 +209,20 @@ export default function SpaceDashboard() {
       {tab === "apod" && (
         <div className="-mx-6 -mb-6">
           <ApodDashboard />
+        </div>
+      )}
+
+      {/* ISS TAB */}
+      {tab === "iss" && (
+        <div className="rounded-xl border border-[#1e2a3a] overflow-hidden" style={{ height: 620 }}>
+          <ISSDashboard />
+        </div>
+      )}
+
+      {/* SATELLITES TAB */}
+      {tab === "satellites" && (
+        <div className="rounded-xl border border-[#1e2a3a] overflow-hidden" style={{ height: 620 }}>
+          <SatelliteDashboard />
         </div>
       )}
 

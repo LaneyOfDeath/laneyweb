@@ -1,19 +1,19 @@
 import PageHeader from "@/components/PageHeader";
-import TorDashboard from "@/components/TorDashboard";
+import SecurityDashboard from "@/components/SecurityDashboard";
 import { Shield } from "lucide-react";
 
-export default function TorPage() {
+export default function SecurityPage() {
   return (
     <div className="flex flex-col h-full">
       <PageHeader
         icon={Shield}
+        title="Security"
+        subtitle="CISA Known Exploited Vulnerabilities · Tor network statistics"
         iconColor="text-purple-400"
-        title="Tor Network"
-        subtitle="Live relay stats, bandwidth & country breakdown — public metrics, no Tor browser needed"
-        live={false}
+        live
       />
       <div className="flex-1 min-h-0">
-        <TorDashboard />
+        <SecurityDashboard />
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ export default function SpacePage() {
       <PageHeader
         icon={Rocket}
         title="Space"
-        subtitle="ISS live position, upcoming rocket launches & near-Earth asteroids"
+        subtitle="Launches · Asteroids · Space weather · APOD · ISS tracker · Satellite tracker"
         iconColor="text-violet-400"
         live
       />
