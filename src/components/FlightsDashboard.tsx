@@ -11,6 +11,11 @@ interface Flight {
 }
 
 interface Airport { icao: string; iata: string; name: string; country: string; }
+interface FlightsApiResponse {
+  flights?: Flight[];
+  airports?: Airport[];
+  needsKey?: boolean;
+}
 
 const POPULAR: { iata: string; icao: string; name: string; flag: string }[] = [
   { iata: "LHR", icao: "EGLL", name: "Heathrow",    flag: "🇬🇧" },
@@ -63,14 +68,16 @@ export default function FlightsDashboard() {
   const [results, setResults]         = useState<Airport[]>([]);
   const [searching, setSearching]     = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [needsKey, setNeedsKey]       = useState(false);
   const searchRef                     = useRef<HTMLDivElement>(null);
 
   const fetchFlights = useCallback(async (code: string, direction: string) => {
     setLoading(true);
     try {
       const res  = await fetch(`/api/flights?icao=${code}&dir=${direction}`);
-      const json = await res.json();
+      const json: FlightsApiResponse = await res.json();
       setFlights(json.flights ?? []);
+      setNeedsKey(Boolean(json.needsKey));
     } finally {
       setLoading(false);
     }
@@ -93,8 +100,9 @@ export default function FlightsDashboard() {
     setShowResults(true);
     try {
       const res  = await fetch(`/api/flights?search=${encodeURIComponent(query.trim())}`);
-      const json = await res.json();
+      const json: FlightsApiResponse = await res.json();
       setResults(json.airports ?? []);
+      setNeedsKey(Boolean(json.needsKey));
     } finally {
       setSearching(false);
     }
@@ -195,6 +203,13 @@ export default function FlightsDashboard() {
           ))}
         </div>
       </div>
+
+      {needsKey && (
+        <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-xs text-yellow-300">
+          Live flight boards require <code className="text-cyan-400">RAPIDAPI_KEY</code> for AeroDataBox.
+          Add it to <code className="text-cyan-400">.env.local</code> to enable airport search and live arrivals/departures.
+        </div>
+      )}
 
       {/* Airport label + tabs */}
       <div className="flex items-center justify-between flex-wrap gap-3">

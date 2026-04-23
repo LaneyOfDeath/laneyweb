@@ -23,7 +23,14 @@ export async function GET(request: Request) {
   const dir    = searchParams.get("dir")    ?? "Departure";
   const search = searchParams.get("search") ?? "";
 
-  if (!KEY) return NextResponse.json({ error: "RAPIDAPI_KEY not set" }, { status: 500 });
+  if (!KEY) {
+    return NextResponse.json({
+      needsKey: true,
+      airports: [],
+      flights: [],
+      timestamp: Date.now(),
+    });
+  }
 
   if (search) {
     try {
@@ -36,13 +43,13 @@ export async function GET(request: Request) {
         name: (a.fullName ?? a.shortName ?? a.name ?? "") as string,
         country: (a.countryCode ?? "") as string,
       }));
-      return NextResponse.json({ airports });
+      return NextResponse.json({ airports, needsKey: false });
     } catch {
-      return NextResponse.json({ airports: [] });
+      return NextResponse.json({ airports: [], needsKey: false });
     }
   }
 
-  if (!icao) return NextResponse.json({ flights: [], timestamp: Date.now() });
+  if (!icao) return NextResponse.json({ flights: [], needsKey: false, timestamp: Date.now() });
 
   const { from, to } = fmtWindow();
   const qs = new URLSearchParams({
@@ -55,7 +62,7 @@ export async function GET(request: Request) {
       headers: HDR(),
       next: { revalidate: 60 },
     });
-    if (!res.ok) return NextResponse.json({ flights: [], timestamp: Date.now() });
+    if (!res.ok) return NextResponse.json({ flights: [], needsKey: false, timestamp: Date.now() });
     const data = await res.json();
 
     const listKey = dir === "Departure" ? "departures" : "arrivals";
@@ -77,8 +84,8 @@ export async function GET(request: Request) {
       };
     });
 
-    return NextResponse.json({ flights, timestamp: Date.now() });
+    return NextResponse.json({ flights, needsKey: false, timestamp: Date.now() });
   } catch {
-    return NextResponse.json({ flights: [], timestamp: Date.now() });
+    return NextResponse.json({ flights: [], needsKey: false, timestamp: Date.now() });
   }
 }

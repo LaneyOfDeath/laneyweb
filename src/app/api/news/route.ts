@@ -18,6 +18,27 @@ interface Article {
   category: string;
 }
 
+function decodeXml(value: string): string {
+  return value
+    .replace(/<!\[CDATA\[(.*?)\]\]>/gs, "$1")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
+}
+
+function getTag(block: string, tag: string): string | null {
+  const match = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
+  return match ? decodeXml(match[1]) : null;
+}
+
+function getAttr(block: string, tag: string, attr: string): string | null {
+  const match = block.match(new RegExp(`<${tag}[^>]*\\s${attr}="([^"]+)"[^>]*/?>`, "i"));
+  return match ? decodeXml(match[1]) : null;
+}
+
 async function fetchGNews(category: string): Promise<Article[]> {
   if (!GNEWS_KEY) return [];
   const url = `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&max=10&token=${GNEWS_KEY}`;
@@ -52,22 +73,33 @@ async function fetchNewsAPI(category: string): Promise<Article[]> {
   }));
 }
 
-// No-key fallback: use public RSS via rss2json.com free tier
 async function fetchRSS(feed: string, category: string): Promise<Article[]> {
   try {
-    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}&count=10`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(feed, {
+      headers: { Accept: "application/rss+xml, application/xml, text/xml" },
+      next: { revalidate: 300 },
+    });
     if (!res.ok) return [];
-    const data = await res.json();
-    return (data.items ?? []).slice(0, 10).map((item: Record<string, unknown>) => ({
-      title: item.title,
-      description: item.description ? String(item.description).replace(/<[^>]*>/g, "").slice(0, 200) : null,
-      url: item.link,
-      image: item.thumbnail ?? item.enclosure ?? null,
-      publishedAt: item.pubDate,
-      source: { name: data.feed?.title ?? "RSS Feed" },
-      category,
-    }));
+    const xml = await res.text();
+    const sourceName = getTag(xml, "title") ?? "RSS Feed";
+    const items = [...xml.matchAll(/<item\b[\s\S]*?<\/item>/gi)]
+      .slice(0, 10)
+      .map((match) => {
+        const item = match[0];
+        const description = getTag(item, "description");
+        return {
+          title: getTag(item, "title") ?? "Untitled",
+          description: description ? description.replace(/<[^>]*>/g, "").slice(0, 200) : null,
+          url: getTag(item, "link") ?? "",
+          image: getAttr(item, "media:thumbnail", "url") ?? getAttr(item, "enclosure", "url"),
+          publishedAt: getTag(item, "pubDate") ?? "",
+          source: { name: sourceName },
+          category,
+        };
+      })
+      .filter((item) => item.url);
+
+    return items;
   } catch {
     return [];
   }
