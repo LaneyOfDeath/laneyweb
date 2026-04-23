@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { RefreshCw, Rocket, AlertTriangle, Sun, Wind, Radio } from "lucide-react";
+import { RefreshCw, Rocket, AlertTriangle, Sun, Wind, Radio, Telescope } from "lucide-react";
 import LiveTimestamp from "@/components/LiveTimestamp";
+import ApodDashboard from "@/components/ApodDashboard";
 
 interface SolarData {
   kp: { time: string; value: number } | null;
@@ -69,7 +70,7 @@ export default function SpaceDashboard() {
   const [data, setData] = useState<SpaceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [tab, setTab] = useState<"launches" | "asteroids" | "solar">("launches");
+  const [tab, setTab] = useState<"launches" | "asteroids" | "solar" | "apod">("launches");
 
   const fetchData = useCallback(async () => {
     try {
@@ -99,6 +100,7 @@ export default function SpaceDashboard() {
     { id: "launches"  as const, label: "Launches",      icon: Rocket        },
     { id: "asteroids" as const, label: "Asteroids",     icon: AlertTriangle },
     { id: "solar"     as const, label: "Space Weather", icon: Sun           },
+    { id: "apod"      as const, label: "APOD",          icon: Telescope     },
   ];
 
   return (
@@ -196,6 +198,13 @@ export default function SpaceDashboard() {
             </div>
           )}
           <p className="text-xs text-[#64748b] pt-2">Data via NASA NeoWs · Today&apos;s close approaches</p>
+        </div>
+      )}
+
+      {/* APOD TAB */}
+      {tab === "apod" && (
+        <div className="-mx-6 -mb-6">
+          <ApodDashboard />
         </div>
       )}
 
