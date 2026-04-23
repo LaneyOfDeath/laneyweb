@@ -36,7 +36,7 @@ export default function FeedbackButton() {
       {/* Floating button */}
       <button
         onClick={() => { setOpen(true); setState("idle"); }}
-        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-3 py-2 rounded-xl
+        className="fixed top-3 right-3 z-50 flex items-center gap-2 px-3 py-2 rounded-xl
                    bg-[#111827] border border-[#1e2a3a] text-[#64748b] text-xs font-medium
                    hover:text-cyan-400 hover:border-cyan-500/30 transition-all duration-200 shadow-lg"
         style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }}
