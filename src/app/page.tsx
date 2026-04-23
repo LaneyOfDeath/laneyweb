@@ -6,6 +6,7 @@ import {
   Train, Radio, Gauge,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
+import HomeAlertLayer from "@/components/HomeAlertLayer";
 
 type BadgeColor = "green" | "yellow" | "cyan";
 
@@ -123,6 +124,8 @@ export default function DashboardPage() {
           <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
         </div>
       </div>
+
+      <HomeAlertLayer />
 
       {/* Sections */}
       <div className="p-4 space-y-6">
