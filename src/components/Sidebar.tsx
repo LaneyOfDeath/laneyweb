@@ -7,12 +7,13 @@ import {
   LayoutDashboard, PlaneTakeoff, MapPin, Trophy, TrendingUp,
   Gamepad2, Menu, X, Radio, Globe, CloudSun, Rocket,
   Zap, HelpCircle, Shield, Flame, AlertTriangle,
-  Train, Gauge,
+  Train, Gauge, Building2,
 } from "lucide-react";
 import { clsx } from "clsx";
 
 const navItems = [
   { href: "/",          label: "Dashboard",        icon: LayoutDashboard, color: "text-cyan-400"    },
+  { href: "/companies", label: "Companies House",   icon: Building2,       color: "text-cyan-400"    },
   { href: "/crime",     label: "Police Crime Data", icon: AlertTriangle,   color: "text-red-400"     },
   { href: "/finance",   label: "Finance",           icon: TrendingUp,      color: "text-emerald-400" },
   { href: "/gaming",    label: "Gaming",            icon: Gamepad2,        color: "text-pink-400"    },

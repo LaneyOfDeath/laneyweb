@@ -3,7 +3,7 @@ import {
   PlaneTakeoff, MapPin, Trophy, TrendingUp,
   Gamepad2, Globe, CloudSun, Rocket, Zap, HelpCircle,
   Shield, Flame, AlertTriangle,
-  Train, Radio, Gauge,
+  Train, Radio, Gauge, Building2,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 import HomeAlertLayer from "@/components/HomeAlertLayer";
@@ -48,6 +48,7 @@ const sections: { title: string; modules: Module[] }[] = [
     title: "Technology",
     modules: [
       { href: "/social",    label: "Online & Social", icon: Globe,        color: "text-rose-400",   bg: "bg-rose-400/10",   border: "border-rose-400/20",   badge: "Live",    badgeColor: "green"  },
+      { href: "/companies", label: "Companies House", icon: Building2,    color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",    badgeColor: "green"  },
       { href: "/crime",     label: "Police Crime Data",icon: AlertTriangle,color: "text-red-400",   bg: "bg-red-400/10",    border: "border-red-400/20",    badge: "Live",    badgeColor: "green"  },
       { href: "/security",  label: "Security",        icon: Shield,       color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20", badge: "Live",    badgeColor: "green"  },
       { href: "/speed",     label: "Speed Test",      icon: Gauge,        color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Tool",    badgeColor: "cyan"   },
