@@ -21,11 +21,11 @@ interface Article {
 function decodeXml(value: string): string {
   return value
     .replace(/<!\[CDATA\[(.*?)\]\]>/gs, "$1")
-    .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&")
     .trim();
 }
 

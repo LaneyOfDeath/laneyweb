@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date") ?? "";
   const url = new URL("https://api.nasa.gov/planetary/apod");
-  url.searchParams.set("api_key", "DEMO_KEY");
+  url.searchParams.set("api_key", process.env.NASA_API_KEY ?? "DEMO_KEY");
   if (date) url.searchParams.set("date", date);
 
   const res = await fetch(url.toString(), { next: { revalidate: 3600 } });

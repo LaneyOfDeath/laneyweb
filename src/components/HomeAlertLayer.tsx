@@ -103,8 +103,25 @@ function intensityTone(index: string | null | undefined): AlertTone {
   return "red";
 }
 
-function buildTransportAlert(data?: TransportResponse): AlertItem {
+function buildTransportAlert(
+  data: TransportResponse | undefined,
+  failed: boolean
+): AlertItem {
   const lines = data?.lines ?? [];
+
+  if (failed || lines.length === 0) {
+    return {
+      title: "Transport",
+      message: "Transport feed unavailable",
+      meta: "No line status returned from TfL",
+      href: "/transport",
+      badge: "Retry",
+      tone: "yellow",
+      icon: Train,
+      timestamp: data?.timestamp,
+    };
+  }
+
   const disruptions = lines.filter((line) =>
     line.statuses.some((status) => status.severity !== 10)
   );
@@ -161,7 +178,7 @@ function buildWeatherAlert(data?: WeatherResponse): AlertItem {
 
   return {
     title: "Weather",
-    message: `${location}: ${Math.round(current.temp)}C and ${current.label}`,
+    message: `${location}: ${Math.round(current.temp)}°C and ${current.label}`,
     meta: hazardous
       ? `Wind gusts ${Math.round(current.windGusts)} mph`
       : `UV ${Math.round(current.uvIndex)} | gusts ${Math.round(current.windGusts)} mph`,
@@ -247,9 +264,26 @@ function buildPowerAlert(data?: PowerResponse): AlertItem {
   };
 }
 
-function buildSportsAlert(data?: SportsResponse): AlertItem {
+function buildSportsAlert(
+  data: SportsResponse | undefined,
+  failed: boolean
+): AlertItem {
   const leagueName = data?.league?.name ?? "Premier League";
-  const events = data?.data ?? [];
+
+  if (failed || !data) {
+    return {
+      title: "Sports",
+      message: "Sports feed unavailable",
+      meta: `No scoreboard returned for ${leagueName}`,
+      href: "/sports",
+      badge: "Retry",
+      tone: "yellow",
+      icon: Trophy,
+      timestamp: data?.timestamp,
+    };
+  }
+
+  const events = data.data ?? [];
   const liveEvent = events.find((event) => event.state === "in");
   const upcomingEvent = events.find((event) => event.state === "pre");
 
@@ -371,17 +405,28 @@ export default function HomeAlertLayer() {
     }
   );
 
-  const alerts = [
-    buildTransportAlert(transport.data),
-    buildWeatherAlert(weather.data),
-    buildAirQualityAlert(weather.data),
-    buildPowerAlert(power.data),
-    buildSportsAlert(sports.data),
+  const cards = [
+    {
+      ready: Boolean(transport.data || transport.error),
+      alert: buildTransportAlert(transport.data, Boolean(transport.error)),
+    },
+    {
+      ready: Boolean(weather.data || weather.error),
+      alert: buildWeatherAlert(weather.data),
+    },
+    {
+      ready: Boolean(weather.data || weather.error),
+      alert: buildAirQualityAlert(weather.data),
+    },
+    {
+      ready: Boolean(power.data || power.error),
+      alert: buildPowerAlert(power.data),
+    },
+    {
+      ready: Boolean(sports.data || sports.error),
+      alert: buildSportsAlert(sports.data, Boolean(sports.error)),
+    },
   ];
-
-  const loadingCount = [transport, weather, power, sports].filter(
-    (query) => !query.data && !query.error
-  ).length;
 
   return (
     <section className="px-4 pt-4">
@@ -404,13 +449,13 @@ export default function HomeAlertLayer() {
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {alerts.map((alert) => (
-            <AlertCard key={alert.title} alert={alert} />
-          ))}
-          {loadingCount > 0 &&
-            Array.from({ length: Math.min(loadingCount, 2) }).map((_, index) => (
-              <SkeletonCard key={`home-alert-skeleton-${index}`} h="h-36" />
-            ))}
+          {cards.map(({ ready, alert }) =>
+            ready ? (
+              <AlertCard key={alert.title} alert={alert} />
+            ) : (
+              <SkeletonCard key={`${alert.title}-skeleton`} h="h-36" />
+            )
+          )}
         </div>
       </div>
     </section>
