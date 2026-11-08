@@ -25,6 +25,14 @@ async function check(c: (typeof CHECKS)[number]) {
     const ms = Date.now() - t0;
     let detail: string | null = null;
     const type = r.headers.get("content-type") ?? "";
+    // Cloudflare turning the checker away (Vercel runs on AWS, which chgraph blocks) is not an outage.
+    if (r.status === 403 || r.status === 429 || r.headers.get("cf-mitigated")) {
+      // A real chgraph reply carries its own security headers; a Cloudflare block page does not.
+      const fromCloudflare = (r.headers.get("server") ?? "").toLowerCase() === "cloudflare" && !r.headers.get("x-frame-options");
+      if (r.headers.get("cf-mitigated") || fromCloudflare) {
+        return { ...c, ok: true, blocked: true, status: r.status, ms, detail: "Cloudflare blocks checks from Vercel, so this can't be tested from here" };
+      }
+    }
     if (type.includes("json")) {
       const d: any = await r.json().catch(() => null);
       if (c.id === "chgraph-api" && d) detail = d.db ? "Database OK" : "Database DOWN";
@@ -33,9 +41,9 @@ async function check(c: (typeof CHECKS)[number]) {
       }
     }
     const ok = r.ok && !(c.id === "chgraph-api" && detail === "Database DOWN");
-    return { ...c, ok, status: r.status, ms, detail };
+    return { ...c, ok, blocked: false, status: r.status, ms, detail };
   } catch (e: any) {
-    return { ...c, ok: false, status: 0, ms: Date.now() - t0, detail: e?.name === "AbortError" ? "Timed out" : "Unreachable" };
+    return { ...c, ok: false, blocked: false, status: 0, ms: Date.now() - t0, detail: e?.name === "AbortError" ? "Timed out" : "Unreachable" };
   }
 }
 
