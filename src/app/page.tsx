@@ -3,7 +3,7 @@ import {
   PlaneTakeoff, MapPin, Trophy, TrendingUp,
   Gamepad2, Globe, CloudSun, Rocket, Zap, HelpCircle,
   Shield, Flame, AlertTriangle,
-  Train, Radio, Gauge, Building2,
+  Train, Radio, Gauge, Building2, TramFront, Trash2, Activity,
 } from "lucide-react";
 import LiveBadge from "@/components/LiveBadge";
 import HomeAlertLayer from "@/components/HomeAlertLayer";
@@ -22,6 +22,17 @@ interface Module {
 }
 
 const sections: { title: string; modules: Module[] }[] = [
+  {
+    title: "Mine",
+    modules: [
+      { href: "/fpl",       label: "Claude's XI",     icon: Trophy,       color: "text-amber-400",  bg: "bg-amber-400/10",  border: "border-amber-400/20",  badge: "Live",    badgeColor: "green"  },
+      { href: "/city",      label: "Man City",        icon: Shield,       color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/metrolink", label: "Metrolink",       icon: TramFront,    color: "text-yellow-400", bg: "bg-yellow-400/10", border: "border-yellow-400/20", badge: "Live",    badgeColor: "green"  },
+      { href: "/bins",      label: "Bin Day",         icon: Trash2,       color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Tool",    badgeColor: "cyan"   },
+      { href: "/drops",     label: "Game Drops",      icon: Gamepad2,     color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Updated", badgeColor: "yellow" },
+      { href: "/sites",     label: "My Sites",        icon: Activity,     color: "text-emerald-400",bg: "bg-emerald-400/10",border: "border-emerald-400/20",badge: "Live",    badgeColor: "green"  },
+    ],
+  },
   {
     title: "Transport",
     modules: [
