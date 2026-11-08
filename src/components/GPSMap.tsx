@@ -19,7 +19,7 @@ const LAYERS: { key: MapLayer; label: string; url: string; attribution: string }
   {
     key: "dark",
     label: "Dark",
-    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_54qg_1_4354911e1157db516997f2ea",
     attribution: "&copy; CARTO",
   },
   {

@@ -22,7 +22,7 @@ export default function SatelliteMapLeaflet({ satellites, color }: Props) {
     >
       <TileLayer
         attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_54qg_1_4354911e1157db516997f2ea"
         subdomains="abcd"
       />
       {satellites.map(sat => (

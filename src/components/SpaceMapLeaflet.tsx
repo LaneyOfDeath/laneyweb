@@ -46,7 +46,7 @@ export default function SpaceMapLeaflet({ lat, lon }: { lat: number; lon: number
       zoomControl={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_54qg_1_4354911e1157db516997f2ea"
         attribution="&copy; CartoDB"
       />
       {/* Orbital path indicator */}
