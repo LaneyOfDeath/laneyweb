@@ -4,88 +4,110 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  LayoutDashboard, PlaneTakeoff, MapPin, Trophy, TrendingUp,
-  Gamepad2, Menu, X, Radio, Globe, CloudSun, Rocket,
-  Zap, HelpCircle, Shield, Flame, AlertTriangle,
-  Train, Gauge, Building2, TramFront, Trash2, Activity,
+  Ship, MapPin, Trophy, TrendingUp, Gamepad2, Menu, X, Radio, Globe, CloudSun, Rocket,
+  Zap, HelpCircle, Shield, Flame, AlertTriangle, Train, Gauge, Building2, TramFront, Trash2,
+  Activity, Plane, Home,
 } from "lucide-react";
 import { clsx } from "clsx";
 
-const navItems = [
-  { href: "/",          label: "Dashboard",        icon: LayoutDashboard, color: "text-cyan-400"    },
-  { href: "/fpl",       label: "Claude's XI",      icon: Trophy,          color: "text-amber-400"   },
-  { href: "/city",      label: "Man City",         icon: Shield,          color: "text-sky-400"     },
-  { href: "/metrolink", label: "Metrolink",        icon: TramFront,       color: "text-yellow-400"  },
-  { href: "/bins",      label: "Bin Day",          icon: Trash2,          color: "text-emerald-400" },
-  { href: "/drops",     label: "Game Drops",       icon: Gamepad2,        color: "text-emerald-400" },
-  { href: "/sites",     label: "My Sites",         icon: Activity,        color: "text-emerald-400" },
-  { href: "/companies", label: "Companies House",   icon: Building2,       color: "text-cyan-400"    },
-  { href: "/crime",     label: "Police Crime Data", icon: AlertTriangle,   color: "text-red-400"     },
-  { href: "/finance",   label: "Finance",           icon: TrendingUp,      color: "text-emerald-400" },
-  { href: "/gaming",    label: "Gaming",            icon: Gamepad2,        color: "text-pink-400"    },
-  { href: "/gps",       label: "GPS / Maps",        icon: MapPin,          color: "text-green-400"   },
-  { href: "/hazards",   label: "Hazards",           icon: Flame,           color: "text-orange-400"  },
-  { href: "/power",     label: "Power Grid",        icon: Zap,             color: "text-lime-400"    },
-  { href: "/quiz",      label: "Trivia Quiz",       icon: HelpCircle,      color: "text-yellow-300"  },
-  { href: "/radio",     label: "Radio",             icon: Radio,           color: "text-violet-400"  },
-  { href: "/security",  label: "Security",          icon: Shield,          color: "text-purple-400"  },
-  { href: "/social",    label: "Online & Social",   icon: Globe,           color: "text-rose-400"    },
-  { href: "/space",     label: "Space",             icon: Rocket,          color: "text-violet-400"  },
-  { href: "/speed",     label: "Speed Test",        icon: Gauge,           color: "text-cyan-400"    },
-  { href: "/sports",    label: "Sports",            icon: Trophy,          color: "text-orange-400"  },
-  { href: "/transport", label: "UK Live Transport Data", icon: Train,       color: "text-sky-400"     },
-  { href: "/vessels",   label: "Vessels",           icon: PlaneTakeoff,    color: "text-sky-400"     },
-  { href: "/weather",   label: "Weather",           icon: CloudSun,        color: "text-sky-300"     },
+const groups = [
+  {
+    title: "Mine",
+    items: [
+      { href: "/fpl",       label: "Claude's XI",  icon: Trophy },
+      { href: "/city",      label: "Man City",     icon: Shield },
+      { href: "/metrolink", label: "Metrolink",    icon: TramFront },
+      { href: "/bins",      label: "Bin day",      icon: Trash2 },
+      { href: "/drops",     label: "Game drops",   icon: Gamepad2 },
+      { href: "/sites",     label: "My sites",     icon: Activity },
+    ],
+  },
+  {
+    title: "Moving",
+    items: [
+      { href: "/planes",    label: "Planes",       icon: Plane },
+      { href: "/vessels",   label: "Ships",        icon: Ship },
+      { href: "/transport", label: "UK transport", icon: Train },
+      { href: "/gps",       label: "Maps",         icon: MapPin },
+    ],
+  },
+  {
+    title: "Outside",
+    items: [
+      { href: "/weather",   label: "Weather",      icon: CloudSun },
+      { href: "/hazards",   label: "Hazards",      icon: Flame },
+      { href: "/power",     label: "Power grid",   icon: Zap },
+      { href: "/space",     label: "Space",        icon: Rocket },
+    ],
+  },
+  {
+    title: "Records",
+    items: [
+      { href: "/companies", label: "Companies House", icon: Building2 },
+      { href: "/crime",     label: "Police crime data", icon: AlertTriangle },
+      { href: "/security",  label: "Security",     icon: Shield },
+      { href: "/finance",   label: "Finance",      icon: TrendingUp },
+      { href: "/social",    label: "Online and social", icon: Globe },
+      { href: "/speed",     label: "Speed test",   icon: Gauge },
+    ],
+  },
+  {
+    title: "Fun",
+    items: [
+      { href: "/sports",    label: "Sports",       icon: Trophy },
+      { href: "/gaming",    label: "Gaming",       icon: Gamepad2 },
+      { href: "/radio",     label: "Radio",        icon: Radio },
+      { href: "/quiz",      label: "Trivia quiz",  icon: HelpCircle },
+    ],
+  },
 ];
+
+function NavLink({ href, label, icon: Icon, active, onClick }: {
+  href: string; label: string; icon: React.ElementType; active: boolean; onClick?: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      className={clsx(
+        "flex items-center gap-2.5 pl-4 pr-3 py-[5px] text-[15px] border-l-[3px]",
+        active
+          ? "border-[var(--amber)] bg-[var(--navy-2)] text-[var(--paper)] font-semibold"
+          : "border-transparent text-[var(--soft)] hover:text-[var(--paper)] hover:bg-[var(--navy-2)]",
+      )}
+    >
+      <Icon className={clsx("w-4 h-4 flex-shrink-0", active ? "text-[var(--amber)]" : "text-[var(--dim)]")} aria-hidden />
+      <span className="truncate">{label}</span>
+    </Link>
+  );
+}
 
 function SidebarContent({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   return (
-    <aside
-      className="flex flex-col h-full w-44 flex-shrink-0 border-r border-[#1e2633]"
-      style={{ background: "linear-gradient(180deg,#0d0d18 0%,#0b0b14 100%)" }}
-    >
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-3 py-3 border-b border-[#1e2633] flex-shrink-0">
-        <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0"
-          style={{ boxShadow: "0 0 10px rgba(0,245,255,0.2)" }}>
-          <Globe className="w-4 h-4 text-cyan-400" />
-        </div>
-        <p className="font-black text-xs tracking-wide flex-1"
-          style={{ background: "linear-gradient(135deg,#00f5ff,#ff006e)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          LANEYWEB
-        </p>
+    <aside className="flex flex-col h-full w-[210px] flex-shrink-0 border-r border-[var(--rule)] bg-[var(--navy)]">
+      <div className="flex items-center justify-between pl-4 pr-3 h-[60px] border-b border-[var(--rule)] flex-shrink-0">
+        <Link href="/" onClick={onClose} className="text-[26px] font-bold leading-none text-[var(--paper)]" style={{ fontFamily: "var(--font-pl-display)" }}>
+          LaneyWeb
+        </Link>
         {mobile && (
-          <button onClick={onClose} className="text-[#64748b] hover:text-white">
-            <X className="w-4 h-4" />
+          <button onClick={onClose} aria-label="Close menu" className="p-1 text-[var(--dim)] hover:text-[var(--paper)]">
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-1.5 py-2 space-y-px">
-        {navItems.map(({ href, label, icon: Icon, color }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              onClick={onClose}
-              className={clsx(
-                "flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11px] font-medium",
-                "transition-colors duration-150 relative group",
-                active ? "text-white" : "text-[#4a5a6a] hover:text-[#9898b8] hover:bg-white/5"
-              )}
-              style={active ? { background: "rgba(0,245,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(0,245,255,0.1)" } : undefined}
-            >
-              {active && (
-                <span className={clsx("absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r-full", color.replace("text-", "bg-"))} />
-              )}
-              <Icon className={clsx("w-3.5 h-3.5 flex-shrink-0", active ? color : `text-[#3a4a5a] group-hover:${color}`)} />
-              <span className="truncate">{label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto py-3" aria-label="Pages">
+        <NavLink href="/" label="Home" icon={Home} active={pathname === "/"} onClick={onClose} />
+        {groups.map((g) => (
+          <div key={g.title} className="mt-4">
+            <p className="pl-[19px] pb-1 text-[13px] text-[var(--dim)]">{g.title}</p>
+            {g.items.map((it) => (
+              <NavLink key={it.href} {...it} active={pathname === it.href} onClick={onClose} />
+            ))}
+          </div>
+        ))}
       </nav>
     </aside>
   );
@@ -96,20 +118,18 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile hamburger */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[#13131f] border border-[#252538] text-[#9898b8] hover:text-white"
+        aria-label="Open menu"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-[var(--navy)] border border-[var(--rule)] text-[var(--soft)] hover:text-[var(--paper)]"
       >
         <Menu className="w-4 h-4" />
       </button>
 
-      {/* Mobile backdrop */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-40 bg-black/60" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Mobile drawer */}
       <div className={clsx(
         "md:hidden fixed inset-y-0 left-0 z-50 transition-transform duration-300",
         mobileOpen ? "translate-x-0" : "-translate-x-full"
@@ -117,7 +137,6 @@ export default function Sidebar() {
         <SidebarContent mobile onClose={() => setMobileOpen(false)} />
       </div>
 
-      {/* Desktop sidebar */}
       <div className="hidden md:flex h-full">
         <SidebarContent />
       </div>

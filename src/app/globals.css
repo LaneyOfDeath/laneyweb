@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
+/* Site look: an aeronautical chart at night. Navy ink, chart-paper text, runway amber for
+   anything you can act on. Barlow (a signage face) everywhere, condensed for headings. */
 :root {
-  --background: #0e0e18;
-  --foreground: #e2e8f0;
-  --sidebar-bg: #0b0b14;
-  --card-bg: #13131f;
-  --card-border: #252538;
-  --accent-primary: #00f5ff;
-  --accent-secondary: #ff006e;
+  --ink: #0a1430;
+  --navy: #101e44;
+  --navy-2: #172a5c;
+  --rule: #2a3d78;
+  --paper: #ede7d6;
+  --dim: #92a0c8;
+  --soft: #c3cbe3;
+  --amber: #ffb23e;
+  --magenta: #ec5aa8;
+  --alarm: #ff6b5e;
+
+  --background: var(--ink);
+  --foreground: var(--paper);
+  --sidebar-bg: var(--navy);
+  --card-bg: var(--navy);
+  --card-border: var(--rule);
+  --accent-primary: var(--amber);
+  --accent-secondary: var(--magenta);
   --accent-green: #10b981;
   --accent-red: #ef4444;
   --accent-orange: #f59e0b;
   --accent-purple: #8b5cf6;
-  --text-muted: #60607a;
-  --text-secondary: #9898b8;
+  --text-muted: var(--dim);
+  --text-secondary: var(--soft);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-pl-body);
+  --font-mono: var(--font-pl-body);
+}
+
+/* The old accent was neon cyan. Pointing it at amber re-colours every page at once. */
+@theme {
+  --color-cyan-300: #ffd08a;
+  --color-cyan-400: #ffb23e;
+  --color-cyan-500: #f59a1b;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
 }
 
 * { box-sizing: border-box; }
@@ -30,53 +53,63 @@ html, body {
   margin: 0;
   padding: 0;
 }
+html { font-size: 17px; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-mono), "JetBrains Mono", monospace;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-pl-body), "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-image:
-    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(0,245,255,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255,0,110,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(139,92,246,0.08) 0%, transparent 60%);
-  background-attachment: fixed;
 }
+h1, h2, h3 { font-family: var(--font-pl-display), var(--font-pl-body), sans-serif; letter-spacing: 0.01em; }
+.font-mono { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Older pages hard-code their greys. Map each one onto the chart palette here. */
+.bg-\[\#111827\], .bg-\[\#0a1726\], .bg-\[\#13131f\], .bg-\[\#0d1e30\], .bg-\[\#131f30\], .bg-\[\#131a2e\] { background-color: var(--navy); }
+.bg-\[\#0d1224\], .bg-\[\#0b0b14\], .bg-\[\#081321\], .bg-\[\#060611\] { background-color: var(--ink); }
+.bg-\[\#1e2a3a\], .bg-\[\#1f3150\], .bg-\[\#1a2640\] { background-color: var(--navy-2); }
+.border-\[\#1e2a3a\], .border-\[\#1a2640\], .border-\[\#2d3f55\], .border-\[\#252538\], .border-\[\#1f3150\], .border-\[\#13243a\], .border-\[\#243352\], .border-\[\#1e2633\] { border-color: var(--rule); }
+.text-\[\#64748b\], .text-\[\#4a6080\], .text-\[\#4a5568\], .text-\[\#475569\], .text-\[\#60607a\], .text-\[\#60708f\], .text-\[\#3a4a5a\], .text-\[\#6b85a8\], .text-\[\#4a5a6a\], .text-\[\#374151\], .text-\[\#2d3748\], .text-\[\#2d3f55\], .text-\[\#1e2a3a\] { color: var(--dim); }
+.text-\[\#94a3b8\], .text-\[\#9fb3cc\], .text-\[\#c5d3e6\], .text-\[\#9898b8\] { color: var(--soft); }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #252538; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #00f5ff; }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--amber); }
 
 /* ── Leaflet ────────────────────────────────────────────────────────────────── */
 .leaflet-container {
-  background: #090910 !important;
+  background: var(--ink) !important;
   font-family: inherit !important;
 }
 .leaflet-tile-pane {
   filter: brightness(0.75) saturate(0.8) hue-rotate(220deg);
 }
 .leaflet-control-attribution {
-  background: rgba(5,5,10,0.9) !important;
-  color: #4a4a6a !important;
+  background: rgba(10,20,48,0.85) !important;
+  color: var(--dim) !important;
   font-size: 10px !important;
 }
-.leaflet-control-attribution a { color: #00f5ff !important; }
+.leaflet-control-attribution a { color: var(--dim) !important; }
 .leaflet-bar a {
-  background: #0f0f17 !important;
-  color: #e2e8f0 !important;
-  border-color: #1e1e2e !important;
+  background: var(--navy) !important;
+  color: var(--paper) !important;
+  border-color: var(--rule) !important;
 }
-.leaflet-bar a:hover { background: #1e1e2e !important; }
+.leaflet-bar a:hover { background: var(--navy-2) !important; }
 .leaflet-popup-content-wrapper {
-  background: #0f0f17 !important;
-  color: #e2e8f0 !important;
-  border: 1px solid #1e1e2e !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,245,255,0.12) !important;
+  background: var(--navy) !important;
+  color: var(--paper) !important;
+  border: 1px solid var(--rule) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 24px rgba(4,9,26,0.7) !important;
 }
-.leaflet-popup-tip { background: #0f0f17 !important; }
+.leaflet-popup-tip { background: var(--navy) !important; }
 
 /* ── Animations ─────────────────────────────────────────────────────────────── */
 @keyframes pulse-ring {
@@ -97,7 +130,7 @@ body {
   100% { background-position: 200% 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, #13131f 25%, #1e1e30 50%, #13131f 75%);
+  background: linear-gradient(90deg, var(--navy) 25%, var(--navy-2) 50%, var(--navy) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -132,19 +165,19 @@ body {
 
 /* ── Gradient text ──────────────────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, #00f5ff, #ff006e);
+  background: linear-gradient(0deg, var(--amber), var(--amber));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .gradient-text-purple {
-  background: linear-gradient(135deg, #8b5cf6, #ff006e);
+  background: linear-gradient(0deg, var(--amber), var(--amber));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .gradient-text-green {
-  background: linear-gradient(135deg, #10b981, #00f5ff);
+  background: linear-gradient(0deg, var(--amber), var(--amber));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

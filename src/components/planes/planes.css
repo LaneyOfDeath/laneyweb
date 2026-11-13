@@ -1,0 +1,266 @@
+/* Planes page. Look: an aeronautical chart at night, with the selected aircraft
+   shown as a paper flight strip like the ones controllers slide across a board. */
+
+.planes {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-pl-body), "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.planes button, .planes select, .planes input { font: inherit; color: inherit; }
+.planes :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* Top bar */
+.pl-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px 124px 10px 16px;
+  background: var(--navy);
+  border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 767px) { .pl-bar { padding: 10px 16px 10px 56px; } }
+.pl-title {
+  font-family: var(--font-pl-display), sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  margin-right: 8px;
+}
+.pl-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+.pl-search:focus-within { border-color: var(--amber); }
+.pl-search input { width: 150px; background: none; border: 0; outline: 0; }
+.pl-search input::placeholder { color: var(--dim); }
+.pl-search svg { color: var(--dim); }
+
+.pl-btn, .pl-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--paper);
+  font-weight: 500;
+  cursor: pointer;
+}
+.pl-btn:hover, .pl-select:hover { border-color: var(--dim); }
+.pl-btn[aria-pressed="true"] {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 600;
+}
+.pl-seg { display: inline-flex; }
+.pl-seg .pl-btn { border-radius: 0; margin-left: -1px; }
+.pl-seg .pl-btn:first-child { border-radius: 3px 0 0 3px; margin-left: 0; }
+.pl-seg .pl-btn:last-child { border-radius: 0 3px 3px 0; }
+.pl-seg .pl-btn[aria-pressed="true"] { position: relative; z-index: 1; }
+.pl-count { margin-left: auto; color: var(--dim); }
+.pl-count b { color: var(--paper); font-weight: 600; }
+.pl-count.is-bad { color: var(--amber); }
+
+/* Body */
+.pl-body { display: flex; flex: 1; min-height: 0; }
+.pl-map { position: relative; flex: 1; min-width: 0; }
+.pl-panel {
+  width: 340px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  background: var(--navy);
+  border-left: 1px solid var(--rule);
+}
+@media (max-width: 767px) {
+  .pl-body { flex-direction: column; }
+  .pl-map { min-height: 50%; }
+  .pl-panel { width: 100%; height: 50%; border-left: 0; border-top: 1px solid var(--rule); }
+  .pl-title { font-size: 24px; }
+}
+
+/* Map dressing: tint the grey basemap into chart blue */
+
+.planes .leaflet-tile-pane.leaflet-tile-pane { filter: sepia(1) hue-rotate(178deg) saturate(2.4) brightness(1.5) contrast(0.92); }
+.planes .leaflet-bar { border: 1px solid var(--rule); border-radius: 3px; box-shadow: none; }
+.planes .leaflet-bar a { background: var(--navy); color: var(--paper); border-bottom-color: var(--rule); }
+.planes .leaflet-bar a:hover { background: var(--navy-2); color: var(--paper); }
+.planes .leaflet-control-attribution { background: rgba(10, 20, 48, 0.8); color: var(--dim); font-size: 10px; }
+.planes .leaflet-control-attribution a { color: var(--dim); }
+
+.pl-note {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  max-width: calc(100% - 90px);
+  padding: 6px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  font-weight: 500;
+}
+.pl-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 22px;
+  z-index: 500;
+  padding: 8px 10px 6px;
+  background: rgba(16, 30, 68, 0.92);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--dim);
+  font-size: 11px;
+}
+.pl-ramp {
+  width: 170px;
+  height: 5px;
+  background: linear-gradient(90deg, hsl(28 95% 60%), hsl(90 95% 60%), hsl(160 95% 60%), hsl(220 95% 60%), hsl(283 95% 60%));
+}
+.pl-legend div:last-child { display: flex; justify-content: space-between; margin-top: 4px; }
+
+/* Panel: what is in view */
+.pl-h {
+  margin: 0;
+  padding: 16px 16px 8px;
+  font-family: var(--font-pl-display), sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.1;
+}
+.pl-counts { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0 16px; border: 1px solid var(--rule); }
+.pl-counts div { padding: 8px 8px 7px; border-left: 1px solid var(--rule); }
+.pl-counts div:first-child { border-left: 0; }
+.pl-counts strong {
+  display: block;
+  font-family: var(--font-pl-display), sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1;
+}
+.pl-counts span { display: block; margin-top: 3px; color: var(--dim); font-size: 12px; line-height: 1.15; }
+.pl-hint { margin: 10px 16px 0; color: var(--amber); }
+.pl-text { margin: 0; padding: 0 16px 4px; color: var(--dim); max-width: 60ch; }
+
+.pl-facts { margin: 12px 16px 0; }
+.pl-facts button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 5px 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  color: var(--dim);
+  cursor: pointer;
+  text-align: left;
+}
+.pl-facts button:hover span:last-child { color: var(--amber); }
+.pl-facts span:last-child { color: var(--paper); }
+
+.pl-airlines { margin: 12px 16px 4px; display: grid; grid-template-columns: auto 1fr auto; gap: 5px 10px; align-items: center; color: var(--dim); }
+.pl-airlines i { display: block; height: 3px; background: var(--paper); opacity: 0.75; }
+.pl-airlines b { color: var(--paper); font-weight: 500; text-align: right; }
+
+.pl-alarm { margin: 14px 16px 0; padding: 10px 12px; border: 1px solid var(--alarm); border-radius: 3px; }
+.pl-alarm p { margin: 0 0 4px; color: var(--alarm); font-weight: 600; }
+.pl-alarm button { display: block; padding: 2px 0; background: none; border: 0; color: var(--paper); cursor: pointer; text-align: left; }
+.pl-alarm button:hover { color: var(--alarm); }
+
+.pl-row {
+  display: grid;
+  grid-template-columns: 4px 1fr auto;
+  gap: 0 10px;
+  align-items: center;
+  width: 100%;
+  padding: 6px 16px;
+  background: none;
+  border: 0;
+  border-top: 1px solid rgba(42, 61, 120, 0.55);
+  cursor: pointer;
+  text-align: left;
+}
+.pl-row:hover { background: var(--navy-2); }
+.pl-row i { display: block; width: 4px; height: 28px; }
+.pl-row strong { display: block; font-family: var(--font-pl-display), sans-serif; font-weight: 600; font-size: 17px; line-height: 1.1; letter-spacing: 0.02em; }
+.pl-row small { display: block; color: var(--dim); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-row span:last-child { text-align: right; }
+.pl-row span:last-child b { display: block; font-weight: 500; }
+
+/* Selected aircraft */
+.pl-photo { position: relative; display: block; }
+.pl-photo img { display: block; width: 100%; height: 170px; object-fit: cover; }
+.pl-photo a { position: absolute; right: 6px; bottom: 6px; padding: 1px 6px; background: rgba(10, 20, 48, 0.75); color: var(--paper); font-size: 11px; text-decoration: none; }
+
+.pl-strip {
+  position: relative;
+  margin: 14px 14px 0;
+  background: var(--paper);
+  color: var(--ink);
+  border-left: 8px solid var(--amber);
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1.3fr;
+}
+.pl-strip.is-alarm { border-left-color: var(--alarm); }
+.pl-strip > div { padding: 8px 10px; border-left: 1px solid rgba(10, 20, 48, 0.28); min-width: 0; }
+.pl-strip > div:first-child { border-left: 0; }
+.pl-strip strong {
+  display: block;
+  font-family: var(--font-pl-display), sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.pl-strip .is-mid strong { font-size: 22px; font-weight: 600; line-height: 30px; }
+.pl-strip small { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.2; color: rgba(10, 20, 48, 0.72); overflow: hidden; text-overflow: ellipsis; }
+.pl-strip .is-stale strong { opacity: 0.4; text-decoration: line-through; }
+.pl-close {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--paper);
+  cursor: pointer;
+}
+.pl-close:hover { border-color: var(--amber); color: var(--amber); }
+
+.pl-trip { margin: 12px 16px 0; }
+.pl-trip .pl-line { position: relative; height: 3px; background: var(--rule); }
+.pl-trip .pl-line i { position: absolute; inset: 0 auto 0 0; background: var(--magenta); }
+.pl-trip p { margin: 6px 0 0; color: var(--dim); }
+.pl-trip p.is-warn { color: var(--amber); }
+.pl-state { margin: 12px 16px 0; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.pl-state span { color: var(--dim); font-weight: 400; }
+.pl-banner { margin: 12px 16px 0; padding: 8px 12px; background: var(--alarm); color: var(--ink); font-weight: 600; border-radius: 3px; }
+
+.pl-read { margin: 12px 16px 0; }
+.pl-read div { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-top: 1px solid var(--rule); }
+.pl-read dt { color: var(--dim); }
+.pl-read dd { margin: 0; text-align: right; }
+.pl-actions { display: flex; gap: 8px; margin: 14px 16px 18px; }
+.pl-actions .pl-btn { flex: 1; justify-content: center; height: 36px; }

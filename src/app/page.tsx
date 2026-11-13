@@ -1,11 +1,10 @@
 import Link from "next/link";
 import {
-  PlaneTakeoff, MapPin, Trophy, TrendingUp,
+  PlaneTakeoff, Plane, MapPin, Trophy, TrendingUp,
   Gamepad2, Globe, CloudSun, Rocket, Zap, HelpCircle,
   Shield, Flame, AlertTriangle,
   Train, Radio, Gauge, Building2, TramFront, Trash2, Activity,
 } from "lucide-react";
-import LiveBadge from "@/components/LiveBadge";
 import HomeAlertLayer from "@/components/HomeAlertLayer";
 
 type BadgeColor = "green" | "yellow" | "cyan";
@@ -37,6 +36,7 @@ const sections: { title: string; modules: Module[] }[] = [
     title: "Transport",
     modules: [
       { href: "/transport", label: "UK Live Transport Data", icon: Train, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
+      { href: "/planes",    label: "Planes",          icon: Plane,        color: "text-cyan-400",   bg: "bg-cyan-400/10",   border: "border-cyan-400/20",   badge: "Live",    badgeColor: "green"  },
       { href: "/vessels",   label: "Vessels",         icon: PlaneTakeoff, color: "text-sky-400",    bg: "bg-sky-400/10",    border: "border-sky-400/20",    badge: "Live",    badgeColor: "green"  },
       { href: "/gps",       label: "GPS / Maps",      icon: MapPin,       color: "text-green-400",  bg: "bg-green-400/10",  border: "border-green-400/20",  badge: "Live",    badgeColor: "cyan"   },
     ],
@@ -84,75 +84,38 @@ const sections: { title: string; modules: Module[] }[] = [
 
 const totalModules = sections.reduce((n, s) => n + s.modules.length, 0);
 
-function ModuleCard({ href, label, icon: Icon, color, bg, border, badge, badgeColor }: Module) {
-  return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-2.5 p-3 rounded-xl border border-[#1a2640] bg-[#0d1e30]
-                 hover:border-[#243352] transition-all duration-200 relative overflow-hidden"
-    >
-      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl ${bg}`}
-        style={{ filter: "blur(1px)" }} />
-      <div className="relative flex items-center justify-between">
-        <div className={`w-8 h-8 rounded-lg ${bg} border ${border} flex items-center justify-center
-                        group-hover:scale-110 transition-transform duration-200`}>
-          <Icon className={`w-3.5 h-3.5 ${color}`} />
-        </div>
-        <LiveBadge label={badge} color={badgeColor} />
-      </div>
-      <p className={`relative text-xs font-semibold text-white leading-tight group-hover:${color} transition-colors duration-200`}>
-        {label}
-      </p>
-    </Link>
-  );
-}
-
 export default function DashboardPage() {
   return (
     <div className="min-h-full">
-      {/* Hero */}
-      <div className="relative px-6 pt-4 pb-3 border-b border-[#1a2640] overflow-hidden">
-        <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full aurora"
-          style={{ background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)", filter: "blur(40px)" }} />
-        <div className="absolute -bottom-10 right-20 w-48 h-48 rounded-full aurora"
-          style={{ background: "radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)", filter: "blur(40px)", animationDelay: "4s" }} />
-
-        <div className="relative flex items-center justify-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.2), rgba(59,130,246,0.15))", border: "1px solid rgba(6,182,212,0.3)", boxShadow: "0 0 16px rgba(6,182,212,0.2)" }}>
-            <Globe className="w-5 h-5 text-cyan-400" />
-          </div>
-          <h1 className="text-2xl font-black tracking-tight"
-            style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            LaneyWeb
-          </h1>
-        </div>
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <LiveBadge label="All systems live" color="green" />
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            {totalModules} modules
-          </div>
-          <span className="text-xs text-[#4a6080]">Data refreshes automatically · No login required</span>
-        </div>
-      </div>
+      <header className="pl-14 md:pl-8 pr-32 pt-8 pb-6 border-b border-[var(--rule)] bg-[var(--navy)]">
+        <h1 className="text-[56px] md:text-[72px] font-bold leading-[0.9] text-[var(--paper)]">LaneyWeb</h1>
+        <p className="mt-3 text-base text-[var(--soft)] max-w-[60ch]">
+          {totalModules} live pages on what is moving right now: planes, trams, the power grid, the weather, the football.
+          Everything updates by itself and nothing needs a login.
+        </p>
+      </header>
 
       <HomeAlertLayer />
 
-      {/* Sections */}
-      <div className="p-4 space-y-6">
+      <div className="px-4 md:px-8 py-6 grid gap-x-10 gap-y-8" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))" }}>
         {sections.map(({ title, modules }) => (
-          <div key={title}>
-            <p className="text-sm font-black uppercase tracking-widest mb-2.5"
-              style={{ background: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a78bfa 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              {title}
-            </p>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
-              {modules.map((m) => (
-                <ModuleCard key={m.href} {...m} />
+          <section key={title}>
+            <h2 className="text-[22px] font-semibold text-[var(--paper)] leading-none pb-2 border-b-2 border-[var(--amber)]">{title}</h2>
+            <ul>
+              {modules.map(({ href, label, icon: Icon, badge }) => (
+                <li key={href} className="border-b border-[var(--rule)]">
+                  <Link
+                    href={href}
+                    className="group flex items-center gap-3 py-2.5 text-base text-[var(--paper)] hover:text-[var(--amber)]"
+                  >
+                    <Icon className="w-4 h-4 text-[var(--dim)] group-hover:text-[var(--amber)]" aria-hidden />
+                    <span className="flex-1">{label}</span>
+                    {badge !== "Live" && <span className="text-sm text-[var(--dim)]">{badge}</span>}
+                  </Link>
+                </li>
               ))}
-            </div>
-          </div>
+            </ul>
+          </section>
         ))}
       </div>
     </div>
